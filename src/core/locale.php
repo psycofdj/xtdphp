@@ -1,8 +1,7 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../../config.php");
-require_once(__BASE_DIR__      . "/wappcore/locales/fr.php");
-require_once(__BASE_DIR__      . "/wappcore/locales/en.php");
+require_once(__WAPPCORE_DIR__ . "/core/locales/fr.php");
+require_once(__WAPPCORE_DIR__ . "/core/locales/en.php");
 
 class locale
 {

@@ -1,8 +1,12 @@
 <?php
 
 require_once(dirname(__FILE__) . "/../local.php");
-require_once(__WAPPCORE_DIR__      . "/core/types.php");
-require_once(__WAPPCORE_DIR__      . "/externals/smarty/Smarty.class.php");
+require_once(__WAPPCORE_DIR__  . "/core/log.php");
+require_once(__WAPPCORE_DIR__  . "/core/locale.php");
+require_once(__WAPPCORE_DIR__  . "/core/types.php");
+require_once(__WAPPCORE_DIR__  . "/core/libs/smarty/Smarty.class.php");
+require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.php");
+require_once(__WAPPCORE_DIR__  . "/core/sql.php");
 
 /**
  * Output generator
@@ -24,7 +28,6 @@ class Handler
     $this->m_headers     = Array();
     $this->m_statusCode  = 200;
     $this->m_contentType = "text/plain";
-    $this->initialize();
   }
 
   /* ---------------------------------------------- */
@@ -153,6 +156,8 @@ class Handler
    */
   private function reply($p_isValid)
   {
+    global $g_conf;
+
     if (false === $p_isValid)
       $this->setStatusCode(500);
 
@@ -168,6 +173,11 @@ class Handler
     // 2.
     if (200 == $this->m_statusCode)
       echo $this->display();
+    else if ((500 == $this->m_statusCode) && ($g_conf["env"] == "dev"))
+    {
+      echo join("<br/>3", log::getLines());
+      echo $php_errormsg;
+    }
 
     return $p_isValid;
   }
@@ -226,24 +236,72 @@ class Handler
 
 
   /**
-   *  Initialize the session and language settings
+   *  Initialize request
    *
    *  Child classe may override this function if it need to perform operations
    *  before action routing or parameter parsing.
    *
    *  @return bool true
    */
-  function initialize()
+  protected function initialize()
   {
+    $this->initSession();
+    $this->initLocale();
+    $this->initSql();
+    return true;
+  }
 
+  /**
+   * Initialize session engine
+   *
+   * Creates a session id if no session is found
+   */
+  private function initSession()
+  {
     $l_sessionID = session_id();
     if (empty($l_sessionID))
       session_start();
     log::debug("SESSION ID: " . session_id());
-    locale::init();
-    return true;
   }
 
+  /**
+   * Initialize sql engine
+   *
+   * - Conntect to mysql database according to local configuration
+   * - Configure logging handler to log request
+   * - Configure redbean "freeze" status according current environement
+   */
+  private function initSql()
+  {
+    global $g_conf;
+
+    $l_conf = sprintf("mysql:host=%s;dbname=%s;", $g_conf["mysql"]["host"], $g_conf["mysql"]["database"]);
+    R::setup($l_conf, $g_conf["mysql"]["username"], $g_conf["mysql"]["password"]);
+
+    R::debug(true, new SqlLogger());
+
+    if ($g_conf["env"] != "dev")
+      R::freeze(true);
+    else
+    {
+      log::warn("initializing redbean with dynamic schemas, transactions will be auto-commited");
+      R::freeze(false);
+    }
+  }
+
+
+  /**
+   * Initialize locale engine
+   *
+   * Set locale to first language found in accept-language header @see locale::detectLang
+   * If session contains "lang" parameter, it become the current locale.
+   */
+  private function initLocale()
+  {
+    locale::init();
+    if (false != ($l_lang = $this->getSession("lang")))
+      locale::setLang($l_lang);
+  }
 
   /**
    * Overridable process finalization callback
@@ -502,9 +560,11 @@ class TemplateHandler extends Handler
     parent::__construct();
     $this->m_targetTmpl = null;
     $this->m_smarty     = new Smarty();
+    log::debug("app template dir : %s", sprintf("%s/templates",      __APP_DIR__));
     $this->m_smarty
-      ->setCompileDir(sprintf("%s/templates_c", __APP_DIR__))
-      ->setTemplateDir(sprintf("%s/templates", __APP_DIR__))
+      ->setCompileDir(sprintf("%s/templates_c",     __APP_DIR__))
+      ->setTemplateDir(sprintf("%s/core/templates", __WAPPCORE_DIR__))
+      ->addTemplateDir(sprintf("%s/templates",      __APP_DIR__), "app")
       ->setCacheDir(sprintf("%s/cache", __APP_DIR__))
       ->registerPlugin("block", "t", array($this, 'translate'));
     $this->setContentType("text/plain");
@@ -619,6 +679,22 @@ class HtmlHandler extends TemplateHandler
     $this->m_onload         = "";
     $this->m_metaHttpEquivs = Array();
     $this->setContentType("text/html");
+
+    $this
+      ->addJs("jquery.js",      "core")
+      ->addJs("jquery-ui.js",   "core")
+      ->addJs("bootstrap.js",   "core")
+      ->addCss("jquery-ui.css", "core")
+      ->addCss("bootstrap.css", "core");
+  }
+
+  protected function initialize()
+  {
+    if (false == parent::initialize())
+      return false;
+
+    $this->setData("lang", locale::getName());
+    return true;
   }
 
   protected function setContent($p_content)
@@ -627,22 +703,29 @@ class HtmlHandler extends TemplateHandler
     return $this;
   }
 
-  protected function addJs($p_jsPath)
+  protected function addJs($p_jsPath, $p_module = "app")
   {
-    array_push($this->m_jsList, $this->relPathToUrl("js/" . $p_jsPath));
+    array_push($this->m_jsList, $this->relPathToUrl($p_module, "js/" . $p_jsPath));
     return $this;
   }
 
-  protected function addCss($p_cssPath)
+  protected function addCss($p_cssPath, $p_module = "app")
   {
-    array_push($this->m_cssList, $this->relPathToUrl("css/" . $p_cssPath));
+    array_push($this->m_cssList, $this->relPathToUrl($p_module, "css/" . $p_cssPath));
     return $this;
   }
 
-  private function relPathToUrl($p_filePath)
+  private function relPathToUrl($p_module, $p_filePath)
   {
     global $g_conf;
-    return sprintf("%s/%s", $g_conf["web"]["uri"], $p_filePath);
+
+    $l_moduleUri       = $g_conf["web"]["uri"][$p_module];
+    $l_moduleUriLength = strlen($l_moduleUri);
+
+    if ((0 == $l_moduleUriLength) || ("/" != substr($l_moduleUri, -$l_moduleUriLength)))
+      $l_moduleUri = $l_moduleUri . "/";
+
+    return $l_moduleUri . $p_filePath;
   }
 
   protected function setTitle($p_title)

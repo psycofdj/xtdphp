@@ -3,6 +3,7 @@
 class log
 {
   public static  $ms_curLevel   = 2;
+  public static  $ms_lines      = Array();
   const           mc_levelDebug = 7;
   const           mc_levelInfo  = 6;
   const           mc_levelWarn  = 4;
@@ -15,6 +16,10 @@ class log
 
   public static function getLevel($p_level) {
     return self::$ms_curLevel;
+  }
+
+  public static function getLines($p_level) {
+    return self::$ms_lines;
   }
 
   public static function debug() {
@@ -90,6 +95,7 @@ class log
     array_push($l_callArgs, $l_stackInfo["line"]);
 
     $l_msg = call_user_func_array("sprintf", $l_callArgs);
+    array_push(self::$ms_lines, $l_msg);
     error_log($l_msg);
   }
 

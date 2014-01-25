@@ -127,7 +127,7 @@ template.</p>
 		
 		
 
-		<b>Located at</b> <a href="source-class-HtmlHandler.html#588-695" title="Go to source code">core/handler.php</a><br />
+		<b>Located at</b> <a href="source-class-HtmlHandler.html#600-730" title="Go to source code">core/handler.php</a><br />
 	</div>
 
 
@@ -145,7 +145,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-HtmlHandler.html#610-622" title="Go to source code">__construct</a>( )</code>
+		<code><a href="source-class-HtmlHandler.html#622-641" title="Go to source code">__construct</a>( )</code>
 
 		<div class="description short">
 			
@@ -165,6 +165,48 @@ template.</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="initialize" id="_initialize">
+
+		<td class="attributes"><code>
+			 protected 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_initialize">#</a>
+		<code><a href="source-class-HtmlHandler.html#643-650" title="Go to source code">initialize</a>( )</code>
+
+		<div class="description short">
+			
+<p>Initialize the session and language settings</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Initialize the session and language settings</p>
+
+<p>Child classe may override this function if it need to perform operations
+before action routing or parameter parsing.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>true<br />
+				</div>
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Handler.html#_initialize">Handler::initialize()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="setContent" id="_setContent">
 
 		<td class="attributes"><code>
@@ -176,7 +218,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setContent">#</a>
-		<code><a href="source-class-HtmlHandler.html#624-628" title="Go to source code">setContent</a>( <span>mixed <var>$p_content</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#652-656" title="Go to source code">setContent</a>( <span>mixed <var>$p_content</var></span> )</code>
 
 		<div class="description short">
 			
@@ -205,7 +247,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addJs">#</a>
-		<code><a href="source-class-HtmlHandler.html#630-634" title="Go to source code">addJs</a>( <span>mixed <var>$p_jsPath</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#658-662" title="Go to source code">addJs</a>( <span>mixed <var>$p_jsPath</var></span>, <span>mixed <var>$p_module</var> = <span class="php-quote">&quot;app&quot;</span></span> )</code>
 
 		<div class="description short">
 			
@@ -234,7 +276,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addCss">#</a>
-		<code><a href="source-class-HtmlHandler.html#636-640" title="Go to source code">addCss</a>( <span>mixed <var>$p_cssPath</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#664-668" title="Go to source code">addCss</a>( <span>mixed <var>$p_cssPath</var></span>, <span>mixed <var>$p_module</var> = <span class="php-quote">&quot;app&quot;</span></span> )</code>
 
 		<div class="description short">
 			
@@ -263,7 +305,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_relPathToUrl">#</a>
-		<code><a href="source-class-HtmlHandler.html#642-646" title="Go to source code">relPathToUrl</a>( <span>mixed <var>$p_filePath</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#670-681" title="Go to source code">relPathToUrl</a>( <span>mixed <var>$p_module</var></span>, <span>mixed <var>$p_filePath</var></span> )</code>
 
 		<div class="description short">
 			
@@ -292,7 +334,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setTitle">#</a>
-		<code><a href="source-class-HtmlHandler.html#648-652" title="Go to source code">setTitle</a>( <span>mixed <var>$p_title</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#683-687" title="Go to source code">setTitle</a>( <span>mixed <var>$p_title</var></span> )</code>
 
 		<div class="description short">
 			
@@ -321,7 +363,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setMetaKw">#</a>
-		<code><a href="source-class-HtmlHandler.html#654-658" title="Go to source code">setMetaKw</a>( <span>mixed <var>$p_metaKw</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#689-693" title="Go to source code">setMetaKw</a>( <span>mixed <var>$p_metaKw</var></span> )</code>
 
 		<div class="description short">
 			
@@ -350,7 +392,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setMetaDescr">#</a>
-		<code><a href="source-class-HtmlHandler.html#660-664" title="Go to source code">setMetaDescr</a>( <span>mixed <var>$p_metaDescr</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#695-699" title="Go to source code">setMetaDescr</a>( <span>mixed <var>$p_metaDescr</var></span> )</code>
 
 		<div class="description short">
 			
@@ -379,7 +421,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setOnload">#</a>
-		<code><a href="source-class-HtmlHandler.html#666-670" title="Go to source code">setOnload</a>( <span>mixed <var>$p_onload</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#701-705" title="Go to source code">setOnload</a>( <span>mixed <var>$p_onload</var></span> )</code>
 
 		<div class="description short">
 			
@@ -408,7 +450,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addMetaHttpEquiv">#</a>
-		<code><a href="source-class-HtmlHandler.html#672-676" title="Go to source code">addMetaHttpEquiv</a>( <span>mixed <var>$p_equiv</var></span>, <span>mixed <var>$p_content</var></span> )</code>
+		<code><a href="source-class-HtmlHandler.html#707-711" title="Go to source code">addMetaHttpEquiv</a>( <span>mixed <var>$p_equiv</var></span>, <span>mixed <var>$p_content</var></span> )</code>
 
 		<div class="description short">
 			
@@ -437,7 +479,7 @@ template.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_display">#</a>
-		<code><a href="source-class-HtmlHandler.html#678-694" title="Go to source code">display</a>( )</code>
+		<code><a href="source-class-HtmlHandler.html#713-729" title="Go to source code">display</a>( )</code>
 
 		<div class="description short">
 			
@@ -485,7 +527,6 @@ template.</p>
 			<a href="class-Handler.html#_deleteSession">deleteSession()</a>, 
 			<a href="class-Handler.html#_finalize">finalize()</a>, 
 			<a href="class-Handler.html#_getSession">getSession()</a>, 
-			<a href="class-Handler.html#_initialize">initialize()</a>, 
 			<a href="class-Handler.html#_process">process()</a>, 
 			<a href="class-Handler.html#_redirect">redirect()</a>, 
 			<a href="class-Handler.html#_setContentType">setContentType()</a>, 
@@ -514,7 +555,7 @@ template.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-HtmlHandler.html#595-596" title="Go to source code"><var>$m_content</var></a>
+				<a href="source-class-HtmlHandler.html#607-608" title="Go to source code"><var>$m_content</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -541,7 +582,7 @@ template.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-HtmlHandler.html#597-598" title="Go to source code"><var>$m_jsList</var></a>
+				<a href="source-class-HtmlHandler.html#609-610" title="Go to source code"><var>$m_jsList</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -568,7 +609,7 @@ template.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-HtmlHandler.html#599-600" title="Go to source code"><var>$m_cssList</var></a>
+				<a href="source-class-HtmlHandler.html#611-612" title="Go to source code"><var>$m_cssList</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -595,7 +636,7 @@ template.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-HtmlHandler.html#601-602" title="Go to source code"><var>$m_title</var></a>
+				<a href="source-class-HtmlHandler.html#613-614" title="Go to source code"><var>$m_title</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -622,7 +663,7 @@ template.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-HtmlHandler.html#603-604" title="Go to source code"><var>$m_metaKw</var></a>
+				<a href="source-class-HtmlHandler.html#615-616" title="Go to source code"><var>$m_metaKw</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -649,7 +690,7 @@ template.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-HtmlHandler.html#605-606" title="Go to source code"><var>$m_metaDescr</var></a>
+				<a href="source-class-HtmlHandler.html#617-618" title="Go to source code"><var>$m_metaDescr</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -676,7 +717,7 @@ template.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-HtmlHandler.html#607-608" title="Go to source code"><var>$m_metaHttpEquiv</var></a>
+				<a href="source-class-HtmlHandler.html#619-620" title="Go to source code"><var>$m_metaHttpEquiv</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
