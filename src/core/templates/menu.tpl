@@ -30,10 +30,10 @@
 
     {* check if one of suburls is current url *}
     {foreach $c_menu.sections as $c_section}
-    {if $smarty.server.PHP_SELF == $c_section.link} {assign "active" "active"} {/if}
+    {if $smarty.server.PHP_SELF == $c_section.link} {assign "active" "active"}{/if}
     {/foreach}
 
-    <li class="dropdown">
+    <li class="dropdown {$active}">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         {t}{$c_menu.title}{/t}
         <b class="caret"></b>

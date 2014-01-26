@@ -1,9 +1,8 @@
 <?php
 
 ini_set( "error_reporting", E_ALL);
-
-if (false == defined("__WAPPCORE_DIR__"))
-  define("__WAPPCORE_DIR__", dirname(__FILE__));
+define("__APP_DIR__",      getenv("__APP_DIR__"));
+define("__WAPPCORE_DIR__", getenv("__WAPPCORE_DIR__"));
 
 require_once(__WAPPCORE_DIR__ . "/core/module.php");
 require_once(__WAPPCORE_DIR__ . "/core/log.php");
@@ -40,6 +39,8 @@ $g_conf["mail"]["name"]       = "no-reply";
 $g_conf["mail"]["host"]       = "localhost";
 $g_conf["mail"]["port"]       = 25;
 $g_conf["mail"]["charset"]    = "utf-8";
+
+require_once(__APP_DIR__      . "/local.php");
 
 /* -------------------------------------------------------------------------- */
 

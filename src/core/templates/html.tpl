@@ -20,7 +20,7 @@
   <body {if isset($__onload) } onload="{$__onload}" {/if}>
     <div id="wrap">
       {include file="file:[core]menu.tpl"}
-      {include file="file:[app]$__content"}
+      {include file="$__content"}
     </div>
   </body>
 </html>
