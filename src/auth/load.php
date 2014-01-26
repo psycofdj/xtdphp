@@ -18,7 +18,7 @@ class authModule extends Module
                                        "title" => "auth.menu.users",
                                        "role"  => "admin")));
 
-    $this->addMenuWidget("[auth]menu_widget.tpl", array($this, "createWidget"));
+    $this->addMenuWidget("file:[auth]menu_widget.tpl", array($this, "createWidget"));
   }
 
   public function createWidget(HtmlHandler $p_handler)

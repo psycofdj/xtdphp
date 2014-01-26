@@ -22,7 +22,10 @@ function core_en() {
           "core.error.file.internal"  => "An internal server error occured.",
           "core.error.file.type"      => "Invalid image type '%s'",
 
-          "core.menu.home"   => "Home",
+          "core.menu.home"    => "Home",
+          "core.menu.lang"    => "Languages",
+          "core.menu.lang.fr" => "French",
+          "core.menu.lang.en" => "English",
           );
 }
 

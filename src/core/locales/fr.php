@@ -22,7 +22,10 @@ function core_fr() {
           "core.error.file.internal"  => "Une erreur interne s'est produite.",
           "core.error.file.type"      => "Type d'image '%s' invalide",
 
-          "core.menu.home"   => "Accueil",
+          "core.menu.home"    => "Accueil",
+          "core.menu.lang"    => "Langues",
+          "core.menu.lang.fr" => "Français",
+          "core.menu.lang.en" => "Anglais",
           );
 }
 

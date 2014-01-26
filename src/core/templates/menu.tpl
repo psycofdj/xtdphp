@@ -11,17 +11,6 @@
 
   <div class="collapse navbar-collapse" id="menu-navbar">
 
-  <!-- <p class="navbar-text pull-right"><i class="icon-user icon-white"></i> -->
-  <!--   xavier@marcelet.com  |  <a href="connexion.php?c=logout" class="navbar-link">Déconnexion</a> -->
-  <!-- </p> -->
-  <!-- <ul class="nav pull-right" id="history"> -->
-  <!--   <li id="fat-menu" class="dropdown"> -->
-  <!--     <a href="#" id="histo" role="button" class="dropdown-toggle" data-toggle="dropdown">Activité<b class="caret"></b></a> -->
-  <!--     <ul class="dropdown-menu" role="menu" id="histo-content" aria-labelledby="drop3"> -->
-  <!--     </ul> -->
-  <!--   </li> -->
-  <!-- </ul> -->
-
   <ul class="nav navbar-nav">
     {foreach $__menu as $c_menu}
     {assign "active" ""}
@@ -46,13 +35,20 @@
         {/foreach}
       </ul>
     </li>
+
     {else}
+
     {if $smarty.server.PHP_SELF == $c_menu.link} {assign "active" "active"} {/if}
     <li class="{$active}">
       <a href="{$c_menu.link}" title="{$c_menu.role}">{t}{$c_menu.title}{/t}</a>
     </li>
     {/if}
+
     {/foreach}
   </ul>
+
+  {foreach $__menu_widgets as $c_widget}
+  {include file="$c_widget"}
+  {/foreach}
 </div>
 </div>

@@ -89,7 +89,15 @@ class Module
     return $this->m_menu;
   }
 
+  public function getWidgets()
+  {
+    return $this->m_widgets;
+  }
+
   protected function addMenuWidget($p_template, $p_callback = null)
   {
+    array_push($this->m_widgets,
+               Array("tpl"      => $p_template,
+                     "callback" => $p_callback));
   }
 }

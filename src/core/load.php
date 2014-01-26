@@ -10,6 +10,15 @@ class coreModule extends Module
     parent::__construct("core");
 
     $this->addMenu("/index.php", "core.menu.home", "public");
+
+    $this->addMenuComposed("core.menu.lang",
+                           Array(Array("link"  => "/wappcore/core/lang.php?lang=fr",
+                                       "title" => "core.menu.lang.fr",
+                                       "role"  => "public"),
+                                 Array("link"  => "/wappcore/core/lang.php?lang=en",
+                                       "title" => "core.menu.lang.en",
+                                       "role"  => "public")));
+
   }
 }
 

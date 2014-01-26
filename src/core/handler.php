@@ -186,7 +186,7 @@ class Handler
   /**
    * @return Handler $this
    */
-  protected function setData($p_key, $p_value)
+  public function setData($p_key, $p_value)
   {
     $this->m_data[$p_key] = $p_value;
     return $this;
@@ -335,7 +335,7 @@ class Handler
    * @param  string $p_key session key name
    * @return mixed  session value or false if not found
    */
-  protected function getSession($p_key)
+  public function getSession($p_key)
   {
     if (array_key_exists($p_key, $_SESSION))
       return $_SESSION[$p_key];
@@ -785,9 +785,20 @@ class HtmlHandler extends TemplateHandler
     if (null != $this->m_title)
       $this->setData("__title", $this->m_title);
 
-    $l_menu = Array();
-    foreach (Module::getModules() as $c_module) {
+    $l_menu    = Array();
+    $l_widgets = Array();
+
+    foreach (Module::getModules() as $c_module)
+    {
       $l_menu = array_merge($l_menu, $c_module->getMenu());
+
+      foreach ($c_module->getWidgets() as $c_widget)
+      {
+        if (null != $c_widget["callback"]) {
+          call_user_func($c_widget["callback"], $this);
+        }
+        array_push($l_widgets, $c_widget["tpl"]);
+      }
     }
 
     $this
@@ -797,6 +808,7 @@ class HtmlHandler extends TemplateHandler
       ->setData("__meta_http_equivs", $this->m_metaHttpEquivs)
       ->setData("__menu",             $l_menu)
       ->setData("__menu_brand",       $g_conf["brand"])
+      ->setData("__menu_widgets",     $l_widgets)
       ->setTarget("html.tpl");
 
     return parent::display();
