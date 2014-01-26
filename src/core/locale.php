@@ -22,8 +22,8 @@ class locale
 
     if (false == array_key_exists($p_key, $l_data))
     {
-      log::error("locale key '%s' not found", $p_key);
-      return 'error: ø("' . $p_key . '")';
+      log::error("locale key '%s' not found for lang '%s'", $p_key, self::$ms_localeName);
+      return sprintf('error: ø("%s")', $p_key);
     }
     return $l_data[$p_key];
   }
@@ -49,26 +49,30 @@ class locale
     return self::$ms_localeName;
   }
 
-  static public function setLang($p_lang)
+  static public function setLang($p_langName)
   {
     global $g_localeFr;
     global $g_localeEn;
 
-    $p_lang = strtolower($p_lang);
+    $p_langName = strtolower($p_langName);
 
-    switch ($p_lang)
+    switch ($p_langName)
     {
     case "fr-fr":
     case "fr":
-      self::$ms_localeName = "fr";
-    self::$ms_locale     = $g_localeFr;
-    return true;
+      {
+        self::$ms_localeName = "fr";
+        self::$ms_locale     = Module::getLang("fr");
+        return true;
+      }
 
     case "en-us":
     case "en":
-      self::$ms_localeName = "en";
-    self::$ms_locale     = $g_localeEn;
-    return true;
+      {
+        self::$ms_localeName = "en";
+        self::$ms_locale     = Module::getLang("en");
+        return true;
+      }
 
     default:
       return false;

@@ -7,6 +7,7 @@ require_once(__WAPPCORE_DIR__  . "/core/types.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/smarty/Smarty.class.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.php");
 require_once(__WAPPCORE_DIR__  . "/core/sql.php");
+require_once(__WAPPCORE_DIR__  . "/core/module.php");
 
 /**
  * Output generator
@@ -562,14 +563,26 @@ class TemplateHandler extends Handler
     $this->m_smarty     = new Smarty();
     log::debug("app template dir : %s", sprintf("%s/templates",      __APP_DIR__));
     $this->m_smarty
-      ->setCompileDir(sprintf("%s/templates_c",     __APP_DIR__))
-      ->setTemplateDir(sprintf("%s/core/templates", __WAPPCORE_DIR__))
-      ->addTemplateDir(sprintf("%s/templates",      __APP_DIR__), "app")
-      ->setCacheDir(sprintf("%s/cache", __APP_DIR__))
-      ->registerPlugin("block", "t", array($this, 'translate'));
+      ->setCompileDir(sprintf("%s/templates_c", __APP_DIR__))
+      ->setCacheDir(sprintf("%s/cache",         __APP_DIR__))
+      ->addTemplateDir(sprintf("%s/templates",  __APP_DIR__), "app")
+      ->registerPlugin("block", "t",   array($this, 'translate'));
     $this->setContentType("text/plain");
   }
 
+  protected function initialize()
+  {
+    if (false == parent::initialize())
+      return false;
+
+    foreach (Module::getModules() as $c_module) {
+      $l_name = $c_module->getName();
+      $l_path = sprintf("%s/%s/templates", __WAPPCORE_DIR__, $l_name);
+      $this->m_smarty->addTemplateDir($l_path, $l_name);
+    }
+
+    return true;
+  }
 
   /**
    * Smarty custom plugin for localized output
@@ -673,10 +686,10 @@ class HtmlHandler extends TemplateHandler
     $this->m_content        = null;
     $this->m_jsList         = Array();
     $this->m_cssList        = Array();
-    $this->m_title          = "";
-    $this->m_metaKw         = "";
-    $this->m_metaDescr      = "";
-    $this->m_onload         = "";
+    $this->m_title          = null;
+    $this->m_metaKw         = null;
+    $this->m_metaDescr      = null;
+    $this->m_onload         = null;
     $this->m_metaHttpEquivs = Array();
     $this->setContentType("text/html");
 
@@ -685,7 +698,8 @@ class HtmlHandler extends TemplateHandler
       ->addJs("jquery-ui.js",   "core")
       ->addJs("bootstrap.js",   "core")
       ->addCss("jquery-ui.css", "core")
-      ->addCss("bootstrap.css", "core");
+      ->addCss("bootstrap.css", "core")
+      ->addCss("bootstrap-theme.css", "core");
   }
 
   protected function initialize()
@@ -760,19 +774,31 @@ class HtmlHandler extends TemplateHandler
 
   protected function display()
   {
-    if (0 != strlen($this->m_metaDescr))
+    global $g_conf;
+
+    if (null != $this->m_metaDescr)
       $this->setData("__meta_descr", $this->m_metaDescr);
-    if (0 != strlen($this->m_metaKw))
+    if (null != $this->m_metaKw)
       $this->setData("__meta_kw",    $this->m_metaKw);
-    if (0 != strlen($this->m_onload))
+    if (null != $this->m_onload)
       $this->setData("__onload", $this->m_onload);
+    if (null != $this->m_title)
+      $this->setData("__title", $this->m_title);
+
+    $l_menu = Array();
+    foreach (Module::getModules() as $c_module) {
+      $l_menu = array_merge($l_menu, $c_module->getMenu());
+    }
+
     $this
       ->setData("__content",          $this->m_content)
-      ->setData("__title",            $this->m_title)
       ->setData("__js_list",          $this->m_jsList)
       ->setData("__css_list",         $this->m_cssList)
       ->setData("__meta_http_equivs", $this->m_metaHttpEquivs)
+      ->setData("__menu",             $l_menu)
+      ->setData("__menu_brand",       $g_conf["brand"])
       ->setTarget("html.tpl");
+
     return parent::display();
   }
 }
