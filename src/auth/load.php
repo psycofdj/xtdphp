@@ -23,14 +23,10 @@ class authModule extends Module
 
   public function createWidget(HtmlHandler $p_handler)
   {
-    $p_handler->setData("auth_logged", false);
+    $p_handler->setData("auth_user", null);
 
-    if ((false != ($l_userID = $p_handler->getSession("auth_logged"))) &&
-        (null  != ($l_user   = UserModel::getByID($l_userID))))
-    {
-      $p_handler->setData("auth_logged", true);
+    if (false != ($l_user = $p_handler->getSession("auth_user")))
       $p_handler->setData("auth_user",   $l_user);
-    }
   }
 }
 

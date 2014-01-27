@@ -694,11 +694,12 @@ class HtmlHandler extends TemplateHandler
     $this->setContentType("text/html");
 
     $this
-      ->addJs("jquery.js",      "core")
-      ->addJs("jquery-ui.js",   "core")
-      ->addJs("bootstrap.js",   "core")
-      ->addCss("jquery-ui.css", "core")
-      ->addCss("bootstrap.css", "core")
+      ->addJs("jquery.js",            "core")
+      ->addJs("jquery-ui.js",         "core")
+      ->addJs("jquery.validate.js",   "core")
+      ->addJs("bootstrap.js",         "core")
+      ->addCss("jquery-ui.css",       "core")
+      ->addCss("bootstrap.css",       "core")
       ->addCss("bootstrap-theme.css", "core");
   }
 
@@ -708,6 +709,9 @@ class HtmlHandler extends TemplateHandler
       return false;
 
     $this->setData("lang", locale::getName());
+    if (locale::getName() == "fr")
+      $this->addJs("jquery.validate.messages-fr.js", "core");
+
     return true;
   }
 

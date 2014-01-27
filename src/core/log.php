@@ -18,7 +18,7 @@ class log
     return self::$ms_curLevel;
   }
 
-  public static function getLines($p_level) {
+  public static function getLines() {
     return self::$ms_lines;
   }
 

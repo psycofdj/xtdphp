@@ -8,6 +8,7 @@ function auth_en() {
           "auth.menu.mail"     => "Email",
           "auth.menu.password" => "Password",
           "auth.menu.login"    => "Login",
+          "auth.menu.logout"   => "Logout",
           "auth.menu.recover"  => "Forgot your password ?",
           );
 }

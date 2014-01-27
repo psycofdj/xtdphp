@@ -8,6 +8,7 @@ function auth_fr() {
           "auth.menu.mail"     => "Email",
           "auth.menu.password" => "Mot de passe",
           "auth.menu.login"    => "Connexion",
+          "auth.menu.logout"   => "Déconnexion",
           "auth.menu.recover"  => "Mot de passe perdu ?",
           );
 }

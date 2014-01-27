@@ -16,7 +16,9 @@ class UserPage extends HtmlHandler
     $this->setData("val", $pu_test);
     return true;
   }
+
 }
+
 
 $l_page = new UserPage();
 $l_page->process();
