@@ -17,9 +17,9 @@
 {/if}
 
 <div id="auth_error" class="hide">
+  <button type="button" class="close" onclick="$('#auth_btn').popover('hide');">&times;</button>
   <p class="text-danger"> {t}auth.menu.wrong{/t} </p>
   <a href="/wappcore/auth/recover.php">{t}auth.menu.recover{/t}</a>
-  <button type="button" class="close" onclick="$('#auth_btn').popover('hide');">&times;</button>
 </div>
 
 <script type="text/javascript">
