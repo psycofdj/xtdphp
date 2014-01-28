@@ -36,7 +36,7 @@ class Handler
   /**
    * @return Handler
    */
-  private function setStatusCode($p_statusCode)
+  protected function setStatusCode($p_statusCode)
   {
     $this->m_statusCode = $p_statusCode;
     return $this;
@@ -55,6 +55,8 @@ class Handler
       return "200 OK";
     case 302:
       return "302 Moved Temporarily";
+    case 401:
+      return "401 Unauthorized";
     case 500:
       return "500 Internal Server Error";
     default:
@@ -700,7 +702,9 @@ class HtmlHandler extends TemplateHandler
       ->addJs("bootstrap.js",         "core")
       ->addCss("jquery-ui.css",       "core")
       ->addCss("bootstrap.css",       "core")
-      ->addCss("bootstrap-theme.css", "core");
+      ->addCss("bootstrap-theme.css", "core")
+      ->addCss("wapp.css",            "core")
+      ;
   }
 
   protected function initialize()

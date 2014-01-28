@@ -10,6 +10,7 @@ function auth_fr() {
           "auth.menu.login"    => "Connexion",
           "auth.menu.logout"   => "Déconnexion",
           "auth.menu.recover"  => "Mot de passe perdu ?",
+          "auth.menu.wrong"    => "L'email ou le mot de passe saisi est incorrect.",
           );
 }
 

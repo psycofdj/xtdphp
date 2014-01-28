@@ -10,6 +10,7 @@ function auth_en() {
           "auth.menu.login"    => "Login",
           "auth.menu.logout"   => "Logout",
           "auth.menu.recover"  => "Forgot your password ?",
+          "auth.menu.wrong"    => "Unknown user name or bad password.",
           );
 }
 
