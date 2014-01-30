@@ -2,6 +2,8 @@
 
 require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/module.php");
+require_once(__WAPPCORE_DIR__  . "/core/app.php");
+require_once(__WAPPCORE_DIR__  . "/core/menu.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/user.php");
 
 class authModule extends Module
@@ -10,15 +12,13 @@ class authModule extends Module
   {
     parent::__construct("auth");
 
-    $this->addMenuComposed("auth.menu.title",
-                           Array(Array("link"  => "/wappcore/auth/roles.php",
-                                       "title" => "auth.menu.roles",
-                                       "role"  => "admin"),
-                                 Array("link"  => "/wappcore/auth/users.php",
-                                       "title" => "auth.menu.users",
-                                       "role"  => "admin")));
+    App::get()->getMenu()
+      ->addTab(new MenuTab("auth.menu.title"), 80)
+      ->addSubTab("auth.menu.roles", "/wappcore/auth/roles.php")
+      ->addSubTab("auth.menu.users", "/wappcore/auth/users.php");
 
-    $this->addMenuWidget("file:[auth]menu_widget.tpl", array($this, "createWidget"));
+    App::get()->getMenu()
+      ->addWidget("file:[auth]menu_widget.tpl", array($this, "createWidget"));
   }
 
   public function createWidget(HtmlHandler $p_handler)

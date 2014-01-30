@@ -4,7 +4,6 @@ ini_set( "error_reporting", E_ALL);
 define("__APP_DIR__",      getenv("__APP_DIR__"));
 define("__WAPPCORE_DIR__", getenv("__WAPPCORE_DIR__"));
 
-require_once(__WAPPCORE_DIR__ . "/core/module.php");
 require_once(__WAPPCORE_DIR__ . "/core/log.php");
 
 /* -------------------------------------------------------------------------- */
@@ -45,8 +44,6 @@ require_once(__APP_DIR__      . "/local.php");
 /* -------------------------------------------------------------------------- */
 
 log::setLevel($g_conf["log"]["level"]);
-
-Module::init();
 
 /* -------------------------------------------------------------------------- */
 

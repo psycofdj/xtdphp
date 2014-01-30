@@ -7,7 +7,7 @@ require_once(__WAPPCORE_DIR__  . "/core/types.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/smarty/Smarty.class.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.php");
 require_once(__WAPPCORE_DIR__  . "/core/sql.php");
-require_once(__WAPPCORE_DIR__  . "/core/module.php");
+require_once(__WAPPCORE_DIR__  . "/core/app.php");
 
 /**
  * Output generator
@@ -577,7 +577,7 @@ class TemplateHandler extends Handler
     if (false == parent::initialize())
       return false;
 
-    foreach (Module::getModules() as $c_module) {
+    foreach (App::get()->getModules() as $c_module) {
       $l_name = $c_module->getName();
       $l_path = sprintf("%s/%s/templates", __WAPPCORE_DIR__, $l_name);
       $this->m_smarty->addTemplateDir($l_path, $l_name);
@@ -793,19 +793,10 @@ class HtmlHandler extends TemplateHandler
     if (null != $this->m_title)
       $this->setData("__title", $this->m_title);
 
-    $l_menu    = Array();
-    $l_widgets = Array();
-
-    foreach (Module::getModules() as $c_module)
+    foreach (App::get()->getMenu()->getWidgets() as $c_widget)
     {
-      $l_menu = array_merge($l_menu, $c_module->getMenu());
-
-      foreach ($c_module->getWidgets() as $c_widget)
-      {
-        if (null != $c_widget["callback"]) {
-          call_user_func($c_widget["callback"], $this);
-        }
-        array_push($l_widgets, $c_widget["tpl"]);
+      if (null != $c_widget["callback"]) {
+        call_user_func($c_widget["callback"], $this);
       }
     }
 
@@ -814,9 +805,7 @@ class HtmlHandler extends TemplateHandler
       ->setData("__js_list",          $this->m_jsList)
       ->setData("__css_list",         $this->m_cssList)
       ->setData("__meta_http_equivs", $this->m_metaHttpEquivs)
-      ->setData("__menu",             $l_menu)
-      ->setData("__menu_brand",       $g_conf["brand"])
-      ->setData("__menu_widgets",     $l_widgets)
+      ->setData("__menu",             App::get()->getMenu())
       ->setTarget("html.tpl");
 
     return parent::display();

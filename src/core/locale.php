@@ -1,7 +1,5 @@
 <?php
 
-require_once(__WAPPCORE_DIR__ . "/core/locales/fr.php");
-require_once(__WAPPCORE_DIR__ . "/core/locales/en.php");
 
 class locale
 {
@@ -23,7 +21,7 @@ class locale
     if (false == array_key_exists($p_key, $l_data))
     {
       log::error("locale key '%s' not found for lang '%s'", $p_key, self::$ms_localeName);
-      return sprintf('error: ø("%s")', $p_key);
+      return sprintf('error: t("%s")', $p_key);
     }
     return $l_data[$p_key];
   }
@@ -62,7 +60,7 @@ class locale
     case "fr":
       {
         self::$ms_localeName = "fr";
-        self::$ms_locale     = Module::getLang("fr");
+        self::$ms_locale     = App::get()->getLocale("fr");
         return true;
       }
 
@@ -70,7 +68,7 @@ class locale
     case "en":
       {
         self::$ms_localeName = "en";
-        self::$ms_locale     = Module::getLang("en");
+        self::$ms_locale     = App::get()->getLocale("en");
         return true;
       }
 
