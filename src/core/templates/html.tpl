@@ -18,6 +18,29 @@
     <meta name="keywords" content="{$__meta_kw|default:''}"/>
   </head>
   <body {if isset($__onload) } onload="{$__onload}" {/if}>
+
+    <script type="text/javascript">
+      $("document").ready(function() {
+        $("a").on("click", function() {
+            var p = $(this).attr('href').split('?');
+            if (p.length == 1)
+              return true;
+            var action = p[0];
+            var params = p[1].split('&');
+            var form = $(document.createElement('form')).attr('action', action);
+            $('body').append(form);
+            form.attr("method", "POST");
+            for (var i in params) {
+                var tmp= params[i].split('=');
+                var key = tmp[0], value = tmp[1];
+                $(document.createElement('input')).attr('type', 'hidden').attr('name', key).attr('value', value).appendTo(form);
+            }
+            $(form).submit();
+            return false;
+        });
+      });
+    </script>
+
     <div id="wrap">
       {include file="file:[core]menu.tpl"}
       {include file="$__content"}
