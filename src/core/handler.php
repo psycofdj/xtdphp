@@ -696,14 +696,19 @@ class HtmlHandler extends TemplateHandler
     $this->setContentType("text/html");
 
     $this
-      ->addJs("jquery.js",            "core")
-      ->addJs("jquery-ui.js",         "core")
-      ->addJs("jquery.validate.js",   "core")
-      ->addJs("bootstrap.js",         "core")
-      ->addCss("jquery-ui.css",       "core")
-      ->addCss("bootstrap.css",       "core")
-      ->addCss("bootstrap-theme.css", "core")
-      ->addCss("wapp.css",            "core")
+      ->addJs("jquery.js",                        "core")
+      ->addJs("jquery-ui.js",                     "core")
+      ->addJs("jquery.validate.js",               "core")
+      ->addJs("bootstrap.js",                     "core")
+      ->addJs("jquery.dataTables.js",             "core")
+      ->addJs("jquery.dataTables.bootstrap.js",   "core")
+      ->addJs("jquery.dataTables.locale.fr.js",   "core")
+      ->addCss("jquery-ui.css",                   "core")
+      ->addCss("bootstrap.css",                   "core")
+      ->addCss("bootstrap-theme.css",             "core")
+      ->addCss("jquery.dataTables.css",           "core")
+      ->addCss("jquery.dataTables.bootstrap.css", "core")
+      ->addCss("wapp.css",                        "core")
       ;
   }
 

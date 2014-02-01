@@ -8,7 +8,7 @@ class UserPage extends HtmlHandler
   public function __construct()
   {
     parent::__construct();
-    $this->setContent("file:[app]test.tpl");
+    $this->setContent("file:[auth]list.tpl");
   }
 
   public function h_default($pu_test = 5)
