@@ -1,5 +1,5 @@
 {if null == $auth_user }
-  <form id="auth_menu_widget" class="navbar-form navbar-right form-inline" method="POST" action="/wappcore/auth/auth.php">
+  <form id="auth_menu_widget" class="navbar-form navbar-right form-inline" method="POST" action="/wappcore/auth/">
     <input type="hidden" name="action"   value="login"/>
     <div class="form-group control-group">
       <input class="required form-control" style="width:200px" type="text"     name="mail"     value="" placeholder="{t}auth.menu.mail{/t}..." />
@@ -12,7 +12,7 @@
 {else}
   <div class="navbar-right navbar-text">
     <span class="glyphicon glyphicon-user"></span>&nbsp;
-    {$auth_user.mail} | <a href="/wappcore/auth/auth.php?action=logout">{t}auth.menu.logout{/t}</a>
+    {$auth_user.mail} | <a href="/wappcore/auth/?action=logout">{t}auth.menu.logout{/t}</a>
   </div>
 {/if}
 

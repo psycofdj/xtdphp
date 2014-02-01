@@ -11,6 +11,10 @@ function auth_fr() {
           "auth.menu.logout"   => "Déconnexion",
           "auth.menu.recover"  => "Mot de passe perdu ?",
           "auth.menu.wrong"    => "L'email ou le mot de passe saisi est incorrect.",
+
+          "auth.userlist.name" => "Nom",
+          "auth.userlist.actions"   => "Actions",
+          "auth.userlist.role"   => "Rôle",
           );
 }
 

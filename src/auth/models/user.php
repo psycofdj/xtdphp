@@ -13,6 +13,11 @@ class UserModel
                       array("mail"     => $p_mail,
                             "password" => md5($p_password)));
   }
+
+  static function getAll()
+  {
+    return R::find("users");
+  }
 }
 
 ?>

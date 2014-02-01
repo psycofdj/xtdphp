@@ -3,20 +3,12 @@
 require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/handler.php");
 
-class AuthPage extends HtmlHandler
+class Page extends HtmlHandler
 {
   public function __construct()
   {
     parent::__construct();
   }
-
-  /* public function h_list($p_mail, $p_pass, $p_role) */
-  /* { */
-  /* } */
-
-  /* public function h_add($p_mail, $p_pass, $p_role,  = "/") */
-  /* { */
-  /* } */
 
   public function h_login($ps_mail, $ps_password)
   {
@@ -36,9 +28,17 @@ class AuthPage extends HtmlHandler
     return $this->redirect($p_dest);
   }
 
+
+  public function h_userlist($pu_test = 5)
+  {
+    $this->setContent("file:[auth]userlist.tpl");
+    $this->setData("auth_users", UserModel::getAll());
+    return true;
+  }
+
 }
 
-$l_page = new AuthPage();
+$l_page = new Page();
 $l_page->process();
 
 ?>

@@ -14,8 +14,8 @@ class authModule extends Module
 
     App::get()->getMenu()
       ->addTab(new MenuTab("auth.menu.title"), 80)
-      ->addSubTab("auth.menu.roles", "/wappcore/auth/roles.php")
-      ->addSubTab("auth.menu.users", "/wappcore/auth/users.php");
+      ->addSubTab("auth.menu.roles", "/wappcore/auth/?action=roles")
+      ->addSubTab("auth.menu.users", "/wappcore/auth/?action=userlist");
 
     App::get()->getMenu()
       ->addWidget("file:[auth]menu_widget.tpl", array($this, "createWidget"));
