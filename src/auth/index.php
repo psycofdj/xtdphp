@@ -36,6 +36,12 @@ class Page extends HtmlHandler
     return true;
   }
 
+  public function h_rolelist($pu_test = 5)
+  {
+    $this->setContent("file:[auth]rolelist.tpl");
+    return true;
+  }
+
 }
 
 $l_page = new Page();

@@ -702,12 +702,13 @@ class HtmlHandler extends TemplateHandler
       ->addJs("bootstrap.js",                     "core")
       ->addJs("jquery.dataTables.js",             "core")
       ->addJs("jquery.dataTables.bootstrap.js",   "core")
-      ->addJs("jquery.dataTables.locale.fr.js",   "core")
+      ->addJs("bootstrap.multiselect.js",         "core")
       ->addCss("jquery-ui.css",                   "core")
       ->addCss("bootstrap.css",                   "core")
       ->addCss("bootstrap-theme.css",             "core")
       ->addCss("jquery.dataTables.css",           "core")
       ->addCss("jquery.dataTables.bootstrap.css", "core")
+      ->addCss("bootstrap.multiselect.css",       "core")
       ->addCss("wapp.css",                        "core")
       ;
   }
@@ -719,7 +720,16 @@ class HtmlHandler extends TemplateHandler
 
     $this->setData("lang", locale::getName());
     if (locale::getName() == "fr")
-      $this->addJs("jquery.validate.messages-fr.js", "core");
+    {
+      $this
+        ->addJs("jquery.validate.messages-fr.js", "core")
+        ->addJs("jquery.dataTables.locale.fr.js", "core");
+    }
+    else
+    {
+      $this
+        ->addJs("jquery.dataTables.locale.en.js", "core");
+    }
 
     return true;
   }

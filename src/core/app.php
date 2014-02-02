@@ -74,10 +74,20 @@ class App
     }
   }
 
-
   public function getModules()
   {
     return $this->m_modules;
+  }
+
+  public function getModule($p_moduleName)
+  {
+    $l_modules = array_filter($this->m_modules, function($p_el) use (&$p_moduleName) {
+        return ($p_el->getName() == $p_moduleName);
+      });
+
+    if (1 != count($l_modules))
+      return false;
+    return array_shift($l_modules);
   }
 
   public function getLocale($p_name)
