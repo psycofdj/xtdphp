@@ -36,7 +36,7 @@
 
         </td>
         <td class="text-center vert-align">
-          {if $auth->hasRole("auth.roles.user.write", $c_user->role)}
+          {if $auth->hasRole("auth.roles.user.write", $auth_user->role)}
           <a href="/wappcore/auth/?action=useredit&uid={$c_user->id}" class="btn btn-warning btn-xs" title="{t}auth.userlist.tooltips.edit{/t}">
             <span class="glyphicon glyphicon-pencil"/>
           </a>
