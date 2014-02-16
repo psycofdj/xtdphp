@@ -96,11 +96,11 @@ class MenuTab
     return $this->m_subTabs;
   }
 
-  function validForRole($p_role)
+  function isValidForRole($p_role)
   {
     if (true == $this->hasTabs())
-      return array_reduce($this->m_subTabs, function ($p_res, $p_obj) {
-          $p_res = $p_res || $p_obj->validForRole($p_role);
+      return array_reduce($this->m_subTabs, function ($p_res, $p_obj) use ($p_role) {
+          $p_res = $p_res || $p_obj->isValidForRole($p_role);
           return $p_res;
         }, false);
     return 0 != ($this->m_role & $p_role);

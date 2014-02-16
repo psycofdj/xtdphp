@@ -12,17 +12,24 @@ function auth_en() {
           "auth.menu.recover"  => "Forgot your password ?",
           "auth.menu.wrong"    => "Unknown user name or bad password.",
 
-          "auth.roles.user.read"  => "consult user list",
-          "auth.roles.user.write" => "edit/add/remove a user",
+          "auth.perm.user.view"      => "Consult user list",
+          "auth.perm.user.create"    => "Create new user",
+          "auth.perm.user.update"    => "Update existing user",
+          "auth.perm.user.terminate" => "Delete user",
 
-          "auth.rolelist.tag"               => "Tag",
-          "auth.rolelist.description"       => "Description",
+          "auth.perm.role.view"      => "Consult role list",
+          "auth.perm.role.create"    => "Create new role",
+          "auth.perm.role.update"    => "Update existing role",
+          "auth.perm.role.terminate" => "Delete role",
 
-          "auth.userlist.name" => "Name",
-          "auth.userlist.actions"   => "Actions",
-          "auth.userlist.role"   => "Roles",
-          "auth.userlist.tooltips.delete"   => "Delete current user",
-          "auth.userlist.tooltips.edit"     => "Edit current user",
+          "auth.rolelist.tag"         => "Tag",
+          "auth.rolelist.description" => "Description",
+
+          "auth.userlist.name"            => "Name",
+          "auth.userlist.actions"         => "Actions",
+          "auth.userlist.role"            => "Roles",
+          "auth.userlist.tooltips.delete" => "Delete current user",
+          "auth.userlist.tooltips.edit"   => "Edit current user",
           );
 }
 

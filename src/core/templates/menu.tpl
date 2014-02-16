@@ -14,6 +14,16 @@
     <ul class="nav navbar-nav">
       {foreach $__menu->getTabs() as $c_tab}
 
+      {if isset($auth) }
+        {assign "role" "1"}
+        {if isset($auth_user)}
+        {assign "role" $auth_user->role}
+        {/if}
+        {if false == $c_tab->isValidForRole($role) }
+          {continue}
+        {/if}
+      {/if}
+
       {assign "active" ""}
       {if $c_tab->isActiveUrl()}
       {assign "active" "active"}
@@ -33,9 +43,7 @@
           {/foreach}
         </ul>
       </li>
-
       {else}
-
       <li class="{$active}">
         <a href="{$c_tab->m_link}">{t}{$c_tab->m_title}{/t}</a>
       </li>
@@ -46,8 +54,7 @@
 
     {foreach $__menu->getWidgets() as $c_widget}
     <div class="navbar-right">
-      
-    {include file="{$c_widget.tpl}"}
+      {include file="{$c_widget.tpl}"}
     </div>
     {/foreach}
   </div>

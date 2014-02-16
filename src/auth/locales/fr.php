@@ -12,8 +12,16 @@ function auth_fr() {
           "auth.menu.recover"  => "Mot de passe perdu ?",
           "auth.menu.wrong"    => "L'email ou le mot de passe saisi est incorrect.",
 
-          "auth.roles.user.read"  => "consulter la liste des utilisateurs",
-          "auth.roles.user.write" => "éditer/créer/modifier un utilisateur",
+
+          "auth.perm.user.view"      => "Consulter la liste des utillisateurs",
+          "auth.perm.user.create"    => "Créer un utilisateur",
+          "auth.perm.user.update"    => "Modifier un utilisateur",
+          "auth.perm.user.terminate" => "Supprimer un utilisateur",
+
+          "auth.perm.role.view"      => "Consulter la liste des rôles",
+          "auth.perm.role.create"    => "Créer un rôle",
+          "auth.perm.role.update"    => "Modifier un rôle",
+          "auth.perm.role.terminate" => "Supprimer un rôle",
 
           "auth.rolelist.tag"               => "Étiquette",
           "auth.rolelist.description"       => "Description",

@@ -6,6 +6,7 @@ require_once(__WAPPCORE_DIR__  . "/core/locale.php");
 require_once(__WAPPCORE_DIR__  . "/core/types.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/smarty/Smarty.class.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.php");
+require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.rebean.php");
 require_once(__WAPPCORE_DIR__  . "/core/sql.php");
 require_once(__WAPPCORE_DIR__  . "/core/app.php");
 

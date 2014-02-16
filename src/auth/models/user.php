@@ -18,6 +18,12 @@ class UserModel
   {
     return R::find("users");
   }
+
+  /* static function getUserRoles($p_user) */
+  /* { */
+  /*   return R::find("roles" */
+  /* } */
+
 }
 
 ?>
