@@ -18,4 +18,7 @@ class Module
     $this->m_name = $p_name;
   }
 
+  public function setup()
+  {
+  }
 }
