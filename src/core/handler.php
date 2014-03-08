@@ -5,8 +5,8 @@ require_once(__WAPPCORE_DIR__  . "/core/log.php");
 require_once(__WAPPCORE_DIR__  . "/core/locale.php");
 require_once(__WAPPCORE_DIR__  . "/core/types.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/smarty/Smarty.class.php");
-require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.php");
-require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.rebean.php");
+require_once(__WAPPCORE_DIR__  . "/core/libs/rb.phar");
+/* require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.rebean.php"); */
 require_once(__WAPPCORE_DIR__  . "/core/sql.php");
 require_once(__WAPPCORE_DIR__  . "/core/app.php");
 
@@ -282,7 +282,7 @@ class Handler
     $l_conf = sprintf("mysql:host=%s;dbname=%s;", $g_conf["mysql"]["host"], $g_conf["mysql"]["database"]);
     R::setup($l_conf, $g_conf["mysql"]["username"], $g_conf["mysql"]["password"]);
 
-    R::debug(true, new SqlLogger());
+    R::getDatabaseAdapter()->getDatabase()->setDebugMode(true, new SqlLogger());
 
     if ($g_conf["env"] != "dev")
       R::freeze(true);
@@ -564,11 +564,9 @@ class TemplateHandler extends Handler
     parent::__construct();
     $this->m_targetTmpl = null;
     $this->m_smarty     = new Smarty();
-    log::debug("app template dir : %s", sprintf("%s/templates",      __APP_DIR__));
     $this->m_smarty
       ->setCompileDir(sprintf("%s/templates_c", __APP_DIR__))
       ->setCacheDir(sprintf("%s/cache",         __APP_DIR__))
-      ->addTemplateDir(sprintf("%s/templates",  __APP_DIR__), "app")
       ->registerPlugin("block", "t",   array($this, 'translate'));
     $this->setContentType("text/plain");
   }
@@ -580,7 +578,7 @@ class TemplateHandler extends Handler
 
     foreach (App::get()->getModules() as $c_module) {
       $l_name = $c_module->getName();
-      $l_path = sprintf("%s/%s/templates", __WAPPCORE_DIR__, $l_name);
+      $l_path = sprintf("%s/%s/templates", $c_module->getBaseDir(), $l_name);
       $this->m_smarty->addTemplateDir($l_path, $l_name);
     }
 
@@ -692,7 +690,7 @@ class HtmlHandler extends TemplateHandler
     $this->m_title          = null;
     $this->m_metaKw         = null;
     $this->m_metaDescr      = null;
-    $this->m_onload         = null;
+    $this->m_favicon        = null;
     $this->m_metaHttpEquivs = Array();
     $this->setContentType("text/html");
 
@@ -741,6 +739,12 @@ class HtmlHandler extends TemplateHandler
     return $this;
   }
 
+  protected function setFavicon($p_favicon)
+  {
+    $this->m_favicon = $p_favicon;
+    return $this;
+  }
+
   protected function addJs($p_jsPath, $p_module = "app")
   {
     array_push($this->m_jsList, $this->relPathToUrl($p_module, "js/" . $p_jsPath));
@@ -784,11 +788,6 @@ class HtmlHandler extends TemplateHandler
     return $this;
   }
 
-  protected function setOnload($p_onload)
-  {
-    $this->m_onload = $p_onload;
-    return $this;
-  }
 
   protected function addMetaHttpEquiv($p_equiv, $p_content)
   {
@@ -804,10 +803,10 @@ class HtmlHandler extends TemplateHandler
       $this->setData("__meta_descr", $this->m_metaDescr);
     if (null != $this->m_metaKw)
       $this->setData("__meta_kw",    $this->m_metaKw);
-    if (null != $this->m_onload)
-      $this->setData("__onload", $this->m_onload);
     if (null != $this->m_title)
       $this->setData("__title", $this->m_title);
+    if (null != $this->m_favicon)
+      $this->setData("__favicon", $this->m_favicon);
 
     foreach (App::get()->getMenu()->getWidgets() as $c_widget)
     {

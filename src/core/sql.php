@@ -1,14 +1,21 @@
 <?php
 
 require_once(dirname(__FILE__) . "/../local.php");
-require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.php");
+require_once(__WAPPCORE_DIR__  . "/core/libs/rb.phar");
 require_once(__WAPPCORE_DIR__  . "/core/log.php");
 
+/* require_once("phar:///". __WAPPCORE_DIR__  . "/core/libs/rb.phar/Logger.php"); */
+/* $p = new Phar('rb.phar', 0); */
+/* // Phar étend la classe DirectoryIterator de SPL */
+/* foreach (new RecursiveIteratorIterator($p) as $file) { */
+/*   // $file est une classe PharFileInfo et hérité de SplFileInfo */
+/*   echo $file->getFileName() . "\n"; */
+/* } */
 
 /**
  * Simple redbean request logger
  */
-class SqlLogger implements RedBean_Logger
+class SqlLogger implements RedBeanPHP\Logger
 {
   public function log()
   {

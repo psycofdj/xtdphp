@@ -20,7 +20,8 @@ class App
   {
     if (null == self::$ms_instance) {
       self::$ms_instance = new App();
-      self::$ms_instance->loadModules();
+      self::$ms_instance->loadModules(__WAPPCORE_DIR__);
+      self::$ms_instance->loadModules(__APP_DIR__);
     }
     return self::$ms_instance;
   }
@@ -28,20 +29,20 @@ class App
   /**
    * Find modules in source directory
    */
-  private function loadModules()
+  private function loadModules($p_baseDir)
   {
-    if (false == $l_handle = opendir(__WAPPCORE_DIR__))
+    if (false == $l_handle = opendir($p_baseDir))
     {
-      log::error("unable to open directory %s", __WAPPCORE_DIR__);
+      log::error("unable to open directory %s", $p_baseDir);
       return false;
     }
 
     while (false !== ($l_name = readdir($l_handle)))
     {
-      $l_path = sprintf("%s/%s/load.php", __WAPPCORE_DIR__, $l_name);
+      $l_path = sprintf("%s/%s/load.php", $p_baseDir, $l_name);
       if (false == is_file($l_path))
         continue;
-      $this->addModule($l_path, $l_name);
+      $this->addModule($p_baseDir, $l_path, $l_name);
     }
 
     closedir($l_handle);
@@ -53,18 +54,18 @@ class App
    * 1. source load file and create module object
    * 2. search for locale data
    */
-  private function addModule($p_modulePath, $p_moduleName)
+  private function addModule($p_baseDir, $p_modulePath, $p_moduleName)
   {
     require_once($p_modulePath);
 
     // 1.
     $l_className = sprintf("%sModule", $p_moduleName);
-    array_push($this->m_modules, new $l_className());
+    array_push($this->m_modules, new $l_className($p_baseDir, $p_moduleName));
 
     // 2.
     foreach (Array("fr", "en") as $c_lang)
     {
-      $l_path = sprintf("%s/%s/locales/%s.php", __WAPPCORE_DIR__, $p_moduleName, $c_lang);
+      $l_path = sprintf("%s/%s/locales/%s.php", $p_baseDir, $p_moduleName, $c_lang);
       if (false == is_file($l_path))
         continue;
 

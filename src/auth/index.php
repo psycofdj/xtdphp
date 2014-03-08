@@ -12,7 +12,6 @@ class Page extends HtmlHandler
 
   public function h_login($ps_mail, $ps_password)
   {
-    log::debug("pass : %s", $ps_password);
     if (null != ($l_user = UserModel::getByMailPass($ps_mail, $ps_password)))
     {
       $this->setSession("auth_user",   $l_user);

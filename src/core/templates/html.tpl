@@ -4,6 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang}" lang="{$lang}">
   <head>
     <title>{$__title|default:''}</title>
+    {if isset($__favicon)}
+    <link rel="icon" type="image/png" href="{$__favicon}"/>
+    {/if}
     <meta http-equiv="Content-Type" Content="text/html; charset=UTF-8"/>
     {foreach $__meta_http_equivs as $c_equiv => $c_content}
     <meta http-equiv="{$c_equiv}" content="{$c_content}"/>

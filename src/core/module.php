@@ -4,6 +4,7 @@ require_once(__WAPPCORE_DIR__  . "/core/log.php");
 
 class Module
 {
+  private $m_baseDir;
   private $m_name;
   private $m_widgets;
 
@@ -12,10 +13,16 @@ class Module
     return $this->m_name;
   }
 
-  protected function __construct($p_name)
+  public function getBaseDir()
   {
-    log::debug("initializing module '%s'", $p_name);
-    $this->m_name = $p_name;
+    return $this->m_baseDir;
+  }
+
+  protected function __construct($p_baseDir, $p_name)
+  {
+    log::debug("initializing module '%s' in directory '%s'", $p_name, $p_baseDir);
+    $this->m_baseDir = $p_baseDir;
+    $this->m_name    = $p_name;
   }
 
   public function setup()

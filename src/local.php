@@ -11,11 +11,6 @@ require_once(__WAPPCORE_DIR__ . "/core/log.php");
 $g_conf                       = Array();
 $g_conf["env"]                = "prod";
 
-$g_conf["brand"]              = Array();
-$g_conf["brand"]["url"]       = "/index.php";
-$g_conf["brand"]["title"]     = "Wappcore Corp";
-
-
 $g_conf["web"]                = Array();
 $g_conf["web"]["uri"]         = Array();
 $g_conf["web"]["uri"]["app"]  = "/";

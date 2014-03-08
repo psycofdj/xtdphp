@@ -10,24 +10,24 @@ class authModule extends Module
 {
   private $m_perms = Array();
 
-  public function __construct()
+  public function __construct($p_baseDir, $p_name)
   {
-    parent::__construct("auth");
+    parent::__construct($p_baseDir, $p_name);
 
-    $this
-      ->addPerm("auth.perm.user.view")
-      ->addPerm("auth.perm.user.create")
-      ->addPerm("auth.perm.user.update")
-      ->addPerm("auth.perm.user.terminate")
-      ->addPerm("auth.perm.role.view")
-      ->addPerm("auth.perm.role.create")
-      ->addPerm("auth.perm.role.update")
-      ->addPerm("auth.perm.role.terminate");
+    /* $this */
+    /*   ->addPerm("auth.perm.user.view") */
+    /*   ->addPerm("auth.perm.user.create") */
+    /*   ->addPerm("auth.perm.user.update") */
+    /*   ->addPerm("auth.perm.user.terminate") */
+    /*   ->addPerm("auth.perm.role.view") */
+    /*   ->addPerm("auth.perm.role.create") */
+    /*   ->addPerm("auth.perm.role.update") */
+    /*   ->addPerm("auth.perm.role.terminate"); */
 
-    App::get()->getMenu()
-      ->addTab(new MenuTab("auth.menu.title"), 80)
-      ->addSubTab("auth.menu.roles", "/wappcore/auth/?action=rolelist", "auth.perm.role.*")
-      ->addSubTab("auth.menu.users", "/wappcore/auth/?action=userlist", "auth.perm.user.*");
+    /* App::get()->getMenu() */
+    /*   ->addTab(new MenuTab("auth.menu.title"), 80) */
+    /*   ->addSubTab("auth.menu.roles", "/wappcore/auth/?action=rolelist", "auth.perm.role.*") */
+    /*   ->addSubTab("auth.menu.users", "/wappcore/auth/?action=userlist", "auth.perm.user.*"); */
 
     App::get()->getMenu()
       ->addWidget("file:[auth]menu_widget.tpl", array($this, "createWidget"));
@@ -36,7 +36,7 @@ class authModule extends Module
 
   public function setup()
   {
-    R::nuke();
+    /* R::nuke(); */
 
     /* $l_actionUserWrite              = R::dispense('authaction', 1); */
     /* $l_actionUserWrite->description = "Create or modify user"; */

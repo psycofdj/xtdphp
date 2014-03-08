@@ -6,7 +6,9 @@
       <span class="icon-bar"></span>
     </button>
     {assign "brand" $__menu->getBrand() }
-    <a class="navbar-brand" href="{$brand.url}">{$brand.title}</a>
+    <a class="navbar-brand" href="{$brand.url}">
+      <img style="margin-top:-10px; margin-bottom:-10px; height:40px;" src="/img/favicon.png"/>
+      {$brand.title}</a>
   </div>
 
   <div class="collapse navbar-collapse" id="menu-navbar">

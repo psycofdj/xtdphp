@@ -7,9 +7,9 @@ require_once(__WAPPCORE_DIR__  . "/core/menu.php");
 
 class coreModule extends Module
 {
-  public function __construct()
+  public function __construct($p_baseDir, $p_name)
   {
-    parent::__construct("core");
+    parent::__construct($p_baseDir, $p_name);
 
     App::get()->getMenu()
       ->addTab(new MenuTab("core.menu.home", "/"), 10);
