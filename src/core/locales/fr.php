@@ -2,7 +2,16 @@
 
 function core_fr() {
   return
-    array("core.time.second"  => "seconde",
+    array("core.yes"          => "Oui",
+          "core.no"           => "Non",
+          "core.date"         => "Date",
+          "core.country"      => "Pays",
+          "core.image"        => "Image",
+          "core.viewimage"    => "Voir image",
+          "core.open"         => "Ouvrir",
+          "core.close"        => "Fermer",
+
+          "core.time.second"  => "seconde",
           "core.time.seconds" => "secondes",
           "core.time.minute"  => "minute",
           "core.time.minutes" => "minutes",

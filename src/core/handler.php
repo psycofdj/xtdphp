@@ -179,8 +179,10 @@ class Handler
       echo $this->display();
     else if ((500 == $this->m_statusCode) && ($g_conf["env"] == "dev"))
     {
+      header("Content-Type: text/html");
       echo join("<br/>3", log::getLines());
-      echo $php_errormsg;
+      foreach (error_get_last() as $c_error)
+        echo $c_error;
     }
 
     return $p_isValid;
@@ -515,6 +517,79 @@ class Handler
 
 }
 
+
+/* -------------------------------------------------------------------------- */
+
+Class BinaryHandler extends Handler
+{
+  private $m_binData = null;
+
+  /**
+   * Constructor
+   *
+   * Default status code is error to prevent from non-loaded binary data
+   */
+  protected function __construct()
+  {
+    parent::__construct();
+    $this->setStatusCode(500);
+  }
+
+  protected function loadFile($p_filePath, $p_contentType = null)
+  {
+    if (null == $p_contentType)
+    {
+      if (false == ($l_handle = finfo_open()))
+      {
+        log::error("unable to initialize finfo");
+        return false;
+      }
+
+      if (false == ($p_contentType = finfo_file($l_handle, $p_filePath)))
+      {
+        log::error("unable to detect content-type from '%s' file", $p_filePath);
+        finfo_close($l_handle);
+        return false;
+      }
+      finfo_close($l_handle);
+    }
+
+    $this->setContentType($p_contentType);
+    if (false == ($this->m_binData = file_get_contents($p_filePath)))
+    {
+      log::error("unable to read input file '%s'", $p_filePath);
+      return false;
+    }
+    $this->setStatusCode(200);
+    return true;
+  }
+
+  protected function loadBase64($p_data, $p_contentType)
+  {
+    if (false == ($this->m_binData = base64_decode($p_data, true)))
+    {
+      log::error("error while decoding bases64 data");
+      return false;
+    }
+    $this->setContentType($p_contentType);
+    $this->setStatusCode(200);
+    return true;
+  }
+
+  protected function loadBinary($p_data, $p_contentType)
+  {
+    $this->setContentType($p_contentType);
+    $this->m_binData = $p_data;
+    $this->setStatusCode(200);
+    return true;
+  }
+
+  protected function display()
+  {
+    return $this->m_binData;
+  }
+
+}
 
 /* -------------------------------------------------------------------------- */
 

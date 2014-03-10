@@ -24,7 +24,7 @@
 
     <script type="text/javascript">
       $("document").ready(function() {
-        $("a").on("click", function() {
+         $("a").on("click", function() {
             var p = $(this).attr('href').split('?');
             if (p.length == 1)
               return true;

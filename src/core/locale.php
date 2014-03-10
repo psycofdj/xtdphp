@@ -28,13 +28,15 @@ class locale
 
   static public function detectLang()
   {
-    $l_str = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
-    $l_data = preg_split("/[,;]+/", $l_str);
-
-    foreach ($l_data as $c_key)
+    if (true == array_key_exists("HTTP_ACCEPT_LANGUAGE", $_SERVER))
     {
-      if (true == self::setLang($c_key))
-        return true;
+      $l_str = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+      $l_data = preg_split("/[,;]+/", $l_str);
+      foreach ($l_data as $c_key)
+      {
+        if (true == self::setLang($c_key))
+          return true;
+      }
     }
 
     log::warn("could not detect lang, falling back on 'fr'");

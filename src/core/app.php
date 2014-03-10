@@ -16,7 +16,7 @@ class App
     $this->m_menu = new Menu();
   }
 
-  public function get()
+  static public function get()
   {
     if (null == self::$ms_instance) {
       self::$ms_instance = new App();
@@ -56,6 +56,7 @@ class App
    */
   private function addModule($p_baseDir, $p_modulePath, $p_moduleName)
   {
+    ob_start();
     require_once($p_modulePath);
 
     // 1.
@@ -68,11 +69,11 @@ class App
       $l_path = sprintf("%s/%s/locales/%s.php", $p_baseDir, $p_moduleName, $c_lang);
       if (false == is_file($l_path))
         continue;
-
       require_once($l_path);
       $l_funcName = sprintf("%s_%s", $p_moduleName, $c_lang);
       $this->m_locales[$c_lang] = array_merge($this->m_locales[$c_lang], $l_funcName());
     }
+    ob_end_clean();
   }
 
   public function getModules()
@@ -95,9 +96,8 @@ class App
   {
     if (array_key_exists($p_name, $this->m_locales))
       return $this->m_locales[$p_name];
-
     log::warn("requested unknown locale '%s'", $p_name);
-    return Array();
+    return array();
   }
 
   public function getMenu()
