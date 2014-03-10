@@ -1,3 +1,4 @@
+
 {if null == $auth_user }
   <form id="auth_menu_widget" class="navbar-form navbar-right form-inline" method="POST" action="/wappcore/auth/">
     <input type="hidden" name="action"   value="login"/>
@@ -21,6 +22,8 @@
   <p class="text-danger"> {t}auth.menu.wrong{/t} </p>
   <a href="/wappcore/auth/recover.php">{t}auth.menu.recover{/t}</a>
 </div>
+
+
 
 <script type="text/javascript">
   $(document).ready(function() {

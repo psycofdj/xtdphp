@@ -12,6 +12,7 @@ class Setup extends Handler
 
   public function h_default()
   {
+    R::freeze(false);
     foreach (App::get()->getModules() as $c_module)
       $c_module->setup();
     return true;

@@ -1,8 +1,11 @@
 <?php
 
 ini_set( "error_reporting", E_ALL);
-define("__APP_DIR__",      getenv("__APP_DIR__"));
-define("__WAPPCORE_DIR__", getenv("__WAPPCORE_DIR__"));
+
+if (false == defined("__APP_DIR__"))
+  define("__APP_DIR__",      getenv("__APP_DIR__"));
+if (false == defined("__WAPPCORE_DIR__"))
+  define("__WAPPCORE_DIR__", getenv("__WAPPCORE_DIR__"));
 
 require_once(__WAPPCORE_DIR__ . "/core/log.php");
 

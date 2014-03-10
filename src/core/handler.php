@@ -181,8 +181,7 @@ class Handler
     {
       header("Content-Type: text/html");
       echo join("<br/>3", log::getLines());
-      foreach (error_get_last() as $c_error)
-        echo $c_error;
+      echo error_get_last();
     }
 
     return $p_isValid;
@@ -488,14 +487,16 @@ class Handler
       {
         if (false == $c_param->isDefaultValueAvailable())
         {
-          log::info("requested param '%s' not available", $l_paramName);
+          log::error("requested param '%s' not available", $l_paramName);
           return $this->reply(false);
         }
         $l_paramValue = $c_param->getDefaultValue();
       }
-
-      if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue))
-        return $this->reply(false);
+      else
+      {
+        if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue))
+          return $this->reply(false);
+      }
 
       array_push($l_callArgs, $l_paramValue);
     }
