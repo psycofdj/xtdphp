@@ -643,6 +643,7 @@ class TemplateHandler extends Handler
       ->setCompileDir(sprintf("%s/templates_c", __APP_DIR__))
       ->setCacheDir(sprintf("%s/cache",         __APP_DIR__))
       ->registerPlugin("block", "t",   array($this, 'translate'));
+    $this->m_smarty->caching = 0;
     $this->setContentType("text/plain");
   }
 

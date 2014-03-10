@@ -36,6 +36,28 @@ class authModule extends Module
 
   public function setup()
   {
+    R::exec("SET FOREIGN_KEY_CHECKS=0");
+    R::exec("DROP TABLE IF EXISTS `user`");
+    R::exec("SET FOREIGN_KEY_CHECKS=1");
+
+    R::exec(<<<'EOT'
+            CREATE TABLE IF NOT EXISTS `user`
+            (
+             `id`       int(11)                                                 NOT NULL AUTO_INCREMENT,
+             `mail`     varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+             `password` varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+
+              PRIMARY KEY (`id`),
+              UNIQUE(`mail`)
+            ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
+EOT
+            );
+
+    $l_user           = R::dispense('user');
+    $l_user->mail     = "xavier@marcelet.com";
+    $l_user->password = md5("ipark");
+    R::store($l_user);
+
     /* R::nuke(); */
 
     /* $l_actionUserWrite              = R::dispense('authaction', 1); */

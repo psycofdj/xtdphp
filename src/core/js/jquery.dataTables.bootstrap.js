@@ -294,7 +294,8 @@ function fnCreateSelect( aData )
   var r='<option value=""></option>', i, iLen=aData.length;
   for ( i=0 ; i<iLen ; i++ )
   {
-    r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
+    var l_node = $(aData[i]);
+    r += '<option value="'+l_node.text()+'">'+l_node.text()+'</option>';
   }
   return r;
 }
@@ -384,10 +385,13 @@ function fnCreateSelect( aData )
             l_table.fnFilter($(this).val(), p_colIndex);
           });
 
-          if (0 != l_title.length) {
-            var l_settings = $.fn.dataTable.defaults;
-            $(l_input).attr("placeholder", l_settings.oLanguage.sSearch + " " + l_title.toLowerCase() + " ...");
-          }
+          var l_settings = $.fn.dataTable.defaults;
+          var l_placeholder = $(this).data("placeholder") || null;
+
+          if ((null == l_placeholder) && (0 != l_title.length))
+            l_placeholder = l_settings.oLanguage.sSearch + " " + l_title.toLowerCase() + " ...";
+          if ("none" != l_placeholder)
+            $(l_input).attr("placeholder", l_placeholder);
           l_cell.append(l_input);
           l_nbSearch += 1;
         }
