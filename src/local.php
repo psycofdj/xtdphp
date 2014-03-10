@@ -1,6 +1,5 @@
 <?php
 
-
 ini_set( "error_reporting", E_ALL);
 define("__APP_DIR__",      getenv("__APP_DIR__"));
 define("__WAPPCORE_DIR__", getenv("__WAPPCORE_DIR__"));
