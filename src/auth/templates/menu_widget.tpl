@@ -1,13 +1,9 @@
 
 {if null == $auth_user }
-  <form id="auth_menu_widget" class="navbar-form navbar-right form-inline" method="POST" action="/wappcore/auth/">
+  <form id="auth_menu_widget" class="navbar-form form-inline text-center" style="margin-right:0px;margin-left:0px;" method="POST" action="/wappcore/auth/">
     <input type="hidden" name="action"   value="login"/>
-    <div class="form-group control-group">
-      <input class="required form-control" style="width:200px" type="text"     name="mail"     value="" placeholder="{t}auth.menu.mail{/t}..." />
-    </div>
-    <div class="form-group control-group">
-      <input class="required form-control" style="width:200px" type="password" name="password" value="" placeholder="{t}auth.menu.password{/t}..." />
-    </div>
+    <input class="required form-control input-sm" type="text"     name="mail"     value="" placeholder="{t}auth.menu.mail{/t}..." />
+    <input class="required form-control input-sm" type="password" name="password" value="" placeholder="{t}auth.menu.password{/t}..." />
     <button id="auth_btn" class="btn btn-primary" type="submit" data-trigger="manual" data-placement="bottom" data-container="body">{t}auth.menu.login{/t}</button>
   </form>
 {else}

@@ -1,4 +1,5 @@
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-default navbar-inverse navbar-fixed-top">
+
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu-navbar">
       <span class="icon-bar"></span>
@@ -6,7 +7,7 @@
       <span class="icon-bar"></span>
     </button>
     {assign "brand" $__menu->getBrand() }
-    <a class="navbar-brand" href="{$brand.url}">
+    <a class="navbar-brand hidden-sm" href="{$brand.url}">
       <img style="margin-top:-10px; margin-bottom:-10px; height:40px;" src="/img/favicon.png"/>
       {$brand.title}</a>
   </div>
@@ -55,7 +56,7 @@
     </ul>
 
     {foreach $__menu->getWidgets() as $c_widget}
-    <div class="navbar-right">
+    <div class="nav navbar-nav navbar-right">
       {include file="{$c_widget.tpl}"}
     </div>
     {/foreach}
