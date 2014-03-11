@@ -47,9 +47,9 @@ class authModule extends Module
              `mail`     varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
              `password` varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
 
-              PRIMARY KEY (`id`),
-              UNIQUE(`mail`)
-            ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
+             PRIMARY KEY (`id`),
+             UNIQUE(`mail`)
+             ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 EOT
             );
 
@@ -57,6 +57,12 @@ EOT
     $l_user->mail     = "xavier@marcelet.com";
     $l_user->password = md5("ipark");
     R::store($l_user);
+
+    $l_user           = R::dispense('user');
+    $l_user->mail     = "pb@wapp.pro";
+    $l_user->password = md5("ipark");
+    R::store($l_user);
+
 
     /* R::nuke(); */
 

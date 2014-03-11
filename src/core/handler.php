@@ -5,10 +5,11 @@ require_once(__WAPPCORE_DIR__  . "/core/log.php");
 require_once(__WAPPCORE_DIR__  . "/core/locale.php");
 require_once(__WAPPCORE_DIR__  . "/core/types.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/smarty/Smarty.class.php");
-require_once(__WAPPCORE_DIR__  . "/core/libs/rb.phar");
+require_once(__WAPPCORE_DIR__  . "/core/libs/RedBeanPHP/loader.php");
 /* require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.rebean.php"); */
 require_once(__WAPPCORE_DIR__  . "/core/sql.php");
 require_once(__WAPPCORE_DIR__  . "/core/app.php");
+
 
 /**
  * Output generator

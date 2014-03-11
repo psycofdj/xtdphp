@@ -1,6 +1,7 @@
 <?php
 
-ini_set( "error_reporting", E_ALL);
+ini_set( "error_reporting", E_ALL | E_NOTICE);
+ini_set( "display_errors",  1 );
 
 if (false == defined("__APP_DIR__"))
   define("__APP_DIR__",      getenv("__APP_DIR__"));
@@ -13,7 +14,6 @@ require_once(__WAPPCORE_DIR__ . "/core/log.php");
 
 $g_conf                       = Array();
 $g_conf["env"]                = "prod";
-
 $g_conf["web"]                = Array();
 $g_conf["web"]["uri"]         = Array();
 $g_conf["web"]["uri"]["app"]  = "/";

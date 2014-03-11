@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__) . "/../local.php");
-require_once(__WAPPCORE_DIR__  . "/core/libs/rb.phar");
+require_once(__WAPPCORE_DIR__  . "/core/libs/RedBeanPHP/loader.php");
 require_once(__WAPPCORE_DIR__  . "/core/log.php");
 
 /* require_once("phar:///". __WAPPCORE_DIR__  . "/core/libs/rb.phar/Logger.php"); */
