@@ -776,6 +776,7 @@ class HtmlHandler extends TemplateHandler
       ->addJs("jquery.js",                        "core")
       ->addJs("jquery-ui.js",                     "core")
       ->addJs("jquery.validate.js",               "core")
+      ->addJs("datepicker/js/bootstrap-datepicker.js",               "core")
       ->addJs("bootstrap.js",                     "core")
       ->addJs("jquery.dataTables.js",             "core")
       ->addJs("jquery.dataTables.bootstrap.js",   "core")
