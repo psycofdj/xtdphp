@@ -3,11 +3,11 @@
 require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/handler.php");
 
-class Page extends HtmlHandler
+class Page extends Handler
 {
   public function __construct()
   {
-    parent::__construct();
+    parent::__construct(new WappHtmlGenerator());
     $this->setContent("file:[examples]array.tpl");
   }
 

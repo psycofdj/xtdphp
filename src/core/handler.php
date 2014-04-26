@@ -9,6 +9,7 @@ require_once(__WAPPCORE_DIR__  . "/core/libs/RedBeanPHP/loader.php");
 /* require_once(__WAPPCORE_DIR__  . "/core/libs/redbean.rebean.php"); */
 require_once(__WAPPCORE_DIR__  . "/core/sql.php");
 require_once(__WAPPCORE_DIR__  . "/core/app.php");
+require_once(__WAPPCORE_DIR__  . "/core/generator.php");
 
 
 /**
@@ -16,18 +17,18 @@ require_once(__WAPPCORE_DIR__  . "/core/app.php");
  */
 class Handler
 {
-  /** Variables used to generate HTTP body response */
-  protected $m_data;
   /** List of headers to inlude in HTTP header response */
-  protected $m_headers;
+  private $m_headers;
   /** List of headers to inlude in HTTP header response */
   private $m_statusCode;
   /** Content-Type HTTP value */
   private $m_contentType;
+  /** Content of HTTP response */
+  private $m_content;
 
-  protected function __construct()
+  protected function __construct(Generator $p_gen)
   {
-    $this->m_data        = Array();
+    $this->m_gen         = $p_gen;
     $this->m_headers     = Array();
     $this->m_statusCode  = 200;
     $this->m_contentType = "text/plain";
@@ -148,6 +149,37 @@ class Handler
     return true;
   }
 
+  private function generateOutput($p_isValid)
+  {
+    global $g_conf;
+
+    if (false == $p_isValid)
+      $this->setStatusCode(500);
+
+
+    if (200 == $this->m_statusCode)
+    {
+      if (false != ($l_content = $this->m_gen->resolve($this)))
+      {
+        $this->m_content     = $l_content;
+        $this->m_contentType = $this->m_gen->getContentType();
+      }
+      else
+      {
+        $this->setStatusCode(500);
+      }
+    }
+
+    if (500 == $this->m_statusCode)
+    {
+      $this->setStatusCode(500);
+      if ($g_conf["env"] == "dev")
+      {
+        $this->m_content = join("\n", log::getLines());
+        $this->m_content .= join("\n", error_get_last());
+      }
+    }
+  }
 
   /**
    * Generate HTTP response from current object status
@@ -161,10 +193,7 @@ class Handler
    */
   private function reply($p_isValid)
   {
-    global $g_conf;
-
-    if (false === $p_isValid)
-      $this->setStatusCode(500);
+    $this->generateOutput($p_isValid);
 
     log::debug("replying with status %d", $this->m_statusCode);
 
@@ -175,32 +204,21 @@ class Handler
     foreach($this->m_headers as $c_header)
       header($c_header);
 
-    // 2.
-    if (200 == $this->m_statusCode)
-      echo $this->display();
-    else if ((500 == $this->m_statusCode) && ($g_conf["env"] == "dev"))
-    {
-      header("Content-Type: text/html");
-      echo join("<br/>3", log::getLines());
-      echo error_get_last();
-    }
+    echo $this->m_content;
 
     return $p_isValid;
   }
 
-  /**
-   * @return Handler $this
-   */
-  public function setData($p_key, $p_value)
+
+  public function __call($p_name, $p_arguments)
   {
-    $this->m_data[$p_key] = $p_value;
-    return $this;
+    return call_user_func_array(array(&$this->m_gen, $p_name), $p_arguments);
   }
 
   /**
    * @return Handler $this
    */
-  protected function setContentType($p_contentType)
+  private function setContentType($p_contentType)
   {
     $this->m_contentType = $p_contentType;
     return $this;
@@ -240,7 +258,6 @@ class Handler
     return false;
   }
 
-
   /**
    *  Initialize request
    *
@@ -254,6 +271,10 @@ class Handler
     $this->initSession();
     $this->initLocale();
     $this->initSql();
+
+    if (false == ($this->m_gen instanceof RawGenerator))
+      App::get()->initialize($this);
+
     return true;
   }
 
@@ -517,393 +538,6 @@ class Handler
     return $this->reply(true);
   }
 
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-Class BinaryHandler extends Handler
-{
-  private $m_binData = null;
-
-  /**
-   * Constructor
-   *
-   * Default status code is error to prevent from non-loaded binary data
-   */
-  protected function __construct()
-  {
-    parent::__construct();
-    $this->setStatusCode(500);
-  }
-
-  protected function loadFile($p_filePath, $p_contentType = null)
-  {
-    if (null == $p_contentType)
-    {
-      if (false == ($l_handle = finfo_open()))
-      {
-        log::error("unable to initialize finfo");
-        return false;
-      }
-
-      if (false == ($p_contentType = finfo_file($l_handle, $p_filePath)))
-      {
-        log::error("unable to detect content-type from '%s' file", $p_filePath);
-        finfo_close($l_handle);
-        return false;
-      }
-      finfo_close($l_handle);
-    }
-
-    $this->setContentType($p_contentType);
-    if (false == ($this->m_binData = file_get_contents($p_filePath)))
-    {
-      log::error("unable to read input file '%s'", $p_filePath);
-      return false;
-    }
-    $this->setStatusCode(200);
-    return true;
-  }
-
-  protected function loadBase64($p_data, $p_contentType)
-  {
-    if (false == ($this->m_binData = base64_decode($p_data, true)))
-    {
-      log::error("error while decoding bases64 data");
-      return false;
-    }
-    $this->setContentType($p_contentType);
-    $this->setStatusCode(200);
-    return true;
-  }
-
-  protected function loadBinary($p_data, $p_contentType)
-  {
-    $this->setContentType($p_contentType);
-    $this->m_binData = $p_data;
-    $this->setStatusCode(200);
-    return true;
-  }
-
-  protected function display()
-  {
-    return $this->m_binData;
-  }
-
-}
-
-/* -------------------------------------------------------------------------- */
-
-
-/**
- * Json generator handler
- *
- * Generate a json answer from current data and set content-type header to
- * application/json
- */
-class JsonHandler extends Handler
-{
-  protected function __construct()
-  {
-    parent::__construct();
-    $this->setContentType("application/json");
-  }
-
-  protected function display()
-  {
-    $l_json = json_encode($this->m_data, JSON_FORCE_OBJECT);
-    log::info("answering 200 ok with data : '%s'", $l_json);
-    return $l_json;
-  }
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-
-/**
- * Generate answer from given data and smarty template
- *
- * Renders given $m_targetTmpl smarty template with Handler::$m_data.
- * Smarty engine will be initialized with the custum function plugin named
- * <b>{t}</b> which allow to generate localized output
- */
-class TemplateHandler extends Handler
-{
-  /** Smarty engine instance */
-  private $m_smarty;
-  /** Smarty template relative file path */
-  private $m_targetTmpl;
-
-  protected function __construct()
-  {
-    parent::__construct();
-    $this->m_targetTmpl = null;
-    $this->m_smarty     = new Smarty();
-    $this->m_smarty
-      ->setCompileDir(sprintf("%s/templates_c", __APP_DIR__))
-      ->setCacheDir(sprintf("%s/cache",         __APP_DIR__))
-      ->registerPlugin("block", "t",   array($this, 'translate'));
-    $this->m_smarty->caching = 0;
-    $this->setContentType("text/plain");
-  }
-
-  protected function initialize()
-  {
-    if (false == parent::initialize())
-      return false;
-
-    foreach (App::get()->getModules() as $c_module) {
-      $l_name = $c_module->getName();
-      $l_path = sprintf("%s/%s/templates", $c_module->getBaseDir(), $l_name);
-      $this->m_smarty->addTemplateDir($l_path, $l_name);
-    }
-
-    return true;
-  }
-
-  /**
-   * Smarty custom plugin for localized output
-   *
-   * <br/><b>Smarty plugin signature</b>
-   *
-   * The $p_content comes from the content of the plugin call, like core.currency in :
-   * <code> {t}core.currency{/t} </code>
-   *
-   * The array $p_params represents from the paramters given to the plugin call, like
-   * var1 and var2 in : <code> {t var1=value1 var2=value2}....{/t} </code>
-   *
-   * <br/><b>Process</b>
-   *
-   * First, this function will convert the $p_content key to its localized value according
-   * to the current language configuration (@see Locale::resolve)
-   *
-   * Then, final output will be genrated by passing $p_params to the localized string as if it
-   * were a sprint format.
-   *
-   * Exemple @code {t value=400}core.currency{t}
-   * For english :
-   * - Step 1. Locale::resolve("core.currency") => "Price: $%d"
-   * - Step 2. sprint("Price: $%d", 400)        => "Price: $400"
-   * For french :
-   * - Step 1. Locale::resolve("core.currency") => "Prix : %d€"
-   * - Step 2. sprint("Prix : %d€", 400)        => "Prix : 400€"
-   *
-   * @param string $p_params format arguments
-   * @param string $p_content locale key (content of the smarty call)
-   * @param mixed $p_smarty (unused)
-   * @param mixed $p_repeat (unused)
-   * @return string localized value
-   */
-  public function translate($p_params, $p_content, &$p_smarty, &$p_repeat)
-  {
-    if (!$p_content)
-      return;
-    $p_content = trim($p_content);
-
-    $l_params = array_values($p_params);
-    $l_format = Locale::resolve($p_content);
-    array_unshift($l_params, $l_format);
-    return call_user_func_array("sprintf", $l_params);
-  }
-
-  /**
-   *  Set input template file path
-   *
-   *  @param  string $p_target template file path relative to smarty template directory
-   *  @return TemplateHandler @this
-   */
-  protected function setTarget($p_target)
-  {
-    $this->m_targetTmpl = $p_target;
-    return $this;
-  }
-
-  /**
-   * Generate template result
-   *
-   * @return string generated template result
-   */
-  protected function display()
-  {
-    foreach ($this->m_data as $c_key => $c_value)
-      $this->m_smarty->assign($c_key, $c_value);
-    return $this->m_smarty->fetch($this->m_targetTmpl);
-  }
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-
-/**
- *  Template generator specialized for html output
- *
- *  This object simplifies the generation of HTML page based on a fixed template.
- */
-class HtmlHandler extends TemplateHandler
-{
-  /** Body sub-template file path */
-  private $m_content;
-  /** List of javascript links */
-  private $m_jsList;
-  /** List of css stylesheets */
-  private $m_cssList;
-  /** Page's title */
-  private $m_title;
-  /** Page's meta keywords string */
-  private $m_metaKw;
-  /** Page's meta description */
-  private $m_metaDescr;
-  /** List of additional http-equiv directives */
-  private $m_metaHttpEquiv;
-
-  protected function __construct()
-  {
-    parent::__construct();
-    $this->m_content        = null;
-    $this->m_jsList         = Array();
-    $this->m_cssList        = Array();
-    $this->m_title          = null;
-    $this->m_metaKw         = null;
-    $this->m_metaDescr      = null;
-    $this->m_favicon        = null;
-    $this->m_metaHttpEquivs = Array();
-    $this->setContentType("text/html");
-
-    $this
-      ->addJs("jquery.js",                        "core")
-      ->addJs("jquery-ui.js",                     "core")
-      ->addJs("jquery.validate.js",               "core")
-      ->addJs("datepicker/js/bootstrap-datepicker.js",               "core")
-      ->addJs("bootstrap.js",                     "core")
-      ->addJs("jquery.dataTables.js",             "core")
-      ->addJs("jquery.dataTables.bootstrap.js",   "core")
-      ->addJs("bootstrap.multiselect.js",         "core")
-      ->addCss("jquery-ui.css",                   "core")
-      ->addCss("bootstrap.css",                   "core")
-      ->addCss("bootstrap-theme.css",             "core")
-      ->addCss("jquery.dataTables.css",           "core")
-      ->addCss("jquery.dataTables.bootstrap.css", "core")
-      ->addCss("bootstrap.multiselect.css",       "core")
-      ->addCss("wapp.css",                        "core")
-      ;
-  }
-
-  protected function initialize()
-  {
-    if (false == parent::initialize())
-      return false;
-
-    $this->setData("lang", locale::getName());
-    if (locale::getName() == "fr")
-    {
-      $this
-        ->addJs("jquery.validate.messages-fr.js", "core")
-        ->addJs("jquery.dataTables.locale.fr.js", "core");
-    }
-    else
-    {
-      $this
-        ->addJs("jquery.dataTables.locale.en.js", "core");
-    }
-
-    return true;
-  }
-
-  protected function setContent($p_content)
-  {
-    $this->m_content = $p_content;
-    return $this;
-  }
-
-  protected function setFavicon($p_favicon)
-  {
-    $this->m_favicon = $p_favicon;
-    return $this;
-  }
-
-  protected function addJs($p_jsPath, $p_module = "app")
-  {
-    array_push($this->m_jsList, $this->relPathToUrl($p_module, "js/" . $p_jsPath));
-    return $this;
-  }
-
-  protected function addCss($p_cssPath, $p_module = "app")
-  {
-    array_push($this->m_cssList, $this->relPathToUrl($p_module, "css/" . $p_cssPath));
-    return $this;
-  }
-
-  private function relPathToUrl($p_module, $p_filePath)
-  {
-    global $g_conf;
-
-    $l_moduleUri       = $g_conf["web"]["uri"][$p_module];
-    $l_moduleUriLength = strlen($l_moduleUri);
-
-    if ((0 == $l_moduleUriLength) || ("/" != substr($l_moduleUri, -$l_moduleUriLength)))
-      $l_moduleUri = $l_moduleUri . "/";
-
-    return $l_moduleUri . $p_filePath;
-  }
-
-  protected function setTitle($p_title)
-  {
-    $this->m_title = $p_title;
-    return $this;
-  }
-
-  protected function setMetaKw($p_metaKw)
-  {
-    $this->m_metaKw = $p_metaKw;
-    return $this;
-  }
-
-  protected function setMetaDescr($p_metaDescr)
-  {
-    $this->m_metaDescr = $p_metaDescr;
-    return $this;
-  }
-
-
-  protected function addMetaHttpEquiv($p_equiv, $p_content)
-  {
-    $this->m_metaHttpEquivs[$p_equiv] = $p_content;
-    return $this;
-  }
-
-  protected function display()
-  {
-    global $g_conf;
-
-    if (null != $this->m_metaDescr)
-      $this->setData("__meta_descr", $this->m_metaDescr);
-    if (null != $this->m_metaKw)
-      $this->setData("__meta_kw",    $this->m_metaKw);
-    if (null != $this->m_title)
-      $this->setData("__title", $this->m_title);
-    if (null != $this->m_favicon)
-      $this->setData("__favicon", $this->m_favicon);
-
-    foreach (App::get()->getMenu()->getWidgets() as $c_widget)
-    {
-      if (null != $c_widget["callback"]) {
-        call_user_func($c_widget["callback"], $this);
-      }
-    }
-
-    $this
-      ->setData("__content",          $this->m_content)
-      ->setData("__js_list",          $this->m_jsList)
-      ->setData("__css_list",         $this->m_cssList)
-      ->setData("__meta_http_equivs", $this->m_metaHttpEquivs)
-      ->setData("__menu",             App::get()->getMenu())
-      ->setTarget("html.tpl");
-
-    return parent::display();
-  }
 }
 
 

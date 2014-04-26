@@ -9,7 +9,7 @@ class LangPage extends Handler
 {
   public function __construct()
   {
-    parent::__construct();
+    parent::__construct(new BinaryGenerator());
   }
 
   public function h_default($p_lang)
