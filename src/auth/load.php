@@ -154,14 +154,12 @@ EOT
     /* R::exec("SET FOREIGN_KEY_CHECKS=1;"); */
   }
 
-  public function createWidget(HtmlHandler $p_handler)
+  public function createWidget(Handler $p_handler)
   {
     $p_handler->setData("auth_user", null);
     $p_handler->setData("auth_perm", null);
 
-
     /* $p_handler->setData("auth",      App::get()->getModule("auth")); */
-
     if (false != ($l_user = $p_handler->getSession("auth_user")))
       $p_handler->setData("auth_user",   $l_user);
   }

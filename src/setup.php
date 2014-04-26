@@ -8,6 +8,7 @@ class Setup extends Handler
 {
   public function __construct()
   {
+    parent::__construct(new BinaryGenerator());
   }
 
   public function h_default()
@@ -15,7 +16,7 @@ class Setup extends Handler
     R::freeze(false);
     foreach (App::get()->getModules() as $c_module)
       $c_module->setup();
-    return true;
+    return $this->redirect("/");
   }
 }
 

@@ -50,6 +50,16 @@ class Menu
     $this->m_brand = Array("title" => $p_title, "url" => $p_url);
     return $this;
   }
+
+  public function initialize($p_handler)
+  {
+    foreach ($this->getWidgets() as $c_widget)
+    {
+      if (null != $c_widget["callback"]) {
+        call_user_func($c_widget["callback"], $p_handler);
+      }
+    }
+  }
 }
 
 class MenuTab

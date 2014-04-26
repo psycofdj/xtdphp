@@ -3,11 +3,11 @@
 require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/handler.php");
 
-class Page extends HtmlHandler
+class Page extends Handler
 {
   public function __construct()
   {
-    parent::__construct();
+    parent::__construct(new WappHtmlGenerator());
   }
 
   public function h_login($ps_mail, $ps_password)
@@ -15,6 +15,7 @@ class Page extends HtmlHandler
     if (null != ($l_user = UserModel::getByMailPass($ps_mail, $ps_password)))
     {
       $this->setSession("auth_user",   $l_user);
+    $this->setStatusCode(204);
       return true;
     }
     $this->setStatusCode(401);

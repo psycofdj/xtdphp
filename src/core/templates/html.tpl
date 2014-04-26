@@ -4,6 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang}" lang="{$lang}">
   <head>
     <title>{$__title|default:''}</title>
+    {if isset($__base) }
+    <base href="{$__base}"/>
+    {/if}
     {if isset($__favicon)}
     <link rel="icon" type="image/png" href="{$__favicon}"/>
     {/if}
@@ -45,7 +48,9 @@
     </script>
 
     <div id="wrap">
-      {include file="file:[core]menu.tpl"}
+      {if isset($__menu)}
+        {include file="file:[core]menu.tpl"}
+      {/if}
       {include file="$__content"}
     </div>
   </body>

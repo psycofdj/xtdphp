@@ -104,6 +104,11 @@ class App
   {
     return $this->m_menu;
   }
+
+  public function initialize($p_handler)
+  {
+    $this->m_menu->initialize($p_handler);
+  }
 }
 
 ?>
