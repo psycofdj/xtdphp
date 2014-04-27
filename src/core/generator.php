@@ -432,7 +432,7 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addCss("jquery.dataTables.bootstrap.css", "core")
       ->addCss("bootstrap.multiselect.css",       "core")
       ->addCss("wapp.css",                        "core")
-      ->setFavicon("img/favicon.png")
+      ->setFavicon("/img/favicon.png")
       ->setTitle("Imperial Parking : Garage 44");
 
     if (locale::getName() == "fr")
