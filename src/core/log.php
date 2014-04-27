@@ -77,14 +77,12 @@ class log
     $l_callArgs  = Array();
     $l_level     = $l_args[0];
     $l_srcFmt    = $l_args[1];
-    $l_date      = date("d/m/Y H:i");
-    $l_dstFmt    = sprintf("%%s %%9s : %s at %%s:%%d", $l_srcFmt);
+    $l_dstFmt    = sprintf("%%9s : %s at %%s:%%d", $l_srcFmt);
 
     if (self::$ms_curLevel < $l_level)
       return;
 
     array_push($l_callArgs, $l_dstFmt);
-    array_push($l_callArgs, $l_date);
     array_push($l_callArgs, sprintf("[%s]", self::levelToString($l_level)));
     for ($c_argIdx = 2; $c_argIdx < func_num_args(); $c_argIdx++)
       array_push($l_callArgs, $l_args[$c_argIdx]);
