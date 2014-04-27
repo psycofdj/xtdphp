@@ -123,6 +123,14 @@ class Handler
         $l_name = "int";
         $l_status = types::to_int($p_paramValue);
         break;
+      case 'x' :
+        $l_name = "xml";
+        $l_status = types::xml_to_obj($p_paramValue);
+        break;
+      case '6' :
+        $l_name = "base64";
+        $l_status = types::base64_to_bin($p_paramValue);
+        break;
       case 'u' :
         $l_name = "uint";
         $l_status = types::to_uint($p_paramValue);

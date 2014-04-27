@@ -11,6 +11,22 @@ class types
     return true;
   }
 
+  public static function xml_to_obj(&$p_value)
+  {
+    if (false == ($l_value = simplexml_load_string($p_value)))
+      return false;
+    $p_value = $l_value;
+    return true;
+  }
+
+  public static function base64_to_bin(&$p_value)
+  {
+    if (false == ($l_value = base64_decode($p_value, true)))
+      return false;
+    $p_value = $l_value;
+    return true;
+  }
+
   public static function to_uint(&$p_value)
   {
     if ((false == types::to_int($p_value)) || ($p_value < 0))
