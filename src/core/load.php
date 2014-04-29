@@ -16,8 +16,9 @@ class coreModule extends Module
 
     App::get()->getMenu()
       ->addTab(new MenuTab("core.menu.lang"), 100)
-      ->addSubTab("core.menu.lang.fr", "/wappcore/core/lang.php?lang=fr")
-      ->addSubTab("core.menu.lang.en", "/wappcore/core/lang.php?lang=en");
+      ->addSubTab("core.menu.lang.en", "/wappcore/core/lang.php?lang=en")
+      ->addSubTab("core.menu.lang.sp", "/wappcore/core/lang.php?lang=en")
+      ->addSubTab("core.menu.lang.fr", "/wappcore/core/lang.php?lang=fr");
   }
 }
 

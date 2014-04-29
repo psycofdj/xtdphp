@@ -35,6 +35,7 @@ function core_fr() {
           "core.menu.lang"    => "Langues",
           "core.menu.lang.fr" => "Français",
           "core.menu.lang.en" => "Anglais",
+          "core.menu.lang.sp" => "Espagnol",
           );
 }
 
