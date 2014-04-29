@@ -55,6 +55,8 @@
       {/foreach}
     </ul>
 
+    <!-- <div class="clearfix visible-md"></div> -->
+
     {foreach $__menu->getWidgets() as $c_widget}
     <div class="nav navbar-nav navbar-right">
       {include file="{$c_widget.tpl}"}

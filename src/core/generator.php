@@ -13,6 +13,7 @@ interface Generator
 {
   public function getContentType();
   public function resolve();
+  public function initialize();
 }
 
 interface RawGenerator extends Generator
@@ -26,6 +27,10 @@ Class BinaryGenerator implements RawGenerator
 {
   private $m_contentType = "application/octet-stream";
   private $m_binData     = false;
+
+  public function initialize()
+  {
+  }
 
   public function getContentType()
   {
@@ -101,6 +106,10 @@ class JsonGenerator implements Generator
   private $m_contentType = "application/json";
   private $m_data        = Array();
 
+  public function initialize()
+  {
+  }
+
   public function getContentType()
   {
     return $this->m_contentType;
@@ -158,6 +167,10 @@ class TemplateGenerator implements Generator
       $l_path = sprintf("%s/%s/templates", $c_module->getBaseDir(), $l_name);
       $this->m_smarty->addTemplateDir($l_path, $l_name);
     }
+  }
+
+  public function initialize()
+  {
   }
 
   public function getContentType()
@@ -299,6 +312,11 @@ class HtmlGenerator extends TemplateGenerator
     $this->setData("lang", locale::getName());
   }
 
+  public function initialize()
+  {
+    parent::initialize();
+  }
+
   public function setBase($p_base = null, $p_isHttp = null)
   {
     if (null == $p_isHttp)
@@ -417,24 +435,27 @@ class WappHtmlGenerator extends HtmlGenerator
   {
     parent::__construct();
     $this
-      ->addJs("jquery.js",                        "core")
-      ->addJs("jquery-ui.js",                     "core")
-      ->addJs("jquery.validate.js",               "core")
-      ->addJs("bootstrap.js",                     "core")
-      ->addJs("jquery.dataTables.js",             "core")
-      ->addJs("jquery.dataTables.bootstrap.js",   "core")
-      ->addJs("datepicker/js/bootstrap-datepicker.js",               "core")
-      ->addJs("bootstrap.multiselect.js",         "core")
-      ->addCss("jquery-ui.css",                   "core")
-      ->addCss("bootstrap.css",                   "core")
-      ->addCss("bootstrap-theme.css",             "core")
-      ->addCss("jquery.dataTables.css",           "core")
-      ->addCss("jquery.dataTables.bootstrap.css", "core")
-      ->addCss("bootstrap.multiselect.css",       "core")
-      ->addCss("wapp.css",                        "core")
+      ->addJs("jquery.js",                             "core")
+      ->addJs("jquery-ui.js",                          "core")
+      ->addJs("jquery.validate.js",                    "core")
+      ->addJs("bootstrap.js",                          "core")
+      ->addJs("jquery.dataTables.js",                  "core")
+      ->addJs("jquery.dataTables.bootstrap.js",        "core")
+      ->addJs("datepicker/js/bootstrap-datepicker.js", "core")
+      ->addJs("bootstrap.multiselect.js",              "core")
+      ->addCss("jquery-ui.css",                        "core")
+      ->addCss("bootstrap.css",                        "core")
+      ->addCss("bootstrap-theme.css",                  "core")
+      ->addCss("jquery.dataTables.css",                "core")
+      ->addCss("jquery.dataTables.bootstrap.css",      "core")
+      ->addCss("bootstrap.multiselect.css",            "core")
+      ->addCss("wapp.css",                             "core")
       ->setFavicon("/img/favicon.png")
       ->setTitle("iPark : Garage 107");
+  }
 
+  public function initialize()
+  {
     if (locale::getName() == "fr")
     {
       $this

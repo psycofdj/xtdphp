@@ -21,7 +21,7 @@ class locale
     if (false == array_key_exists($p_key, $l_data))
     {
       log::error("locale key '%s' not found for lang '%s'", $p_key, self::$ms_localeName);
-      return sprintf('error: t("%s")', $p_key);
+      return sprintf('error: t(%s)', $p_key);
     }
     return $l_data[$p_key];
   }

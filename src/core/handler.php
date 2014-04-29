@@ -279,6 +279,7 @@ class Handler
     $this->initSession();
     $this->initLocale();
     $this->initSql();
+    $this->m_gen->initialize();
 
     if (false == ($this->m_gen instanceof RawGenerator))
       App::get()->initialize($this);

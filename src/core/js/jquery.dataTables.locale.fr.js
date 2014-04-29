@@ -3,9 +3,9 @@ $.extend( true, $.fn.dataTable.defaults, {
   "oLanguage": {
     "sProcessing":     "Traitement en cours...",
     "sSearch":         "Rechercher",
-    "sLengthMenu":     "_MENU_ &eacute;l&eacute;ments par page",
-    "sInfo":           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
-    "sInfoEmpty":      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+    "sLengthMenu":     "_MENU_ par page",
+    "sInfo":           "&Eacute;lement _START_ &agrave; _END_ sur _TOTAL_",
+    "sInfoEmpty":      "&Eacute;lement 0 &agrave; 0 sur 0",
     "sInfoFiltered":   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
     "sInfoPostFix":    "",
     "sLoadingRecords": "Chargement en cours...",
