@@ -51,7 +51,13 @@
       {if isset($__menu)}
         {include file="file:[core]menu.tpl"}
       {/if}
+
+      {if isset($__header)}
+        {include file="$__header"}
+      {/if}
+
       {include file="$__content"}
     </div>
+
   </body>
 </html>

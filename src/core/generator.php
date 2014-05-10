@@ -296,6 +296,8 @@ class HtmlGenerator extends TemplateGenerator
   private $m_metaDescr;
   /** List of additional http-equiv directives */
   private $m_metaHttpEquiv;
+  /** default included template */
+  private $m_header;
 
   public function __construct()
   {
@@ -308,6 +310,7 @@ class HtmlGenerator extends TemplateGenerator
     $this->m_metaDescr      = null;
     $this->m_favicon        = null;
     $this->m_base           = null;
+    $this->m_header         = null;
     $this->m_metaHttpEquivs = Array();
     $this->setData("lang", locale::getName());
   }
@@ -333,6 +336,13 @@ class HtmlGenerator extends TemplateGenerator
   public function setContent($p_content)
   {
     $this->m_content = $p_content;
+    return $this;
+  }
+
+
+  public function setHeader($p_header)
+  {
+    $this->m_header = $p_header;
     return $this;
   }
 
@@ -411,6 +421,7 @@ class HtmlGenerator extends TemplateGenerator
 
     $this
       ->setData("__content",          $this->m_content)
+      ->setData("__header",           $this->m_header)
       ->setData("__base",             $this->m_base)
       ->setData("__js_list",          $this->m_jsList)
       ->setData("__css_list",         $this->m_cssList)
@@ -450,6 +461,7 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addCss("jquery.dataTables.bootstrap.css",      "core")
       ->addCss("bootstrap.multiselect.css",            "core")
       ->addCss("wapp.css",                             "core")
+      ->setHeader("[activity]status.tpl")
       ->setFavicon("/img/favicon.png")
       ->setTitle("iPark : Garage 107");
   }
@@ -470,7 +482,7 @@ class WappHtmlGenerator extends HtmlGenerator
 
   public function resolve()
   {
-    $this->setData("__menu", App::get()->getMenu());
+    $this->setData("__menu",   App::get()->getMenu());
     return parent::resolve();
   }
 }
