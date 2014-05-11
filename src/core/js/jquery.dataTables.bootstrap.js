@@ -294,8 +294,9 @@ function fnCreateSelect( aData )
   var r='<option value=""></option>', i, iLen=aData.length;
   for ( i=0 ; i<iLen ; i++ )
   {
-    var l_node = $(aData[i]);
-    r += '<option value="'+l_node.text()+'">'+l_node.text()+'</option>';
+    var l_node = aData[i];
+
+    r += '<option value="'+l_node+'">'+l_node+'</option>';
   }
   return r;
 }
@@ -399,7 +400,11 @@ function fnCreateSelect( aData )
           var l_select = $("<select style='width:100%;' class='form-control'/>");
           l_select.html(fnCreateSelect(l_table.fnGetColumnData(p_colIndex)));
           l_select.change(function() {
-            l_table.fnFilter($(this).val(), p_colIndex);
+            var l_val = $(this).val();
+            if (l_val != "")
+              l_table.fnFilter("^" + $(this).val() + "$", p_colIndex, true, false, false);
+            else
+              l_table.fnFilter("^.*$", p_colIndex, true, false, false);
           });
           l_cell.append(l_select);
           l_cell.css("text-align", "center");
