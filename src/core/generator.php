@@ -453,6 +453,7 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addJs("jquery.dataTables.bootstrap.js",        "core")
       ->addJs("jquery-ui-timepicker-addon.js",         "core")
       ->addJs("jquery-ui-sliderAccess.js",             "core")
+      ->addJs("jquery.cookie.js",                      "core")
       ->addJs("bootstrap.js",                          "core")
       ->addJs("bootstrap.multiselect.js",              "core");
 

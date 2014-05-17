@@ -11,6 +11,8 @@ function core_fr() {
         "core.open"         => "Ouvrir",
         "core.close"        => "Fermer",
         "core.save"         => "Sauvegarder",
+        "core.total"        => "Total",
+        "core.free"         => "Libre",
 
         "core.time.second"  => "seconde",
         "core.time.seconds" => "secondes",

@@ -11,6 +11,8 @@ function core_en() {
         "core.open"         => "Open",
         "core.close"        => "Close",
         "core.save"         => "Save",
+        "core.total"        => "Total",
+        "core.free"         => "Libre",
 
         "core.time.second"  => "second",
         "core.time.seconds" => "seconds",
