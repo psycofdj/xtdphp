@@ -276,6 +276,8 @@ $.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique,
     var aData = this.fnGetData(iRow);
     var sValue = aData[iColumn];
 
+    sValue = $(sValue).text().trim();
+
     // ignore empty values?
     if (bIgnoreEmpty == true && sValue.length == 0) continue;
 
@@ -291,12 +293,14 @@ $.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique,
 
 function fnCreateSelect( aData )
 {
-  var r='<option value=""></option>', i, iLen=aData.length;
+  var r='<option value="all"></option>', i, iLen=aData.length;
   for ( i=0 ; i<iLen ; i++ )
   {
     var l_node = aData[i];
-
-    r += '<option value="'+l_node+'">'+l_node+'</option>';
+    var l_label = l_node;
+    if (l_label == "")
+      l_label = "(empty)";
+    r += '<option value="'+l_node+'">'+l_label+'</option>';
   }
   return r;
 }
@@ -398,10 +402,10 @@ function fnCreateSelect( aData )
         }
         else if (true == $(this).hasClass("wp-filter")) {
           var l_select = $("<select style='width:100%;' class='form-control'/>");
-          l_select.html(fnCreateSelect(l_table.fnGetColumnData(p_colIndex)));
+          l_select.html(fnCreateSelect(l_table.fnGetColumnData(p_colIndex, true, true, false)));
           l_select.change(function() {
             var l_val = $(this).val();
-            if (l_val != "")
+            if (l_val != "all")
               l_table.fnFilter("^" + $(this).val() + "$", p_colIndex, true, false, false);
             else
               l_table.fnFilter("^.*$", p_colIndex, true, false, false);

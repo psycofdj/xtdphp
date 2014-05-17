@@ -2701,8 +2701,7 @@
 
     for ( var i=display.length-1 ; i>=0 ; i-- ) {
       data = settings.aoData[ display[i] ]._aFilterData[ colIdx ];
-
-      if ( ! rpSearch.test( data ) ) {
+      if ( ! rpSearch.test( data.trim() ) ) {
         display.splice( i, 1 );
       }
     }
