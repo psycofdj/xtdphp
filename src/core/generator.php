@@ -449,18 +449,24 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addJs("jquery.js",                             "core")
       ->addJs("jquery-ui.js",                          "core")
       ->addJs("jquery.validate.js",                    "core")
-      ->addJs("bootstrap.js",                          "core")
       ->addJs("jquery.dataTables.js",                  "core")
       ->addJs("jquery.dataTables.bootstrap.js",        "core")
-      ->addJs("datepicker/js/bootstrap-datepicker.js", "core")
-      ->addJs("bootstrap.multiselect.js",              "core")
+      ->addJs("jquery-ui-timepicker-addon.js",         "core")
+      ->addJs("jquery-ui-sliderAccess.js",             "core")
+      ->addJs("bootstrap.js",                          "core")
+      ->addJs("bootstrap.multiselect.js",              "core");
+
+    $this
       ->addCss("jquery-ui.css",                        "core")
+      ->addCss("jquery-ui-timepicker-addon.css",       "core")
+      ->addCss("jquery.dataTables.css",                "core")
       ->addCss("bootstrap.css",                        "core")
       ->addCss("bootstrap-theme.css",                  "core")
-      ->addCss("jquery.dataTables.css",                "core")
-      ->addCss("jquery.dataTables.bootstrap.css",      "core")
       ->addCss("bootstrap.multiselect.css",            "core")
-      ->addCss("wapp.css",                             "core")
+      ->addCss("jquery.dataTables.bootstrap.css",      "core")
+      ->addCss("wapp.css",                             "core");
+
+    $this
       ->setHeader("[activity]status.tpl")
       ->setFavicon("/img/favicon.png")
       ->setTitle("iPark : Garage 107");
@@ -471,8 +477,9 @@ class WappHtmlGenerator extends HtmlGenerator
     if (locale::getName() == "fr")
     {
       $this
-        ->addJs("jquery.validate.messages-fr.js", "core")
-        ->addJs("jquery.dataTables.locale.fr.js", "core");
+        ->addJs("jquery.validate.messages-fr.js",  "core")
+        ->addJs("jquery.dataTables.locale.fr.js",  "core")
+        ->addJs("i18n/jquery-ui-timepicker-fr.js", "core");
     }
     else
     {
