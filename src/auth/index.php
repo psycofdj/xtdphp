@@ -15,7 +15,7 @@ class Page extends Handler
     if (null != ($l_user = UserModel::getByMailPass($ps_mail, $ps_password)))
     {
       $this->setSession("auth_user",   $l_user);
-    $this->setStatusCode(204);
+      $this->setStatusCode(204);
       return true;
     }
     $this->setStatusCode(401);
@@ -27,7 +27,6 @@ class Page extends Handler
     $this->deleteSession("auth_user");
     return $this->redirect($p_dest);
   }
-
 
   public function h_userlist($pu_test = 5)
   {

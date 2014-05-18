@@ -466,11 +466,6 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addCss("bootstrap.multiselect.css",            "core")
       ->addCss("jquery.dataTables.bootstrap.css",      "core")
       ->addCss("wapp.css",                             "core");
-
-    $this
-      ->setHeader("[activity]status.tpl")
-      ->setFavicon("/img/favicon.png")
-      ->setTitle("iPark : Garage 107");
   }
 
   public function initialize()

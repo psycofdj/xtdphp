@@ -40,7 +40,11 @@
         </a>
         <ul class="dropdown-menu">
           {foreach $c_tab->getTabs() as $c_subtab}
-          <li>
+          {assign "subactive" ""}
+          {if $c_subtab->isActiveUrl()}
+          {assign "subactive" "active"}
+          {/if}
+          <li class="{$subactive}">
             <a href="{$c_subtab->m_link}">{t}{$c_subtab->m_title}{/t}</a>
           </li>
           {/foreach}
