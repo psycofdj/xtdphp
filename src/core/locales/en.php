@@ -13,6 +13,7 @@ function core_en() {
         "core.save"         => "Save",
         "core.total"        => "Total",
         "core.free"         => "Libre",
+        "core.mail"         => "Email",
 
         "core.time.second"  => "second",
         "core.time.seconds" => "seconds",
@@ -39,6 +40,8 @@ function core_en() {
         "core.menu.lang.fr" => "French",
         "core.menu.lang.en" => "English",
         "core.menu.lang.sp" => "Spanish",
+        "core.menu.setup"   => "Setup",
+        "core.menu.setup.install"   => "Wipe & Install",
     );
 }
 

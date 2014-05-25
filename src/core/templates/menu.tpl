@@ -16,20 +16,13 @@
 
     <ul class="nav navbar-nav">
       {foreach $__menu->getTabs() as $c_tab}
-
-      {if isset($auth) }
-        {assign "role" "1"}
-        {if isset($auth_user)}
-        {assign "role" $auth_user->role}
-        {/if}
-        {if false == $c_tab->isValidForRole($role) }
-          {continue}
-        {/if}
+      {if isset($auth_acl) && (false == $c_tab->isAllowed($auth_acl)) }
+        {continue}
       {/if}
 
       {assign "active" ""}
       {if $c_tab->isActiveUrl()}
-      {assign "active" "active"}
+        {assign "active" "active"}
       {/if}
 
       {if $c_tab->hasTabs()}
@@ -40,10 +33,13 @@
         </a>
         <ul class="dropdown-menu">
           {foreach $c_tab->getTabs() as $c_subtab}
-          {assign "subactive" ""}
-          {if $c_subtab->isActiveUrl()}
-          {assign "subactive" "active"}
-          {/if}
+            {if isset($auth_acl) && (false == $c_subtab->isAllowed($auth_acl)) }
+              {continue}
+            {/if}
+            {assign "subactive" ""}
+            {if $c_subtab->isActiveUrl()}
+              {assign "subactive" "active"}
+            {/if}
           <li class="{$subactive}">
             <a href="{$c_subtab->m_link}">{t}{$c_subtab->m_title}{/t}</a>
           </li>

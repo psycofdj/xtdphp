@@ -26,6 +26,7 @@
        html: true,
        content: function() { return $("#auth_error").html(); }
     });
+
     $("#auth_menu_widget").validate({
       errorElement : "small",
       errorClass : "text-danger small",
@@ -49,7 +50,6 @@
            $("#auth_btn").popover("show");
         });
       }
-
     });
   });
 </script>

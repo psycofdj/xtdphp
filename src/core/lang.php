@@ -1,9 +1,9 @@
 <?php
 
 require_once(dirname(__FILE__) . "/../local.php");
-require_once(__WAPPCORE_DIR__  . "/core/locale.php");
-require_once(__WAPPCORE_DIR__  . "/core/log.php");
-require_once(__WAPPCORE_DIR__  . "/core/handler.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/locale.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/log.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 
 class LangPage extends Handler
 {
@@ -18,10 +18,10 @@ class LangPage extends Handler
     {
     case "fr":
     case "en":
-      {
-        $this->setSession("lang", $p_lang);
-        break;
-      }
+    {
+      $this->setSession("lang", $p_lang);
+      break;
+    }
     default:
       log::warning("unknown requested lang '%s'", $p_lang);
     }

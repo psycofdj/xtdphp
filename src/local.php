@@ -8,30 +8,30 @@ if (false == defined("__APP_DIR__"))
 if (false == defined("__WAPPCORE_DIR__"))
   define("__WAPPCORE_DIR__", getenv("__WAPPCORE_DIR__"));
 
-require_once(__WAPPCORE_DIR__ . "/core/log.php");
+require_once(__WAPPCORE_DIR__ . "/core/classes/log.php");
 
 /* -------------------------------------------------------------------------- */
 
-$g_conf                       = Array();
+$g_conf                       = array();
 $g_conf["env"]                = "prod";
-$g_conf["web"]                = Array();
-$g_conf["web"]["uri"]         = Array();
-$g_conf["web"]["uri"]["app"]  = "/";
-$g_conf["web"]["uri"]["core"] = "/wappcore/core";
-$g_conf["web"]["host"]        = "localhost";
 
-$g_conf["log"]                = Array();
+$g_conf["style"]              = array();
+$g_conf["style"]["name"]      = "Wappcore";
+$g_conf["style"]["favicon"]   = "/wappcore/core/images/wappcore_logo.png";
+$g_conf["style"]["brand"]     = "/wappcore/core/images/wappcore.png";
+
+$g_conf["log"]                = array();
 $g_conf["log"]["level"]       = 7;
 
-$g_conf["mysql"]              = Array();
+$g_conf["mysql"]              = array();
 $g_conf["mysql"]["host"]      = "localhost";
 $g_conf["mysql"]["port"]      = 3306;
 $g_conf["mysql"]["username"]  = "default";
 $g_conf["mysql"]["password"]  = "default";
 $g_conf["mysql"]["database"]  = "default";
 
-$g_conf["mail"]               = Array();
-$g_conf["mail"]["from"]       = "no-reply";
+$g_conf["mail"]               = array();
+$g_conf["mail"]["from"]       = "no-reply@wapp.pro";
 $g_conf["mail"]["name"]       = "no-reply";
 $g_conf["mail"]["host"]       = "localhost";
 $g_conf["mail"]["port"]       = 25;
@@ -42,6 +42,13 @@ require_once(__APP_DIR__      . "/local.php");
 /* -------------------------------------------------------------------------- */
 
 log::setLevel($g_conf["log"]["level"]);
+
+if ($g_conf["env"] == "dev")
+  ini_set( "display_errors",  1 );
+
+require_once(__WAPPCORE_DIR__ . "/core/classes/app.php");
+
+App::get();
 
 /* -------------------------------------------------------------------------- */
 
