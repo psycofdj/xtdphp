@@ -1,5 +1,0 @@
-{use $myObj}
-
-The number is: {$myObj->a }
-
-Say: {$myObj->getHelloWorld(2 + 2)}

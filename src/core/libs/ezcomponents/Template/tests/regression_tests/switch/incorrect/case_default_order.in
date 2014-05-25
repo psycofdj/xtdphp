@@ -1,4 +1,0 @@
-{switch 2}
-{default}bla{/default}
-{case 1} hoi{/case}
-{/switch}

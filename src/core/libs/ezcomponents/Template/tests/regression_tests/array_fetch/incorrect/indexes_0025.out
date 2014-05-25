@@ -1,4 +1,0 @@
-mock:4:8: Expecting an assignment '=' after an array append '[]'.
-
-[]/*c*/[2]}
-       ^

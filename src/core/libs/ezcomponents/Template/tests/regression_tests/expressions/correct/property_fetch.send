@@ -1,6 +1,0 @@
-<?php
-$v = new ezcTemplateVariableCollection();
-$v->obj = new StdClass;
-
-return $v;
-?>

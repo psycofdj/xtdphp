@@ -1,4 +1,0 @@
-mock:6:10: Open and close block do not match: {foreach} and {/if}
-
-    {/if}
-         ^

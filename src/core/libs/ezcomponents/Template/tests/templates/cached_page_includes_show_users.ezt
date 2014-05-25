@@ -1,3 +1,0 @@
-{cache_template}
-Cached:
-{include "show_users.ezt"}

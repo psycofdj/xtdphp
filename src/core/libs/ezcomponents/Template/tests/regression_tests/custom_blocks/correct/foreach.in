@@ -1,9 +1,0 @@
-{cblock}
-	
-	Hello
-
-    {foreach array(1,2,3) as $index}
-        {$index}
-    {/foreach}
-
-{/cblock}

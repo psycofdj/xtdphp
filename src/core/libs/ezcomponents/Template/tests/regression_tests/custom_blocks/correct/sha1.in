@@ -1,3 +1,0 @@
-{use $text}
-Text: {$text}
-SHA1: {str_sha1( $text )}

@@ -1,4 +1,0 @@
-{if true}
-   True
-{/else}
-   False

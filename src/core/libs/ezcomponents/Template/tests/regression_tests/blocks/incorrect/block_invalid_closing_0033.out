@@ -1,4 +1,0 @@
-mock:3:9: Found closing block {/while} without an opening block.
-
-{/while}
-        ^

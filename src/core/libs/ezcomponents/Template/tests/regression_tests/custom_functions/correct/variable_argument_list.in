@@ -1,5 +1,0 @@
-{variable_argument_list("required")}
-
-{variable_argument_list("required", "bla")}
-
-{variable_argument_list("required", "bla", "haha")}

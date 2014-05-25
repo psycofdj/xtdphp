@@ -1,2 +1,0 @@
-{foreach 42 as $i offset 2}
-{/foreach}

@@ -1,5 +1,0 @@
-mock:2:1: Expecting a closing curly bracket: '}'
-
-{if true
-hello
-^

@@ -1,3 +1,0 @@
-{capture $a}
-Hello
-{/capture}

@@ -1,7 +1,0 @@
-{foreach array(1,2,3) as $i}
-{$i}
-{/foreach}
-
-{foreach array('a', "b", "c") as $key => $value}
-Key: {$key} Value: {$value}
-{/foreach}

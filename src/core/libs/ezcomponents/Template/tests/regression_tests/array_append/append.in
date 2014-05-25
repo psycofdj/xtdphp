@@ -1,4 +1,0 @@
-{var $a = array()}
-{$a[] = "a"}
-{$a[] = "b"}
-{debug_dump( $a )}

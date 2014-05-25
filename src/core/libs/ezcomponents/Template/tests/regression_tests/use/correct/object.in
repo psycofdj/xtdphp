@@ -1,3 +1,0 @@
-{use $myObj}
-
-The number is: {$myObj->a }

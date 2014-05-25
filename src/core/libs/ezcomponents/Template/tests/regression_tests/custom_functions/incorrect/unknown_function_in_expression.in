@@ -1,3 +1,0 @@
-{if does_not_exist() && true || false}
-Yes
-{/if}

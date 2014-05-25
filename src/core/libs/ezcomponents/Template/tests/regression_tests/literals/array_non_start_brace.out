@@ -1,4 +1,0 @@
-mock:1:17: Expecting an opening parentheses: '('
-
-{var $a = array }
-                ^

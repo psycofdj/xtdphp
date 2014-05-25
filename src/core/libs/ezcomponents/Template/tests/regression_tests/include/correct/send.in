@@ -1,2 +1,0 @@
-{var $room_temperature = 20}
-{include "send.inc" send $room_temperature}

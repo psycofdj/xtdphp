@@ -1,3 +1,0 @@
-{foreach 1..2 as $key => $value 
-{$key}
-{/foreach}

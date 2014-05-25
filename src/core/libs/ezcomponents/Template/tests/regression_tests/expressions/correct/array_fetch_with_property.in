@@ -1,3 +1,0 @@
-{use $myArray}
-
-{$myArray["key"]->property}

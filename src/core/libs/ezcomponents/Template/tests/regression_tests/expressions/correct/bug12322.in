@@ -1,7 +1,0 @@
-{use $object}
-
-{var $array = array( 'foo', 'bar' )}
-
-{foreach $array as $attribute}
-    {debug_dump( $object->$attribute )}
-{/foreach}

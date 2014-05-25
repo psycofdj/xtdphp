@@ -1,5 +1,0 @@
-{switch 2}
-{case 1,2}
-Hello
-{/case}
-{/switch}

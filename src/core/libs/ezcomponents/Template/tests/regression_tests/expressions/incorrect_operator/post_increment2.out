@@ -1,4 +1,0 @@
-mock:1:9: Expecting an operand without a pre- or post operator.
-
-{false++}
-        ^

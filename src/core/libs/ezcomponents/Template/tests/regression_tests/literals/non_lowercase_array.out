@@ -1,4 +1,0 @@
-mock:1:12: The array identifier must consist of lowercase characters only.
-
-{var $a = aRRay( 1 )}
-           ^

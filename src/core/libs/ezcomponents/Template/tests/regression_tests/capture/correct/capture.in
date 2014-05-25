@@ -1,7 +1,0 @@
-{var $myVar}
-{capture $myVar}
-Hello world
-{/capture}
------
-{$myVar}
------

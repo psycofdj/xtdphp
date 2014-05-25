@@ -1,2 +1,0 @@
-{var $a = array()}
-{var $b = $a[] + 2}
