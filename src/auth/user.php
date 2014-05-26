@@ -3,6 +3,7 @@
 require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/mail.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/tools.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/user.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/role.php");
 
@@ -34,29 +35,6 @@ class Page extends Handler
     return true;
   }
 
-
-  private function notifyUser($p_user, $p_password)
-  {
-    global $g_conf;
-
-    if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off'))
-      $l_url = sprintf("https://%s/", $_SERVER['HTTP_HOST']);
-    else
-      $l_url = sprintf("http://%s/", $_SERVER['HTTP_HOST']);
-
-    $l_mailer = new MailTemplate("userinfo", $p_user->mail);
-    $l_mailer
-      ->setData("user",     $p_user)
-      ->setData("password", $p_password)
-      ->setData("url",      $l_url)
-      ->setData("name",     $g_conf["style"]["name"]);
-    $l_mailer->addImage($g_conf["style"]["brand"], "brand", true);
-
-    if (false == $l_mailer->send())
-      log::warn("error while sending mail userinfo to '%s'", $p_user->mail);
-  }
-
-
   public function h_save($pi_uid = 0, $pm_email, $p_name, $p_password, $pau_perm = array())
   {
 
@@ -84,7 +62,13 @@ class Page extends Handler
     }
 
     if ($l_isUpdated)
-      $this->notifyUser($l_user, $p_password);
+    {
+      $l_mail = new MailTemplate("userinfo", $p_user->mail);
+      $l_mail
+        ->setData("user",     $p_user)
+        ->setData("password", $p_password)
+        ->send();
+    }
 
     $l_perms = array();
     foreach ($pau_perm as $c_permIdx)
@@ -137,10 +121,40 @@ class Page extends Handler
 
   public function h_add()
   {
-    $this->setContent("file:[auth]user_add.tpl");
+    $this->setContent("[auth]user_add.tpl");
     $this->setData("roles", RoleModel::getAll());
     return true;
   }
+
+  public function h_recover($p_email = null)
+  {
+    $this->setContent("[auth]user_recover.tpl");
+    $this->setData("mail",   "");
+    $this->setData("status", "none");
+
+    if ($p_email == null)
+      return true;
+
+    $this->setData("mail", $p_email);
+    if (false == ($l_user = UserModel::getByMail($p_email)))
+    {
+      $this->setData("status", "notfound");
+      return true;
+    }
+
+    $l_newPassword = tools::genPassword(8, 8);
+    $l_user        = UserModel::update($l_user->id, $l_user->mail, $l_user->name, $l_newPassword, $l_dummy);
+    $l_mail        = new MailTemplate("userrecover", $p_email);
+    $l_mail
+      ->setData("user",     $l_user)
+      ->setData("password", $l_newPassword)
+      ->send();
+    $this
+      ->setData("user",  $l_user)
+      ->setData("status", "ok");
+    return true;
+  }
+
 }
 
 $l_page = new Page();

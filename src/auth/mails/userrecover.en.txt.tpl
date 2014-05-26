@@ -1,12 +1,10 @@
 Hello {$user->name},
 
-Please find your {$__brand_name} credentials below.
+Please find your new {$__brand_name} password below.
 
- address: {$__base_url}
+ adresse: {$__base_url}
    login: {$user->mail}
-{if $password != ""}
 password: {$password}
-{/if}
 
 Regards,
 

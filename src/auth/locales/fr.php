@@ -2,15 +2,18 @@
 
 function auth_fr() {
   return
-    array("auth.menu.title"    => "Admin",
-        "auth.menu.users"    => "Utilisateurs",
-        "auth.menu.roles"    => "Rôles",
-        "auth.menu.mail"     => "Email",
-        "auth.menu.password" => "Mot de passe",
-        "auth.menu.login"    => "Connexion",
-        "auth.menu.logout"   => "Déconnexion",
-        "auth.menu.recover"  => "Mot de passe perdu ?",
-        "auth.menu.wrong"    => "L'email ou le mot de passe saisi est incorrect.",
+    array("auth.menu.title"          => "Admin",
+        "auth.menu.users"            => "Utilisateurs",
+        "auth.menu.roles"            => "Rôles",
+        "auth.menu.mail"             => "Email",
+        "auth.menu.password"         => "Mot de passe",
+        "auth.menu.login"            => "Connexion",
+        "auth.menu.logout"           => "Déconnexion",
+        "auth.menu.recover"          => "Mot de passe perdu ?",
+        "auth.menu.fail"             => "Erreur d'authentification",
+        "auth.menu.fail.credentials" => "L'email ou le mot de passe saisi est incorrect.",
+        "auth.menu.recover"          => "Récupération de mot de passe.",
+
 
 
         "auth.perm.user.view"      => "Consulter la liste des utillisateurs",
@@ -37,6 +40,10 @@ function auth_fr() {
         "auth.user.add.name"                   => "Prénom / Nom",
         "auth.user.add.password"               => "Mot de passe",
         "auth.user.add.password_confirm"       => "Confirmer mot de passe",
+
+        "auth.user.recover.error.notfound" => "L'adresse %s n'a pas été trouvée.",
+        "auth.user.recover.ok"             => "Bonjour %s, un nouveau mot de passe a été envoyé à votre adresse %s.",
+        "auth.user.recover.submit"         => "Envoyer un nouveau mot de passe !",
 
         "auth.role.list.add"             => "Ajouter un rôle",
         "auth.role.list.name"            => "Nom",

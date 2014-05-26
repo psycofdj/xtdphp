@@ -1,21 +1,21 @@
 <html>
  <head>
     <style type="text/css">
-     {include file="userinfo.style"}
+     {include file="mail.style"}
     </style>
  </head>
  <body>
   Bonjour <b>{$user->name}</b>,<br/>
   </br>
-  Veuillez trouver vos informations de connexion {$name} ci-dessus.</br>
+  Veuillez trouver vos informations de connexion {$__brand_name} ci-dessus.</br>
   <br/>
   <table>
     <tr>
-      <td class="label">url : </td>
-      <td><a href="{$url}">{$url}</a></td>
+      <td class="label">adresse : </td>
+      <td><a href="{$__base_url}">{$__base_url}</a></td>
     </tr>
     <tr>
-      <td class="label">adresse : </td>
+      <td class="label">login : </td>
       <td><a href="mailto:{$user->mail}">{$user->mail}</a></td>
     </tr>
     {if $password != ""}
@@ -27,7 +27,7 @@
     <tr>
       <td colspan="2" class="logo">
         <br/><br/>
-        <img src="cid:brand"/>
+        <img src="cid:__brand_logo"/>
       </td>
     </tr>
   </table>

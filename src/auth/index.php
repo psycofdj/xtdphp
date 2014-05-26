@@ -2,6 +2,7 @@
 
 require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/tools.php");
 
 use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
@@ -58,6 +59,7 @@ class Page extends Handler
     $this->deleteSession("auth_acl");
     return $this->redirect($p_dest);
   }
+
 }
 
 $l_page = new Page();

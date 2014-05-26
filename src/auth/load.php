@@ -206,7 +206,7 @@ EOT
     $l_user                 = R::dispense("authuser", 1);
     $l_user->mail           = "sa@sa.com";
     $l_user->name           = "Super Admin";
-    $l_user->password       = md5("sa");
+    $l_user->password       = md5("sasasasa");
     $l_user->link("authuser_authperm", array('data' => null))->authrole = $l_roleAdmin;
     R::store($l_user);
 

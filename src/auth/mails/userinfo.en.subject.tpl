@@ -1,1 +1,1 @@
-Your {$name} credentials !
+Your {$__brand_name} credentials !

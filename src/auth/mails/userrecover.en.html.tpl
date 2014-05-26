@@ -7,7 +7,7 @@
  <body>
   Hello <b>{$user->name}</b>,<br/>
   </br>
-  Please find your {$__brand_name} credentials below.</br>
+  Please find your new {$__brand_name} password below.</br>
   <br/>
   <table>
     <tr>
@@ -18,12 +18,10 @@
       <td class="label">login:</td>
       <td><a href="mailto:{$user->mail}">{$user->mail}</a></td>
     </tr>
-    {if $password != ""}
     <tr>
       <td class="label">password:</td>
       <td>{$password}</td>
     </tr>
-    {/if}
     <tr>
       <td colspan="2" class="logo">
         <br/><br/>

@@ -11,6 +11,7 @@ function core_fr() {
         "core.open"         => "Ouvrir",
         "core.close"        => "Fermer",
         "core.save"         => "Sauvegarder",
+        "core.send"         => "Envoyer",
         "core.total"        => "Total",
         "core.free"         => "Libre",
         "core.mail"         => "Email",

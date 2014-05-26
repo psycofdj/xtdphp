@@ -1,15 +1,8 @@
 <script type="text/javascript">
  $(document).ready(function() {
-
    $("*[data-toggle=tooltip]").tooltip({ container: 'body' });
 
    $("#add").validate({
-     rules: {
-       passwordc: { equalTo: "#password" },
-       password:  { minlength: 8 }
-     },
-     errorClass : "has-error",
-     validClass : "has-success",
      success : function(p_succes, p_el) {
        $(p_el).tooltip("hide");
        $(p_el).parents("div.form-group")
@@ -19,6 +12,7 @@
            .removeClass("glyphicon-error")
            .addClass("glyphicon-ok");
      },
+
      errorPlacement : function(p_error, p_el) {
        p_el.parents("div.form-group")
         .addClass("has-error")
@@ -77,8 +71,6 @@
 
 });
 </script>
-
-
 
 
 <div class="container-fluid">

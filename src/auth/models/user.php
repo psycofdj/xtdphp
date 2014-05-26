@@ -23,6 +23,11 @@ class UserModel
         array("mail" => $p_mail, "password" => md5($p_password)));
   }
 
+  static function getByMail($p_mail)
+  {
+    return R::findOne("authuser", "mail = :mail", array("mail" => $p_mail));
+  }
+
   static function getAll()
   {
     return R::find("authuser");
@@ -37,6 +42,7 @@ class UserModel
     R::store($l_user);
     return $l_user;
   }
+
 
   static function update($p_uid, $p_mail, $p_name, $p_password, &$p_isUpdated)
   {

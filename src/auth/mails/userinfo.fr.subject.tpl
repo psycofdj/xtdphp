@@ -1,1 +1,1 @@
-Vos identifiants {$name} !
+Vos identifiants {$__brand_name} !

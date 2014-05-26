@@ -2,15 +2,19 @@
 
 function auth_en() {
   return
-    array("auth.menu.title"    => "Admin",
-        "auth.menu.users"    => "Users",
-        "auth.menu.roles"    => "Roles",
-        "auth.menu.mail"     => "Email",
-        "auth.menu.password" => "Password",
-        "auth.menu.login"    => "Login",
-        "auth.menu.logout"   => "Logout",
-        "auth.menu.recover"  => "Forgot your password ?",
-        "auth.menu.wrong"    => "Unknown user name or bad password.",
+    array("auth.menu.title"          => "Admin",
+        "auth.menu.users"            => "Users",
+        "auth.menu.roles"            => "Roles",
+        "auth.menu.mail"             => "Email",
+        "auth.menu.password"         => "Password",
+        "auth.menu.login"            => "Login",
+        "auth.menu.logout"           => "Logout",
+        "auth.menu.recover"          => "Forgot your password ?",
+        "auth.menu.fail"             => "Login error",
+        "auth.menu.fail.credentials" => "Unknown user name or bad password.",
+        "auth.menu.recover"          => "Recover password.",
+
+
 
         "auth.perm.user.view"      => "Consult user list",
         "auth.perm.user.create"    => "Create new user",
@@ -36,6 +40,10 @@ function auth_en() {
         "auth.user.add.name"                 => "First name / Last name",
         "auth.user.add.password"             => "Password",
         "auth.user.add.password_confirm"     => "Confirm password",
+
+        "auth.user.recover.error.notfound" => "The address %s was not found.",
+        "auth.user.recover.ok"             => "Hi %s, A new password has been sent to your address %s;.",
+        "auth.user.recover.submit"         => "Send new password !",
 
         "auth.role.list.add"             => "Add role",
         "auth.role.list.name"            => "Name",

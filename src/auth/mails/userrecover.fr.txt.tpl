@@ -1,12 +1,11 @@
 Bonjour {$user->name},
 
-Veuillez trouver vos informations de connexion {$__brand_name} ci-dessus.
+Veuillez trouver votre nouveau mot de passe {$__brand_name} :
 
      adresse : {$__base_url}
        login : {$user->mail}
-{if $password != ""}
 mot de passe : {$password}
-{/if}
+
 
 Cordiallement,
 

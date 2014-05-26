@@ -12,7 +12,7 @@ class MailTemplate extends TemplateGenerator
   private $m_images  = array();
   private $m_files   = array();
 
-  function __construct($p_mailName, $p_dest)
+  function __construct($p_mailName, $p_dest, $p_brandLogo = true)
   {
     global $g_conf;
 
@@ -39,8 +39,13 @@ class MailTemplate extends TemplateGenerator
     $this->setTemplate($p_mailName);
     $this->m_mail->addReplyTo($g_conf["mail"]["from"], $g_conf["mail"]["name"]);
 
-  }
 
+    $this
+      ->setData("__base_url",   tools::getBaseUrl())
+      ->setData("__brand_name", $g_conf["style"]["name"]);
+    if ($p_brandLogo)
+      $this->addImage($g_conf["style"]["brand"], "__brand_logo", true);
+  }
 
   public function setTemplate($p_name)
   {
@@ -55,7 +60,6 @@ class MailTemplate extends TemplateGenerator
     if (true == $p_fromBase)
       $p_path = sprintf("%s/%s", __APP_DIR__, $p_path);
     $this->m_images[$p_path] = $p_id;
-    log::crit("path : %s", $p_path);
     return $this;
   }
 
@@ -91,7 +95,11 @@ class MailTemplate extends TemplateGenerator
     $this->m_mail->Body    = $l_htmlText;
     $this->m_mail->AltBody = $l_txtText;
     $this->m_mail->AddAddress($this->m_to);
-    return $this->m_mail->Send();
+
+    if (false == ($l_status = $this->m_mail->Send()))
+      log::warn("error while sending mail to '%s'", $this->m_to);
+
+    return $l_status;
   }
 
   public function send()

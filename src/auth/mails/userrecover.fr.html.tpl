@@ -5,25 +5,23 @@
     </style>
  </head>
  <body>
-  Hello <b>{$user->name}</b>,<br/>
+  Bonjour <b>{$user->name}</b>,<br/>
   </br>
-  Please find your {$__brand_name} credentials below.</br>
+  Veuillez trouver votre nouveau mot de passe {$__brand_name} ci-dessus.</br>
   <br/>
   <table>
     <tr>
-      <td class="label">address:</td>
+      <td class="label">adresse : </td>
       <td><a href="{$__base_url}">{$__base_url}</a></td>
     </tr>
     <tr>
-      <td class="label">login:</td>
+      <td class="label">login : </td>
       <td><a href="mailto:{$user->mail}">{$user->mail}</a></td>
     </tr>
-    {if $password != ""}
     <tr>
-      <td class="label">password:</td>
+      <td class="label">mot de passe : </td>
       <td>{$password}</td>
     </tr>
-    {/if}
     <tr>
       <td colspan="2" class="logo">
         <br/><br/>
@@ -34,8 +32,9 @@
 
   <span class="footer">
     <br/><br/>
-    This email has been sent automatically.</br>
-    Please do not respond to this message.
+    Ce mail a été envoyé automatiquement.</br>
+    Veuillez ne pas répondre à ce message.
   </span>
  </body>
 </html>
+
