@@ -20,7 +20,7 @@ class Module
 
   public function getUri()
   {
-    return substr(sprintf("%s/%s", $this->m_baseDir, $this->m_name),
+    return substr(sprintf("/%s/%s", $this->m_baseDir, $this->m_name),
         strlen(__APP_DIR__));
   }
 
