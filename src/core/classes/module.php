@@ -20,8 +20,13 @@ class Module
 
   public function getUri()
   {
-    return substr(sprintf("/%s/%s", $this->m_baseDir, $this->m_name),
-        strlen(__APP_DIR__));
+    $l_wappPath   = realpath(__WAPPCORE_DIR__ . "/");
+    $l_appPath    = realpath(__APP_DIR__      . "/");
+    $l_modulePath = realPath(sprintf("/%s/%s", $this->m_baseDir, $this->m_name));
+
+    if ($l_wappPath == substr($l_modulePath, 0, strlen($l_wappPath)))
+      return sprintf("/wappcore%s", substr($l_modulePath, strlen($l_wappPath)));
+    return substr($l_modulePath, strlen($l_appPath));
   }
 
   protected function __construct($p_baseDir, $p_name)
