@@ -16,8 +16,16 @@
 
     <ul class="nav navbar-nav">
       {foreach $__menu->getTabs() as $c_tab}
-      {if isset($auth_acl) && (false == $c_tab->isAllowed($auth_acl)) }
-        {continue}
+
+      {assign acl null}
+      {if isset($auth_acl)}
+        {if false == $c_tab->isAllowed($auth_acl)}
+          {continue}
+        {/if}
+      {else}
+        {if false == $c_tab->isAllowed()}
+          {continue}
+        {/if}
       {/if}
 
       {assign "active" ""}

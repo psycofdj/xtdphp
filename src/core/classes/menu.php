@@ -106,7 +106,7 @@ class MenuTab
     return $this->m_subTabs;
   }
 
-  function isAllowed($p_acl)
+  function isAllowed($p_acl = null)
   {
     if (true == $this->hasTabs())
       return array_reduce($this->m_subTabs, function ($p_res, $p_obj) use (&$p_acl) {
@@ -115,6 +115,12 @@ class MenuTab
           }, false);
     if (false == $this->m_action)
       return true;
+
+    if ($this->m_action == null)
+      return true;
+
+    if ($p_acl == null)
+      return false;
     return $p_acl->isAllowed("user", null, $this->m_action);
   }
 
