@@ -265,7 +265,7 @@ class Handler
     ob_end_flush();
 
     // 4.
-    ob_start(function (string $p_buffer, int $p_phase) {
+    ob_start(function ($p_buffer, $p_phase) {
           return "";
         });
   }
