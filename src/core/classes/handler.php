@@ -239,11 +239,10 @@ class Handler
    * Generate HTTP response from current object status
    *
    * 1. Generates output headers from current status code, content-type
-   * 2. For valid responses (status 200), generates output body by calling
-   *    display virtual method
+   * 2. Forget about any previous output data
+   * 3. Output and send to client handler's data
+   * 4. Prevent any futur output
    *
-   * @param  bool $p_isValid false means that reply is a server error
-   * @return bool $p_isValid's value
    */
   private function reply()
   {
@@ -256,7 +255,19 @@ class Handler
     foreach($this->m_headers as $c_header)
       header($c_header);
 
+    // 2.
+    while (ob_get_level())
+     ob_end_clean();
+
+    // 3.
+    ob_start();
     echo $this->m_content;
+    ob_end_flush();
+
+    // 4.
+    ob_start(function (string $p_buffer, int $p_phase) {
+          return "";
+        });
   }
 
 
