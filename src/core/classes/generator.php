@@ -188,14 +188,6 @@ class TemplateGenerator implements Generator
     $this->m_smarty->registerPlugin($p_type, $p_name, $p_callback);
   }
 
-  /* public function perm($p_params, $p_content, &$p_smarty, &$p_repeat) */
-  /* { */
-  /*   if (!$p_content) */
-  /*     return; */
-  /*   $p_content = trim($p_content); */
-  /*   return $p_content; */
-  /* } */
-
   public function initialize()
   {
     $this->m_signals->emit("initialize", $this);
