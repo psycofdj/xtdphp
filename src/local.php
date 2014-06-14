@@ -21,7 +21,7 @@ $g_conf["style"]["favicon"]   = "/wappcore/core/images/wappcore_logo.png";
 $g_conf["style"]["brand"]     = "/wappcore/core/images/wappcore.png";
 
 $g_conf["log"]                = array();
-$g_conf["log"]["level"]       = 7;
+$g_conf["log"]["level"]       = log::mc_levelCrit;
 
 $g_conf["mysql"]              = array();
 $g_conf["mysql"]["host"]      = "localhost";

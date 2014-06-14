@@ -257,7 +257,7 @@ class Handler
 
     // 2.
     while (ob_get_level())
-     ob_end_clean();
+      ob_end_clean();
 
     // 3.
     ob_start();
