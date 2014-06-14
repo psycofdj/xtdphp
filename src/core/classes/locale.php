@@ -1,10 +1,34 @@
 <?php
 
-
 class locale
 {
-  public static $ms_locale;
-  public static $ms_localeName;
+  public static  $ms_locale;
+  public static  $ms_localeName;
+  private static $ms_data = array();
+
+  static function addData($p_langName, $p_data)
+  {
+    if (false == array_key_exists($p_langName, self::$ms_data))
+      self::$ms_data[$p_langName] = array();
+
+
+
+    foreach ($p_data as $c_key => $c_value)
+    {
+      if (true == array_key_exists($c_key, self::$ms_data[$p_langName]))
+        log::warn("locale key '%s' already exists for lang '%s', previous value is '%s'",
+            $c_key, $p_langName, self::$ms_data[$p_langName][$c_key]);
+
+
+      if (false != ($l_key = array_search($c_value, self::$ms_data[$p_langName])))
+      {
+        log::warn("locale value '%s' already exists for lang '%s' for key '%s'",
+            $c_value, $p_langName, $l_key);
+      }
+
+      self::$ms_data[$p_langName][$c_key] = $c_value;
+    }
+  }
 
   static function init()
   {
@@ -51,9 +75,6 @@ class locale
 
   static public function setLang($p_langName)
   {
-    global $g_localeFr;
-    global $g_localeEn;
-
     $p_langName = strtolower($p_langName);
 
     switch ($p_langName)
@@ -62,7 +83,7 @@ class locale
     case "fr":
     {
       self::$ms_localeName = "fr";
-      self::$ms_locale     = App::get()->getLocale("fr");
+      self::$ms_locale     = self::$ms_data["fr"];
       return true;
     }
 
@@ -70,7 +91,7 @@ class locale
     case "en":
     {
       self::$ms_localeName = "en";
-      self::$ms_locale     = App::get()->getLocale("en");
+      self::$ms_locale     = self::$ms_data["en"];
       return true;
     }
 

@@ -14,7 +14,7 @@ function auth_fr() {
         "auth.menu.fail.credentials" => "L'email ou le mot de passe saisi est incorrect.",
         "auth.menu.recover"          => "Récupération de mot de passe.",
 
-
+        "fds"        => "Fermer",
 
         "auth.perm.user.view"      => "Consulter la liste des utillisateurs",
         "auth.perm.user.create"    => "Créer un utilisateur",

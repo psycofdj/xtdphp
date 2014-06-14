@@ -2,6 +2,7 @@
 
 require_once(__WAPPCORE_DIR__  . "/core/classes/log.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/menu.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/locale.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/ezcomponents/load.php");
 
 class App
@@ -9,7 +10,6 @@ class App
   private static $ms_instance = null;
   private $m_menu             = null;
   private $m_modules          = Array();
-  private $m_locales          = Array("fr" => Array(), "en" => Array());
 
   private function __construct()
   {
@@ -71,7 +71,7 @@ class App
         continue;
       require_once($l_path);
       $l_funcName = sprintf("%s_%s", $p_moduleName, $c_lang);
-      $this->m_locales[$c_lang] = array_merge($this->m_locales[$c_lang], $l_funcName());
+      locale::addData($c_lang, $l_funcName());
     }
     ob_end_clean();
   }
@@ -95,14 +95,6 @@ class App
     if (1 != count($l_modules))
       return false;
     return array_shift($l_modules);
-  }
-
-  public function getLocale($p_name)
-  {
-    if (array_key_exists($p_name, $this->m_locales))
-      return $this->m_locales[$p_name];
-    log::warn("requested unknown locale '%s'", $p_name);
-    return array();
   }
 
   public function getMenu()
