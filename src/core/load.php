@@ -9,7 +9,7 @@ class coreModule extends Module
 {
   public function __construct($p_baseDir, $p_name)
   {
-    parent::__construct($p_baseDir, $p_name);
+    parent::__construct($p_baseDir, $p_name, 0);
     App::get()->getMenu()
       ->addTab(new MenuTab("core.menu.lang"), 100)
       ->addSubTab("core.menu.lang.en", "/wappcore/core/lang.php?lang=en")

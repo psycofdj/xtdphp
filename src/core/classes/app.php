@@ -11,19 +11,42 @@ class App
   private $m_menu             = null;
   private $m_modules          = Array();
 
-  private function __construct()
-  {
-    $this->m_menu = new Menu();
-  }
-
   static public function get()
   {
     if (null == self::$ms_instance) {
       self::$ms_instance = new App();
       self::$ms_instance->loadModules(__WAPPCORE_DIR__);
       self::$ms_instance->loadModules(__APP_DIR__);
+      self::$ms_instance->init();
     }
     return self::$ms_instance;
+  }
+
+  private function __construct()
+  {
+    $this->m_menu = new Menu();
+  }
+
+  private function init()
+  {
+    usort($this->m_modules, function(Module $p_e1, Module $p_e2) {
+          return $p_e1->getPriority() > $p_e2->getPriority();
+        });
+
+    foreach ($this->m_modules as $c_module)
+    {
+      // 2.
+      foreach (Array("fr", "en") as $c_lang)
+      {
+        $l_path = sprintf("%s/%s/locales/%s.php", $c_module->getBaseDir(), $c_module->getName(), $c_lang);
+        if (false == is_file($l_path))
+          continue;
+
+        require_once($l_path);
+        $l_funcName = sprintf("%s_%s", $c_module->getName(), $c_lang);
+        locale::addData($c_lang, $l_funcName());
+      }
+    }
   }
 
   /**
@@ -42,9 +65,10 @@ class App
       $l_path = sprintf("%s/%s/load.php", $p_baseDir, $l_name);
       if (false == is_file($l_path))
         continue;
+      if ($l_name == ".")
+        $l_name = "main";
       $this->addModule($p_baseDir, $l_path, $l_name);
     }
-
     closedir($l_handle);
   }
 
@@ -56,24 +80,10 @@ class App
    */
   private function addModule($p_baseDir, $p_modulePath, $p_moduleName)
   {
-    ob_start();
     require_once($p_modulePath);
-
     // 1.
     $l_className = sprintf("%sModule", $p_moduleName);
     array_push($this->m_modules, new $l_className($p_baseDir, $p_moduleName));
-
-    // 2.
-    foreach (Array("fr", "en") as $c_lang)
-    {
-      $l_path = sprintf("%s/%s/locales/%s.php", $p_baseDir, $p_moduleName, $c_lang);
-      if (false == is_file($l_path))
-        continue;
-      require_once($l_path);
-      $l_funcName = sprintf("%s_%s", $p_moduleName, $c_lang);
-      locale::addData($c_lang, $l_funcName());
-    }
-    ob_end_clean();
   }
 
   public function connect($p_className, $p_signal, $p_slot)

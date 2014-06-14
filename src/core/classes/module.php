@@ -7,6 +7,20 @@ class Module
   private $m_baseDir;
   private $m_name;
   private $m_widgets;
+  private $m_priority;
+
+  protected function __construct($p_baseDir, $p_name, $p_priority)
+  {
+    log::debug("initializing module '%s' in directory '%s'", $p_name, $p_baseDir);
+    $this->m_baseDir  = $p_baseDir;
+    $this->m_name     = $p_name;
+    $this->m_priority = $p_priority;
+  }
+
+  public function getPriority()
+  {
+    return $this->m_priority;
+  }
 
   public function getName()
   {
@@ -29,12 +43,6 @@ class Module
     return substr($l_modulePath, strlen($l_appPath));
   }
 
-  protected function __construct($p_baseDir, $p_name)
-  {
-    log::debug("initializing module '%s' in directory '%s'", $p_name, $p_baseDir);
-    $this->m_baseDir = $p_baseDir;
-    $this->m_name    = $p_name;
-  }
 
   public function setup()
   {

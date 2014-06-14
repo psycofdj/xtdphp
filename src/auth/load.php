@@ -11,7 +11,6 @@ interface IResource
 {
   public function getName();
   public function generate();
-  // [ ("id", "label") ]
 }
 
 class GarageResource implements IResource
@@ -39,7 +38,7 @@ class authModule extends Module
 
   public function __construct($p_baseDir, $p_name)
   {
-    parent::__construct($p_baseDir, $p_name);
+    parent::__construct($p_baseDir, $p_name, 100);
 
     $l_garage = new GarageResource();
     $this
