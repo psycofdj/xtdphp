@@ -20,8 +20,13 @@
     {foreach $__css_list as $c_css}
     <link rel="stylesheet" type="text/css" href="{$c_css}" media="screen"/>
     {/foreach}
-    <meta name="description" content="{$__meta_descr|default:''}" />
+
+    {if isset($__meta_descr)}
+    <meta name="description" content="{$__meta_descr}" />
+    {/if}
+    {if isset($__meta_kw)}
     <meta name="keywords" content="{$__meta_kw|default:''}"/>
+    {/if}
   </head>
   <body {if isset($__onload) } onload="{$__onload}" {/if}>
 

@@ -3,6 +3,7 @@
 ini_set("error_reporting", E_ALL | E_NOTICE);
 ini_set("display_errors",  1);
 
+
 if (false == defined("__APP_DIR__"))
   define("__APP_DIR__",      getenv("__APP_DIR__"));
 if (false == defined("__WAPPCORE_DIR__"))

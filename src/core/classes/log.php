@@ -97,6 +97,37 @@ class log
     error_log($l_msg);
   }
 
+  public static function doLogFile()
+  {
+    $l_args      = func_get_args();
+    $l_callArgs  = Array();
+    $l_level     = $l_args[0];
+    $l_srcFmt    = $l_args[1];
+    $l_dstFmt    = sprintf("%%9s : %s [ at %%s:%%d ]", $l_srcFmt);
+
+    if (self::$ms_curLevel < $l_level)
+      return;
+
+    array_push($l_callArgs, $l_dstFmt);
+    array_push($l_callArgs, sprintf("[%s]", self::levelToString($l_level)));
+    for ($c_argIdx = 2; $c_argIdx < func_num_args(); $c_argIdx++)
+      array_push($l_callArgs, $l_args[$c_argIdx]);
+
+    /* $l_stackInfo = debug_backtrace(); */
+    /* $l_stackInfo = $l_stackInfo[2]; */
+    /* array_push($l_callArgs, $p_file); */
+    /* array_push($l_callArgs, $p_line); */
+
+    $l_msg = call_user_func_array("sprintf", $l_callArgs);
+    array_push(self::$ms_lines, $l_msg);
+    error_log($l_msg);
+  }
+
 }
+
+set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
+      log::doLogFile(log::mc_levelCrit, "php error : %s ", $errstr, $errfile, $errline);
+    }, E_ALL | E_STRICT );
+
 
 ?>
