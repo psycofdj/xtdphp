@@ -33,4 +33,22 @@ class SqlLogger implements RedBeanPHP\Logger
 }
 
 
+class SqlImporter
+{
+  public function load($p_file)
+  {
+    if (false == ($l_data = file_get_contents($p_file)))
+    {
+      log::crit("enable to open file '%s'", $p_file);
+      return false;
+    }
+
+    R::begin();
+    R::exec($l_data);
+    R::commit();
+
+    return true;
+  }
+}
+
 ?>
