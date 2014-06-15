@@ -200,11 +200,14 @@ class Handler
     global $g_conf;
 
     $this->setStatusCode(500);
+
     if ($g_conf["env"] == "dev")
     {
-      $this->m_content = join("\n", log::getLines());
-      $this->m_content .= join("\n", error_get_last());
+      $this->m_content  = join("\n", log::getLines());
+      if (null != ($l_error = error_get_last()))
+        $this->m_content  .= join("\n", $l_error);
     }
+
     $this->reply();
   }
 
@@ -266,8 +269,8 @@ class Handler
 
     // 4.
     ob_start(function ($p_buffer, $p_phase) {
-          return "";
-        });
+        return "";
+      });
   }
 
 
@@ -556,7 +559,7 @@ class Handler
       $l_method = $l_reflex->getMethod(sprintf("h_%s", $l_action));
     }
     catch (ReflectionException $l_error) {
-      log::info("unknown action '%s'", $l_action);
+      log::error("unknown action '%s'", $l_action);
       return $this->replyInternalError();
     }
 
