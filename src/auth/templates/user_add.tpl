@@ -9,7 +9,6 @@
          .removeClass("has-error")
          .find("span")
            .removeClass("glyphicon-remove")
-           .removeClass("glyphicon-error")
            .addClass("glyphicon-ok");
      },
 
@@ -18,7 +17,6 @@
         .addClass("has-error")
         .find("span")
           .removeClass("glyphicon-ok")
-          .addClass("glyphicon-error")
           .addClass("glyphicon-remove");
        p_el.tooltip("destroy");
        p_el.tooltip({ title     : $(p_error).text(),
