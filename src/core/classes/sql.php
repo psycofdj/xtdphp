@@ -4,14 +4,6 @@ require_once(dirname(__FILE__) . "/../../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/RedBeanPHP/loader.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/log.php");
 
-/* require_once("phar:///". __WAPPCORE_DIR__  . "/core/libs/rb.phar/Logger.php"); */
-/* $p = new Phar('rb.phar', 0); */
-/* // Phar étend la classe DirectoryIterator de SPL */
-/* foreach (new RecursiveIteratorIterator($p) as $file) { */
-/*   // $file est une classe PharFileInfo et hérité de SplFileInfo */
-/*   echo $file->getFileName() . "\n"; */
-/* } */
-
 /**
  * Simple redbean request logger
  */
@@ -27,7 +19,7 @@ class SqlLogger implements RedBeanPHP\Logger
           continue;
         $c_arg = str_replace("\n", " ", print_r($c_arg, TRUE));
       }
-      log::debug("executing sql query : %s", $c_arg);
+      log::debug("core.sql", "executing sql query : %s", $c_arg);
     }
   }
 }
@@ -39,7 +31,7 @@ class SqlImporter
   {
     if (false == ($l_data = file_get_contents($p_file)))
     {
-      log::crit("enable to open file '%s'", $p_file);
+      log::crit("core.sql", "enable to open file '%s'", $p_file);
       return false;
     }
 

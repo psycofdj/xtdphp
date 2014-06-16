@@ -30,8 +30,8 @@ class App
   private function init()
   {
     usort($this->m_modules, function(Module $p_e1, Module $p_e2) {
-          return $p_e1->getPriority() > $p_e2->getPriority();
-        });
+        return $p_e1->getPriority() > $p_e2->getPriority();
+      });
 
     foreach ($this->m_modules as $c_module)
     {
@@ -56,7 +56,7 @@ class App
   {
     if (false == $l_handle = opendir($p_baseDir))
     {
-      log::error("unable to open directory %s", $p_baseDir);
+      log::error("core.app", "unable to open directory %s", $p_baseDir);
       return false;
     }
 
@@ -99,8 +99,8 @@ class App
   public function getModule($p_moduleName)
   {
     $l_modules = array_filter($this->m_modules, function($p_el) use (&$p_moduleName) {
-          return ($p_el->getName() == $p_moduleName);
-        });
+        return ($p_el->getName() == $p_moduleName);
+      });
 
     if (1 != count($l_modules))
       return false;

@@ -16,7 +16,7 @@ class Setup extends Handler
     R::freeze(false);
     foreach (App::get()->getModules() as $c_module)
     {
-      log::crit("installing module '%s'", $c_module->getName());
+      log::crit("core.setup", "installing module '%s'", $c_module->getName());
       $c_module->setup();
     }
     return $this->redirect("/");

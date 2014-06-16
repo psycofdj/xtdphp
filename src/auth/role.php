@@ -91,13 +91,13 @@ class Page extends Handler
   {
     if (false == ($l_role = RoleModel::getByID($pu_rid)))
     {
-      log::crit("unable to get role of id '%d'", $pu_rid);
+      log::crit("auth.role.delete", "unable to get role of id '%d'", $pu_rid);
       return false;
     }
 
     if (false == RoleModel::delete($l_role))
     {
-      log::crit("unable to delete role of id '%d'", $pu_rid);
+      log::crit("auth.role.delete", "unable to delete role of id '%d'", $pu_rid);
       return false;
     }
 

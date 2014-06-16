@@ -11,7 +11,7 @@ class Module
 
   protected function __construct($p_baseDir, $p_name, $p_priority)
   {
-    log::debug("initializing module '%s' in directory '%s'", $p_name, $p_baseDir);
+    log::debug("core.module", "initializing module '%s' in directory '%s'", $p_name, $p_baseDir);
     $this->m_baseDir  = $p_baseDir;
     $this->m_name     = $p_name;
     $this->m_priority = $p_priority;

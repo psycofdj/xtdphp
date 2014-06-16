@@ -16,14 +16,14 @@ class locale
     foreach ($p_data as $c_key => $c_value)
     {
       if (true == array_key_exists($c_key, self::$ms_data[$p_langName]))
-        log::warn("locale key '%s' already exists for lang '%s', previous value is '%s'",
-            $c_key, $p_langName, self::$ms_data[$p_langName][$c_key]);
+        log::warn("core.locale", "locale key '%s' already exists for lang '%s', previous value is '%s'",
+                  $c_key, $p_langName, self::$ms_data[$p_langName][$c_key]);
 
 
       if (false != ($l_key = array_search($c_value, self::$ms_data[$p_langName])))
       {
-        log::warn("locale value '%s' already exists for lang '%s' for key '%s'",
-            $c_value, $p_langName, $l_key);
+        log::warn("core.locale", "locale value '%s' already exists for lang '%s' for key '%s'",
+                  $c_value, $p_langName, $l_key);
       }
 
       self::$ms_data[$p_langName][$c_key] = $c_value;
@@ -44,7 +44,7 @@ class locale
 
     if (false == array_key_exists($p_key, $l_data))
     {
-      log::error("locale key '%s' not found for lang '%s'", $p_key, self::$ms_localeName);
+      log::error("core.locale", "locale key '%s' not found for lang '%s'", $p_key, self::$ms_localeName);
       return sprintf('error: t(%s)', $p_key);
     }
     return $l_data[$p_key];
@@ -63,7 +63,7 @@ class locale
       }
     }
 
-    log::warn("could not detect lang, falling back on 'fr'");
+    log::warn("core.locale", "could not detect lang, falling back on 'fr'");
     self::setLang("fr");
     return false;
   }

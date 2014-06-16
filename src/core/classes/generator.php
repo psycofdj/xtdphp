@@ -45,13 +45,13 @@ class BinaryGenerator implements RawGenerator
     {
       if (false == ($l_handle = finfo_open()))
       {
-        log::error("unable to initialize finfo");
+        log::error("core.generator", "unable to initialize finfo");
         return false;
       }
 
       if (false == ($p_contentType = finfo_file($l_handle, $p_filePath)))
       {
-        log::error("unable to detect content-type from '%s' file", $p_filePath);
+        log::error("core.generator", "unable to detect content-type from '%s' file", $p_filePath);
         finfo_close($l_handle);
         return false;
       }
@@ -61,7 +61,7 @@ class BinaryGenerator implements RawGenerator
     $this->m_contentType = $p_contentType;
     if (false == ($this->m_binData = file_get_contents($p_filePath)))
     {
-      log::error("unable to read input file '%s'", $p_filePath);
+      log::error("core.generator", "unable to read input file '%s'", $p_filePath);
       return false;
     }
 
@@ -72,7 +72,7 @@ class BinaryGenerator implements RawGenerator
   {
     if (false == ($this->m_binData = base64_decode($p_data, true)))
     {
-      log::error("error while decoding bases64 data");
+      log::error("core.generator", "error while decoding bases64 data");
       return false;
     }
 
@@ -133,7 +133,7 @@ class JsonGenerator implements Generator
   public function resolve()
   {
     $l_json = json_encode($this->m_data, JSON_FORCE_OBJECT);
-    log::info("answering 200 ok with data : '%s'", $l_json);
+    log::info("core.generator", "answering 200 ok with data : '%s'", $l_json);
     return $l_json;
   }
 
@@ -279,7 +279,7 @@ class TemplateGenerator implements Generator
   {
     if (null == $this->m_targetTmpl)
     {
-      log::crit("cannot render empty template file");
+      log::crit("core.generator", "cannot render empty template file");
       return false;
     }
 
@@ -290,7 +290,7 @@ class TemplateGenerator implements Generator
       return $this->m_smarty->fetch($this->m_targetTmpl);
     }
     catch (SmartyException $l_error) {
-      log::crit("exception : %s", $l_error);
+      log::crit("core.generator", "exception : %s", $l_error);
       return false;
     }
   }
@@ -437,7 +437,7 @@ class HtmlGenerator extends TemplateGenerator
   {
     if (null == $this->m_content)
     {
-      log::crit("missing inner content template");
+      log::crit("core.generator", "missing inner content template");
       return false;
     }
 

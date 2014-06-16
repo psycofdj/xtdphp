@@ -97,7 +97,7 @@ class MailTemplate extends TemplateGenerator
     $this->m_mail->AddAddress($this->m_to);
 
     if (false == ($l_status = $this->m_mail->Send()))
-      log::warn("error while sending mail to '%s'", $this->m_to);
+      log::warn("core.mail", "error while sending mail to '%s'", $this->m_to);
 
     return $l_status;
   }
@@ -107,13 +107,13 @@ class MailTemplate extends TemplateGenerator
     try {
       if (false == $this->_send())
       {
-        log::crit("unable to send mail to %s (txtTpl=%s, htmlTpl=%s)", $this->m_to, $this->m_txtTpl, $this->m_htmlTpl);
+        log::crit("core.mail", "unable to send mail to %s (txtTpl=%s, htmlTpl=%s)", $this->m_to, $this->m_txtTpl, $this->m_htmlTpl);
         return false;
       }
     }
     catch (Exception $l_error)
     {
-      log::crit("error while sending mail to %s (txtTpl=%s, htmlTpl=%s) : %s", $this->m_to, $this->m_txtTpl, $this->m_htmlTpl, $l_error->getMessage());
+      log::crit("core.mail", "error while sending mail to %s (txtTpl=%s, htmlTpl=%s) : %s", $this->m_to, $this->m_txtTpl, $this->m_htmlTpl, $l_error->getMessage());
       return false;
     }
     return true;

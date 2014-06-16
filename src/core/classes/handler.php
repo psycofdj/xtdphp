@@ -188,7 +188,7 @@ class Handler
 
       if ($l_status == false)
       {
-        log::error("unable to convert param '%s' of value '%s' to %s", $p_paramName, $p_paramValue, $l_name);
+        log::error("core.handler", "unable to convert param '%s' of value '%s' to %s", $p_paramName, $p_paramValue, $l_name);
         return false;
       }
     }
@@ -249,7 +249,7 @@ class Handler
    */
   private function reply()
   {
-    log::debug("replying with status %d", $this->m_statusCode);
+    log::debug("core.handler", "replying with status %d", $this->m_statusCode);
 
     // 1.
     array_push($this->m_headers, sprintf('HTTP/1.1 %s',         $this->translateStatus()));
@@ -299,7 +299,7 @@ class Handler
    */
   protected function redirect($p_dest)
   {
-    log::debug("redirecting with status 302 to %s", $p_dest);
+    log::debug("core.handler", "redirecting with status 302 to %s", $p_dest);
     array_push($this->m_headers, sprintf("Location: %s", $p_dest));
     $this->setStatusCode(302);
     return $this;
@@ -353,7 +353,7 @@ class Handler
     $l_sessionID = session_id();
     if (empty($l_sessionID))
       session_start();
-    log::debug("SESSION ID: " . session_id());
+    log::debug("core.handler", "SESSION ID: " . session_id());
   }
 
   /**
@@ -376,7 +376,7 @@ class Handler
       R::freeze(true);
     else
     {
-      log::warn("initializing redbean with dynamic schemas, transactions will be auto-commited");
+      log::warn("core.sql", "initializing redbean with dynamic schemas, transactions will be auto-commited");
       R::freeze(false);
     }
   }
@@ -542,12 +542,12 @@ class Handler
    */
   public function process()
   {
-    log::debug("handling request...");
+    log::debug("core.handler", "handling request...");
 
     // 1.
     if (true != $this->initialize())
     {
-      log::crit("unable to initialize handler");
+      log::crit("core.handler", "unable to initialize handler");
       return $this->replyInternalError();
     }
 
@@ -559,7 +559,7 @@ class Handler
       $l_method = $l_reflex->getMethod(sprintf("h_%s", $l_action));
     }
     catch (ReflectionException $l_error) {
-      log::error("unknown action '%s'", $l_action);
+      log::error("core.handler", "unknown action '%s'", $l_action);
       return $this->replyInternalError();
     }
 
@@ -574,7 +574,7 @@ class Handler
       {
         if (false == $c_param->isDefaultValueAvailable())
         {
-          log::error("requested param '%s' not available", $l_paramName);
+          log::error("core.handler", "requested param '%s' not available", $l_paramName);
           return $this->replyInternalError();
         }
         $l_paramValue = $c_param->getDefaultValue();
@@ -597,7 +597,7 @@ class Handler
       // 5.
       if (true != $this->finalize())
       {
-        log::crit("unable to finalize handler");
+        log::crit("core.handler", "unable to finalize handler");
         return $this->replyInternalError();
       }
     }

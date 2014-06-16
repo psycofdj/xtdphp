@@ -23,7 +23,7 @@ class LangPage extends Handler
       break;
     }
     default:
-      log::warning("unknown requested lang '%s'", $p_lang);
+      log::warning("core.language", "unknown requested lang '%s'", $p_lang);
     }
     return $this->redirect("/");
   }

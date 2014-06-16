@@ -40,7 +40,7 @@ class Page extends Handler
 
     if ((0 == $pi_uid) && (0 == strlen($p_password)))
     {
-      log::crit("new users must have non-empty passwords");
+      log::crit("auth.user.save", "new users must have non-empty passwords");
       return false;
     }
 
@@ -57,7 +57,7 @@ class Page extends Handler
 
     if (false == $l_user)
     {
-      log::crit("error while accessing/creating user");
+      log::crit("auth.user.save", "error while accessing/creating user");
       return false;
     }
 
@@ -79,7 +79,7 @@ class Page extends Handler
       if ((false === ($l_roleID = $this->getParam($l_roleName))) ||
           (false === ($l_dataID = $this->getParam($l_dataName))))
       {
-        log::crit("could not find role '%s' and data '%s' id form permission index '%d'", $l_roleName, $l_dataName, $c_permIdx);
+        log::crit("auth.user.save", "could not find role '%s' and data '%s' id form permission index '%d'", $l_roleName, $l_dataName, $c_permIdx);
         return false;
       }
 
@@ -88,7 +88,7 @@ class Page extends Handler
 
       if (false == RoleModel::getByID($l_roleID))
       {
-        log::crit("unable to find roleID '%d'", $l_roleID);
+        log::crit("auth.user.save", "unable to find roleID '%d'", $l_roleID);
         return false;
       }
 
@@ -112,7 +112,7 @@ class Page extends Handler
   {
     if (false == UserModel::delete($pu_uid))
     {
-      log::crit("unable to delete user of id '%d'", $pu_uid);
+      log::crit("auth.user.delete", "unable to delete user of id '%d'", $pu_uid);
       return false;
     }
 

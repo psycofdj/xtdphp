@@ -42,7 +42,7 @@ require_once(__APP_DIR__      . "/local.php");
 
 /* -------------------------------------------------------------------------- */
 
-log::setLevel($g_conf["log"]["level"]);
+log::setDefaultLevel($g_conf["log"]["level"]);
 
 if ($g_conf["env"] == "dev")
   ini_set( "display_errors",  1 );
