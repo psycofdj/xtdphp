@@ -67,9 +67,9 @@ class authModule extends Module
 
     $l_this = $this;
     App::get()->connect("TemplateGenerator", "initialize", function(TemplateGenerator $p_gen) use (&$l_this) {
-          $p_gen->addPlugin("block",    "perm",     array($l_this, "pluginPerm"));
-          $p_gen->addPlugin("function", "permelse", array($l_this, "pluginPermElse"));
-        });
+        $p_gen->addPlugin("block",    "perm",     array($l_this, "pluginPerm"));
+        $p_gen->addPlugin("function", "permelse", array($l_this, "pluginPermElse"));
+      });
   }
 
 
@@ -100,8 +100,8 @@ class authModule extends Module
   public function checkPerm(Handler $p_handler, $p_action)
   {
     $l_checks = array_filter($this->m_perms, function($p_el) use (&$p_action) {
-          return ($p_el["action"] == $p_action);
-        });
+        return ($p_el["action"] == $p_action);
+      });
 
     if (0 == count($l_checks))
       return;
@@ -144,10 +144,10 @@ class authModule extends Module
       throw new Exception(sprintf("action '%s' requires unknown resource '%s'", $p_tag, $p_dataName));
 
     array_push($this->m_actions,
-        array(
-          "tag"       => $p_tag,
-          "localetag" => $p_localetag,
-          "data"      => $p_dataName));
+               array(
+                 "tag"       => $p_tag,
+                 "localetag" => $p_localetag,
+                 "data"      => $p_dataName));
     return $this;
   }
 
@@ -188,18 +188,17 @@ EOT
 
     $l_roleAdmin                       = R::dispense("authrole");
     $l_roleAdmin->name                 = "superadmin";
-    $l_roleOther->datatype             = null;
     $l_roleAdmin->sharedAuthactionList = array_filter($l_actions, function($p_el) {
-          return $p_el->datatype == null;
-        });
+        return $p_el->datatype == null;
+      });
     R::store($l_roleAdmin);
 
     $l_roleOther                       = R::dispense("authrole");
     $l_roleOther->name                 = "other";
     $l_roleOther->datatype             = "garages";
     $l_roleOther->sharedAuthactionList = array_filter($l_actions, function($p_el) {
-          return $p_el->datatype == "garages";
-        });
+        return $p_el->datatype == "garages";
+      });
     R::store($l_roleOther);
 
     $l_user                 = R::dispense("authuser", 1);

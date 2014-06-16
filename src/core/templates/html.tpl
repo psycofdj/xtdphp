@@ -3,7 +3,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang}" lang="{$lang}">
   <head>
-    <title>{$__title|default:''}</title>
+    <title>
+      {if isset($__title) } {$__title} {/if}
+    </title>
     {if isset($__base) }
     <base href="{$__base}"/>
     {/if}
