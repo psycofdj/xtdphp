@@ -23,31 +23,16 @@ class log
     return self::$ms_levels[$p_module] = $p_level;
   }
 
-  public static function setLevels($p_data) {
-    self::$ms_levels = $p_data;
-
-    $l_modules = sort(array_keys(self::$ms_levels), SORT_STRING);
-    foreach ($l_modules as $c_module)
+  public static function getLevel($p_module = null)
+  {
+    $l_parts = explode(".", $p_module);
+    while (0 != count($l_parts))
     {
-      $l_value = self::$ms_levels[$c_module];
-      $l_parts = implode(".", $c_module);
-      $l_str   = "";
-
-      foreach ($l_parts as $c_part)
-      {
-        if ($l_str == "")
-          $l_str = $c_part;
-        else
-          $l_str .= "." . $c_part;
-        if (false == array_key_exists($l_str))
-          self::$ms_levels[$l_str] = $l_value;
-      }
+      $l_key = implode(".", $l_parts);
+      if (true == array_key_exists($l_key, self::$ms_levels))
+        return self::$ms_levels[$l_key];
+      array_pop($l_parts);
     }
-  }
-
-  public static function getLevel($p_module = null) {
-    if (true == array_key_exists($p_module, self::$ms_levels))
-      return self::$ms_levels[$p_module];
     return self::$ms_defaultLevel;
   }
 
@@ -163,9 +148,9 @@ class log
 
 }
 
-set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
-    log::doLogFile("core", log::mc_levelCrit, "php error : %s ", $errstr, $errfile, $errline);
-  }, E_ALL | E_STRICT );
+/* set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) { */
+/*     log::doLogFile("core", log::mc_levelCrit, "php error : %s ", $errstr, $errfile, $errline); */
+/*   }, E_ALL | E_STRICT ); */
 
 
 ?>
