@@ -330,6 +330,7 @@ function fnCreateSelect(aData, sEmptyLabel)
       "bColFilter"            : true,  // enable automatique creation of ciltering widgets
       "bForceColFilter"       : false, // display filters even if not many data
       "bCookie"               : true,  // use cookie to save filtering options
+      "dCookieTime"           : 365,   // when use cookie, expire time of the cookie
       "sEmptyCellFilterLabel" : "(empty)"
     }, options);
 
@@ -347,7 +348,21 @@ function fnCreateSelect(aData, sEmptyLabel)
         settings.bColFilter = false;
       }
 
-      var l_table = $(this).dataTable(settings);
+      var l_tableID = $(this).prop("id") || null;
+
+      if (null == l_tableID)
+      {
+        alert("wapptables need table id");
+        return;
+      }
+
+      var l_cookieName  = "#" + l_tableID + "_length";
+      var l_cookieValue = $.cookie(l_cookieName);
+
+      if ((true == settings.bCookie) && (undefined != l_cookieValue))
+        settings.iDisplayLength = parseInt(l_cookieValue);
+
+      var l_table  = $(this).dataTable(settings);
 
       // 1.
       $("tbody", l_table).on("click", "tr", function() {
@@ -370,6 +385,7 @@ function fnCreateSelect(aData, sEmptyLabel)
         l_table.data("current-cell", $(this));
       });
 
+
       // 3.
       if (false == settings.bColFilter)
         return;
@@ -377,19 +393,17 @@ function fnCreateSelect(aData, sEmptyLabel)
       var l_tfoot       = $("<tfoot><tr></tr></tfoot>");
       var l_row         = $("tr", l_tfoot);
       var l_nbSearch    = 0;
-      var l_cookieName  = undefined;
-      var l_cookieValue = undefined;
-      var l_tableID     = l_table.prop("id") || null;
 
-      if (null == l_tableID)
-      {
-        alert("wapptables need table id");
-        return;
-      }
+      $(l_cookieName).each(function() {
+        $(this).change(function() {
+          l_cookieValue = $(this).find(":selected").text();
+          $.cookie(l_cookieName, l_cookieValue, {expires : settings.dCookieTime});
+        });
+      });
 
       $("thead > tr > th", l_table).each(function(p_colIndex) {
-        var l_cell = $("<th></th>");
-        var l_cookieName = "#" + l_tableID + ".wappt-col" + p_colIndex;
+        var l_cell        = $("<th></th>");
+        var l_cookieName  = "#" + l_tableID + ".wappt-col" + p_colIndex;
         var l_cookieValue = $.cookie(l_cookieName);
 
         if (true == $(this).hasClass("wp-search"))
@@ -401,7 +415,7 @@ function fnCreateSelect(aData, sEmptyLabel)
 
           $(l_input).keyup(function () {
             l_table.fnFilter($(this).val(), p_colIndex);
-            $.cookie(l_cookieName, $(this).val());
+            $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
           });
 
           if ((true == settings.bCookie) && (l_cookieValue != undefined))
@@ -425,7 +439,7 @@ function fnCreateSelect(aData, sEmptyLabel)
               l_table.fnFilter("^" + $(this).val() + "$", p_colIndex, true, false, false);
             else
               l_table.fnFilter("^.*$", p_colIndex, true, false, false);
-            $.cookie(l_cookieName, $(this).val());
+            $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
           });
 
           if ((true == settings.bCookie) && (l_cookieValue != undefined))
