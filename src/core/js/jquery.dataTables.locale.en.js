@@ -1,9 +1,9 @@
 $.extend( true, $.fn.dataTable.defaults, {
   "oLanguage": {
     "sEmptyTable":     "No data available in table",
-    "sInfo":           "Showing _START_ to _END_ of _TOTAL_ entries",
-    "sInfoEmpty":      "Showing 0 to 0 of 0 entries",
-    "sInfoFiltered":   "(filtered from _MAX_ total entries)",
+    "sInfo":           "Showing records _START_ to _END_ out of _TOTAL_",
+    "sInfoEmpty":      "No record available",
+    "sInfoFiltered":   "(filtered from total of _MAX_)",
     "sInfoPostFix":    "",
     "sInfoThousands":  ",",
     "sLengthMenu":     "_MENU_ records per page",
