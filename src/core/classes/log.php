@@ -129,7 +129,7 @@ class log
     $l_level     = $l_args[0];
     $l_module    = $l_args[1];
     $l_srcFmt    = $l_args[2];
-    $l_dstFmt    = sprintf("%%9s : %s [ at %%s:%%d ]", $l_srcFmt);
+    $l_dstFmt    = sprintf("%%9s (%%s) : %s [ at %%s:%%d ]", $l_srcFmt);
 
     if (self::getLevel($l_module) < $l_level)
       return;
@@ -138,19 +138,17 @@ class log
     array_push($l_callArgs, sprintf("[%s]", self::levelToString($l_level)));
     array_push($l_callArgs, $l_module);
 
-    for ($c_argIdx = 2; $c_argIdx < func_num_args(); $c_argIdx++)
+    for ($c_argIdx = 3; $c_argIdx < func_num_args(); $c_argIdx++)
       array_push($l_callArgs, $l_args[$c_argIdx]);
 
     $l_msg = call_user_func_array("sprintf", $l_callArgs);
     array_push(self::$ms_lines, $l_msg);
     error_log($l_msg);
   }
-
 }
 
-/* set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) { */
-/*     log::doLogFile("core", log::mc_levelCrit, "php error : %s ", $errstr, $errfile, $errline); */
-/*   }, E_ALL | E_STRICT ); */
-
+set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
+    log::doLogFile(log::mc_levelCrit, "core.php", "%s", $errstr, $errfile, $errline);
+  }, E_ALL | E_STRICT);
 
 ?>
