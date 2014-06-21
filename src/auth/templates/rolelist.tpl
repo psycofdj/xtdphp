@@ -5,6 +5,7 @@
    $("body").on("DOMNodeInserted", "#auth_list tbody", function() {
      $("tr td a", this).tooltip();
    });
+
    $("#auth_list tbody tr td a", this).tooltip();
  });
 </script>

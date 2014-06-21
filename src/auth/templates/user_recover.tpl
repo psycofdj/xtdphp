@@ -1,33 +1,7 @@
 <script type="text/javascript">
  $(document).ready(function() {
    $(".alert").alert();
-
-   $("#recover").validate({
-     success : function(p_succes, p_el) {
-       $(p_el).tooltip("hide");
-       $(p_el).parents("div.form-group")
-         .removeClass("has-error")
-         .find("span")
-           .removeClass("glyphicon-remove")
-           .removeClass("glyphicon-error")
-           .addClass("glyphicon-ok");
-     },
-
-     errorPlacement : function(p_error, p_el) {
-       p_el.parents("div.form-group")
-        .addClass("has-error")
-        .find("span")
-          .removeClass("glyphicon-ok")
-          .addClass("glyphicon-error")
-          .addClass("glyphicon-remove");
-       p_el.tooltip("destroy");
-       p_el.tooltip({ title     : $(p_error).text(),
-                      placement : "right",
-                      container : "body",
-                      trigger   : "manual" });
-       p_el.tooltip("show");
-     }
-   });
+   $("#recover").wappform();
  });
 </script>
 

@@ -485,19 +485,22 @@ class WappHtmlGenerator extends HtmlGenerator
   {
     parent::__construct();
     $this
-      ->addJs("jquery.js",                             "core")
-      ->addJs("jquery-ui.js",                          "core")
-      ->addJs("jquery.validate.js",                    "core")
-      ->addJs("jquery.validate.methods.js",            "core")
-      ->addJs("jquery.validate.methods-custom.js",     "core")
-      ->addJs("jquery.dataTables.js",                  "core")
-      ->addJs("jquery.dataTables.bootstrap.js",        "core")
-      ->addJs("jquery-ui-timepicker-addon.js",         "core")
-      ->addJs("jquery-ui-sliderAccess.js",             "core")
-      ->addJs("jquery.cookie.js",                      "core")
-      ->addJs("bootstrap.js",                          "core")
-      ->addJs("bootstrap.multiselect.js",              "core")
-      ->addJs("bootstrap.confirmation.js",             "core");
+      ->addJs("jquery.js",                         "core")
+      ->addJs("jquery-ui.js",                      "core")
+      ->addJs("jquery.validate.js",                "core")
+      ->addJs("jquery.validate.methods.js",        "core")
+      ->addJs("jquery.validate.methods-custom.js", "core")
+      ->addJs("jquery.dataTables.js",              "core")
+      ->addJs("jquery-ui-timepicker-addon.js",     "core")
+      ->addJs("jquery-ui-sliderAccess.js",         "core")
+      ->addJs("jquery.cookie.js",                  "core")
+      ->addJs("bootstrap.js",                      "core")
+      ->addJs("bootstrap.multiselect.js",          "core")
+      ->addJs("bootstrap.confirmation.js",         "core")
+      ->addJs("wapp.form.js",                      "core")
+      ->addJs("wapp.table.js",                     "core")
+      ->addJs("wapp.confirm.js",                   "core")
+      ;
 
     $this
       ->addCss("jquery-ui.css",                        "core")
@@ -517,11 +520,14 @@ class WappHtmlGenerator extends HtmlGenerator
       $this
         ->addJs("jquery.validate.messages-fr.js",  "core")
         ->addJs("jquery.dataTables.locale.fr.js",  "core")
-        ->addJs("i18n/jquery-ui-timepicker-fr.js", "core");
+        ->addJs("i18n/jquery-ui-timepicker-fr.js", "core")
+        ->addJs("wapp.locale.fr.js",               "core");
     }
     else
     {
-      $this->addJs("jquery.dataTables.locale.en.js", "core");
+      $this
+        ->addJs("jquery.dataTables.locale.en.js", "core")
+        ->addJs("wapp.locale.en.js",              "core");
     }
     parent::initialize();
   }

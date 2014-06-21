@@ -2,38 +2,11 @@
  $(document).ready(function() {
    $("*[data-toggle=tooltip]").tooltip({ container: 'body' });
 
-   $("#add").validate({
-     success : function(p_succes, p_el) {
-       $(p_el).tooltip("hide");
-       $(p_el).parents("div.form-group")
-         .removeClass("has-error")
-         .find("span")
-           .removeClass("glyphicon-remove")
-           .addClass("glyphicon-ok");
-     },
+   $("#add").wappform();
 
-     errorPlacement : function(p_error, p_el) {
-       p_el.parents("div.form-group")
-        .addClass("has-error")
-        .find("span")
-          .removeClass("glyphicon-ok")
-          .addClass("glyphicon-remove");
-       p_el.tooltip("destroy");
-       p_el.tooltip({ title     : $(p_error).text(),
-                      placement : "right",
-                      container : "body",
-                      trigger   : "manual" });
-       p_el.tooltip("show");
-     }
+   $("body").on("click", ".current_role", function() {
+     $(this).parents(".form-group").remove();
    });
-
- $("#save").click(function() {
-    $("#add").submit();
- });
-
- $("body").on("click", ".current_role", function() {
-   $(this).parents(".form-group").remove();
- });
 
  $("body").on("click", ".available_role", function() {
     var l_idx       = $("#current").data("count");
@@ -83,7 +56,7 @@
         {t}auth.user.add.title{/t}
         {/if}
         &nbsp;&nbsp;
-        <button id="save" type="submit" class="btn btn-sm btn-success glyphicon glyphicon-saved" data-toggle="tooltip" data-placement="right" data-title="{t}core.save{/t}"></button>
+        <button type="submit" class="btn btn-sm btn-success glyphicon glyphicon-saved" data-form="#add" data-toggle="tooltip" data-placement="right" data-title="{t}core.save{/t}"></button>
       </li>
     </ol>
   </div> <!-- row -->
