@@ -17,8 +17,10 @@ class SqlLogger implements RedBeanPHP\Logger
       {
         if (0 == count($c_arg))
           continue;
-        $c_arg = str_replace("\n", " ", print_r($c_arg, TRUE));
+        $c_arg = print_r($c_arg, true);
       }
+      $c_arg = str_replace("\n", " ",  $c_arg);
+      $c_arg = preg_replace('/( +)/s', ' ', $c_arg);
       log::debug("core.sql", "executing sql query : %s", $c_arg);
     }
   }

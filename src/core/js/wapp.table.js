@@ -6,17 +6,17 @@ $.extend( true, $.fn.dataTable.defaults, {
     "<'row'<'col-xs-6'i><'col-xs-6'p>>"
 } );
 
-
 /* Default class modification */
 $.extend( $.fn.dataTableExt.oStdClasses, {
-  "sWrapper": "dataTables_wrapper form-inline",
-  "sFilterInput": "form-control input-sm",
-  "sLengthSelect": "form-control input-sm"
+  "sWrapper"      : "dataTables_wrapper form-inline",
+  "sFilterInput"  : "form-control input-sm",
+  "sLengthSelect" : "form-control input-sm"
 } );
 
 // In 1.10 we use the pagination renderers to draw the Bootstrap paging,
 // rather than  custom plug-in
-if ( $.fn.dataTable.Api ) {
+if ($.fn.dataTable.Api)
+{
   $.fn.dataTable.defaults.renderer = 'bootstrap';
   $.fn.dataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, buttons, page, pages ) {
     var api = new $.fn.dataTable.Api( settings );
@@ -110,7 +110,8 @@ if ( $.fn.dataTable.Api ) {
     );
   }
 }
-else {
+else
+{
   // Integration for 1.9-
   $.fn.dataTable.defaults.sPaginationType = 'bootstrap';
 
@@ -208,7 +209,6 @@ else {
   } );
 }
 
-
 /*
  * TableTools Bootstrap compatibility
  * Required TableTools 2.1+
@@ -247,16 +247,40 @@ if ( $.fn.DataTable.TableTools ) {
 }
 
 
+$.fn.dataTableExt.oApi.fnGetServerColumnsData = function (oSettings, p_colIdx) {
+  var l_results;
+
+  var l_data = {
+    sEcho          : 0,
+    iColumns       : 0,
+    iDisplayStart  : 0,
+    iDisplayLength : 0,
+    sSearch        : "",
+    bRegex         : false,
+    iSortingCols   : 0
+  };
+
+  $.ajax({
+    dataType : "json",
+    data     : l_data,
+    url      : oSettings.sAjaxSource + "&colInfo[]=" + p_colIdx,
+    async    : false,
+    success  : function(p_data, p_status, p_xhr) {
+     l_results = p_data;
+    }
+  });
+
+  return l_results[p_colIdx];
+};
+
+
 $.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
   // check that we have a column id
   if ( typeof iColumn == "undefined" ) return new Array();
-
   // by default we only want unique data
   if ( typeof bUnique == "undefined" ) bUnique = true;
-
   // by default we do want to only look at filtered data
   if ( typeof bFiltered == "undefined" ) bFiltered = true;
-
   // by default we do not want to include empty values
   if ( typeof bIgnoreEmpty == "undefined" ) bIgnoreEmpty = true;
 
@@ -264,9 +288,10 @@ $.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique,
   var aiRows;
 
   // use only filtered rows
-  if (bFiltered == true) aiRows = oSettings.aiDisplay;
-  // use all rows
-  else aiRows = oSettings.aiDisplayMaster; // all row numbers
+  if (bFiltered == true)
+    aiRows = oSettings.aiDisplay;
+  else   // use all rows
+    aiRows = oSettings.aiDisplayMaster; // all row numbers
 
   // set up data array
   var asResultData = new Array();
@@ -281,31 +306,50 @@ $.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique,
       sValue = $(sValue).text().trim();
 
     // ignore empty values?
-    if (bIgnoreEmpty == true && sValue.length == 0) continue;
-
+    if (bIgnoreEmpty == true && sValue.length == 0)
+      continue;
     // ignore unique values?
-    else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
-
+    else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1)
+      continue;
     // else push the value onto the result data array
-    else asResultData.push(sValue);
+    else
+      asResultData.push(sValue);
   }
 
   return asResultData;
 }
 
 
-function fnCreateSelect(aData, sEmptyLabel)
+function fnCreateSelect(aData, p_settings)
 {
-  var r='<option value="all"></option>', i, iLen=aData.length;
-  for ( i=0 ; i<iLen ; i++ )
+  var r = "";
+  var i;
+  var iLen = aData.length;
+
+  r += '<option value="__any__">'      + p_settings.sAllCellFilterLabel + '</option>';
+  if (p_settings.bFilterAllowEmpty)
+    r += '<option value="">' + p_settings.sEmptyCellFilterLabel + '</option>';
+  if (p_settings.bFilterAllowNotEmpty)
+    r += '<option value="__notempty__">' + p_settings.sNotEmptyCellFilterLabel + '</option>';
+  if (p_settings.bFilterAllowNull)
+    r += '<option value="__null__">' + p_settings.sNullCellFilterLabel + '</option>';
+  if (p_settings.bFilterAllowNotNull)
+    r += '<option value="__notnull__">'  + p_settings.sNotNullCellFilterLabel + '</option>';
+
+  for (i = 0 ; i < iLen ; i++ )
   {
-    var l_node = aData[i];
+    var l_node  = aData[i];
     var l_label = l_node;
-    if (l_label == "")
-      l_label = sEmptyLabel;
-    r += '<option value="'+l_node+'">'+l_label+'</option>';
+    if ((l_label == null) || (l_label == ""))
+      continue;
+    r += '<option value="' + l_node + '">' + l_label + '</option>';
   }
   return r;
+}
+
+
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
 
@@ -327,27 +371,22 @@ function fnCreateSelect(aData, sEmptyLabel)
   $.fn.wapptable = function(options) {
 
     var settings = $.extend({
-      "bColFilter"            : true,  // enable automatique creation of ciltering widgets
-      "bForceColFilter"       : false, // display filters even if not many data
-      "bCookie"               : true,  // use cookie to save filtering options
-      "dCookieTime"           : 365,   // when use cookie, expire time of the cookie
-      "sEmptyCellFilterLabel" : "(empty)"
+      "bColFilter"               : true,  // enable automatique creation of ciltering widgets
+      "bCookie"                  : true,  // use cookie to save filtering options
+      "dCookieTime"              : 365,   // when use cookie, expire time of the cookie
+      "sAllCellFilterLabel"      : $.wapp.messages.table.nofilter,
+      "sEmptyCellFilterLabel"    : $.wapp.messages.table.empty,
+      "sNotEmptyCellFilterLabel" : $.wapp.messages.table.notempty,
+      "sNullCellFilterLabel"     : $.wapp.messages.table.null,
+      "sNotNullCellFilterLabel"  : $.wapp.messages.table.notnull,
+      "bFilterAllowNull"         : true,
+      "bFilterAllowNotNull"      : true,
+      "bFilterAllowNotEmpty"     : true,
+      "bFilterAllowEmpty"        : true
     }, options);
 
     return this.each(function() {
       // create datatable
-
-      // 0.
-      if ((false == settings.bForceColFilter) &&
-          (((settings.aaData) && (settings.aaData.length < 11)) ||
-           ($("tr", $(this)).length < 11)))
-      {
-        settings.bLengthChange = false;
-        settings.bPaginate = false;
-        settings.bFilter = false;
-        settings.bColFilter = false;
-      }
-
       var l_tableID = $(this).prop("id") || null;
 
       if (null == l_tableID)
@@ -430,15 +469,32 @@ function fnCreateSelect(aData, sEmptyLabel)
         }
         else if (true == $(this).hasClass("wp-filter"))
         {
+          var l_data;
           var l_select = $("<select style='width:100%;' class='form-control'/>");
 
-          l_select.html(fnCreateSelect(l_table.fnGetColumnData(p_colIndex, true, true, false), settings.sEmptyCellFilterLabel));
+          if (undefined != settings.sAjaxSource)
+            l_data = l_table.fnGetServerColumnsData(p_colIndex);
+          else
+            l_data = l_table.fnGetColumnData(p_colIndex, true, true, false);
+
+          l_select.html(fnCreateSelect(l_data, settings));
           l_select.change(function() {
             var l_val = $(this).val();
-            if (l_val != "all")
-              l_table.fnFilter("^" + $(this).val() + "$", p_colIndex, true, false, false);
-            else
+            if (l_val == "__any__")
               l_table.fnFilter("^.*$", p_colIndex, true, false, false);
+            else if (l_val == "__notempty__")
+              l_table.fnFilter("^.+$", p_colIndex, true, false, false);
+            else if (l_val == "__null__")
+              l_table.fnFilter("__null__", p_colIndex, false, false, false);
+            else if (l_val == "__notnull__")
+              l_table.fnFilter("__notnull__", p_colIndex, false, false, false);
+            else
+              l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+
+            // if (l_val != "all")
+            //   l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+            // else
+            //   l_table.fnFilter("^.*$", p_colIndex, true, false, false);
             $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
           });
 

@@ -111,6 +111,12 @@ class JsonGenerator implements Generator
 {
   private $m_contentType = "application/json";
   private $m_data        = array();
+  private $m_forceObject = false;
+
+  public function __construct($p_forceObject = true)
+  {
+    $this->m_forceObject = $p_forceObject;
+  }
 
   public function initialize()
   {
@@ -132,7 +138,10 @@ class JsonGenerator implements Generator
 
   public function resolve()
   {
-    $l_json = json_encode($this->m_data, JSON_FORCE_OBJECT);
+    if ($this->m_forceObject)
+      $l_json = json_encode($this->m_data, JSON_FORCE_OBJECT);
+    else
+      $l_json = json_encode($this->m_data);
     log::info("core.generator", "answering 200 ok with data : '%s'", $l_json);
     return $l_json;
   }
@@ -486,6 +495,7 @@ class WappHtmlGenerator extends HtmlGenerator
     parent::__construct();
     $this
       ->addJs("jquery.js",                         "core")
+      ->addJs("jquery.sprintf.js",                 "core")
       ->addJs("jquery-ui.js",                      "core")
       ->addJs("jquery.validate.js",                "core")
       ->addJs("jquery.validate.methods.js",        "core")

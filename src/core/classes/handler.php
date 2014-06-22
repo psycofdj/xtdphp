@@ -492,6 +492,73 @@ class Handler
 
   /* ---------------------------------------------- */
 
+  public function serverSideData($p_method,
+                                 $pu_sEcho,
+                                 $pu_iColumns,
+                                 $pu_iDisplayStart,
+                                 $pu_iDisplayLength,
+                                 $ps_sSearch,
+                                 $pb_bRegex,
+                                 $pu_iSortingCols,
+                                 $pau_colInfo = array())
+  {
+    $l_mapper = new MapperParams($pu_sEcho,          $pu_iDisplayStart,
+                                 $pu_iDisplayLength, $ps_sSearch,
+                                 $pb_bRegex,         $pau_colInfo);
+
+    if (0 == count($pau_colInfo))
+    {
+      for ($c_idx = 0; $c_idx < $pu_iColumns; $c_idx++)
+      {
+        $l_args   = array($c_idx);
+        $l_params = array("mDataProp"   => "u", "sSearch"     => "s",
+                          "bRegex"      => "b", "bSearchable" => "b",
+                          "bSortable"   => "b");
+        foreach ($l_params as $c_name => $c_attr)
+        {
+          $l_name = sprintf("%s_%d", $c_name, $c_idx);
+          if ((false === ($l_value = $this->getParam($l_name))) ||
+              (false === $this->validateParam($l_name, $c_attr, $l_value)))
+          {
+            log::crit("core.handler", "invalid param %s = %s", $l_name, $l_value);
+            return false;
+          }
+          log::debug("core.handler.param", "ssprocess param name  : '%s'", $l_name);
+          log::debug("core.handler.param", "ssprocess param value : '%s'", $l_value);
+          array_push($l_args, trim($l_value));
+        }
+
+        call_user_func_array(array($l_mapper, "addColumns"), $l_args);
+      }
+
+      for ($c_idx = 0; $c_idx < $pu_iSortingCols; $c_idx++)
+      {
+        $l_args   = array($c_idx);
+        $l_params = array("iSortCol" => "u", "sSortDir" => "s");
+
+        foreach ($l_params as $c_name => $c_attr)
+        {
+          $l_name = sprintf("%s_%d", $c_name, $c_idx);
+          if ((false === ($l_value = $this->getParam($l_name))) ||
+              (false === $this->validateParam($l_name, $c_attr, $l_value)))
+          {
+            log::crit("core.handler", "invalid param %s = %s", $l_name, $l_value);
+            return false;
+          }
+          log::debug("core.handler.param", "ssprocess param name  : '%s'", $l_name);
+          log::debug("core.handler.param", "ssprocess param value : '%s'", $l_value);
+          array_push($l_args, trim($l_value));
+        }
+        call_user_func_array(array($l_mapper, "addSort"), $l_args);
+      }
+    }
+
+    $l_data = $p_method->invokeArgs($this, array($l_mapper));
+    $this->m_gen = new JsonGenerator(false);
+    foreach ($l_data as $c_key => $c_value)
+      $this->m_gen->setData($c_key, $c_value);
+    return true;
+  }
 
   /**
    * Handle current request and render server response
@@ -551,40 +618,18 @@ class Handler
       return $this->replyInternalError();
     }
 
-    // 2
-    if (false === ($l_action = $this->getParam("action")))
-      $l_action = "default";
-    $l_reflex = new ReflectionClass($this);
-    try {
-      $l_method = $l_reflex->getMethod(sprintf("h_%s", $l_action));
-    }
-    catch (ReflectionException $l_error) {
-      log::error("core.handler", "unknown action '%s'", $l_action);
+    if (false == ($l_data = $this->getMethod()))
+    {
+      log::error("core.handler", "unable to find method");
       return $this->replyInternalError();
     }
 
-    // 3
-    $l_params   = $l_method->getParameters();
-    $l_callArgs = Array();
-    foreach ($l_params as $c_param)
-    {
-      list($l_paramAttr, $l_paramName) = explode("_", $c_param->getName(), 2);
+    list($l_method, $l_wrapped, $l_action) = $l_data;
 
-      if (false === ($l_paramValue = $this->getParam($l_paramName)))
-      {
-        if (false == $c_param->isDefaultValueAvailable())
-        {
-          log::error("core.handler", "requested param '%s' not available", $l_paramName);
-          return $this->replyInternalError();
-        }
-        $l_paramValue = $c_param->getDefaultValue();
-      }
-      else
-      {
-        if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue))
-          return $this->replyInternalError();
-      }
-      array_push($l_callArgs, $l_paramValue);
+    if (false === ($l_callArgs = $this->checkMethod($l_method, $l_wrapped)))
+    {
+      log::error("core.handler", "paramters don't fit requested method");
+      return $this->replyInternalError();
     }
 
     try
@@ -609,6 +654,76 @@ class Handler
     // 6.
     return $this->replySuccess();
   }
+
+  private function getMethod()
+  {
+    if (false === ($l_action = $this->getParam("action")))
+      $l_action = "default";
+
+    $l_reflex    = new ReflectionClass($this);
+    try
+    {
+      $l_method    = $l_reflex->getMethod(sprintf("h_%s", $l_action));
+      $l_wrapped   = null;
+    }
+    catch (ReflectionException $l_error)
+    {
+      try
+      {
+        $l_wrapped  = $l_reflex->getMethod(sprintf("s_%s", $l_action));
+        $l_method   = $l_reflex->getMethod("serverSideData");
+      }
+      catch (ReflectionException $l_error)
+      {
+        log::error("core.handler", "unknown action '%s'", $l_action);
+        return false;
+      }
+    }
+
+    return array($l_method, $l_wrapped, $l_action);
+  }
+
+  private function checkMethod($p_method, $p_wrapped)
+  {
+    $l_params   = $p_method->getParameters();
+    $l_callArgs = array();
+
+    foreach ($l_params as $c_param)
+    {
+      list($l_paramAttr, $l_paramName) = explode("_", $c_param->getName(), 2);
+
+      if ($l_paramName == "method")
+      {
+        array_push($l_callArgs, $p_wrapped);
+        continue;
+      }
+
+      if (false === ($l_paramValue = $this->getParam($l_paramName)))
+      {
+        if (false == $c_param->isDefaultValueAvailable())
+        {
+          log::error("core.handler", "requested param '%s' not available", $l_paramName);
+          return false;
+        }
+        $l_paramValue = $c_param->getDefaultValue();
+      }
+      else
+      {
+        log::debug("core.handler.param", "param name            : '%s'",  $l_paramName);
+        log::debug("core.handler.param", "param value origin    : '%s'", print_r($l_paramValue, true));
+        if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue))
+        {
+          log::error("core.handler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue);
+          return false;
+        }
+        log::debug("core.handler.param", "param value validated : '%s'", print_r($l_paramValue, true));
+      }
+      array_push($l_callArgs, $l_paramValue);
+    }
+    return $l_callArgs;
+  }
+
+
 }
 
 
