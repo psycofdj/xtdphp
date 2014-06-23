@@ -447,7 +447,7 @@ function escapeRegExp(str) {
 
         if (true == $(this).hasClass("wp-search"))
         {
-          var l_input       = $("<input class='form-control' type='text'/>");
+          var l_input       = $("<input class='form-control input-sm' type='text'/>");
           var l_title       = $(this).text();
           var l_settings    = $.fn.dataTable.defaults;
           var l_placeholder = $(this).data("placeholder") || null;
@@ -470,7 +470,7 @@ function escapeRegExp(str) {
         else if (true == $(this).hasClass("wp-filter"))
         {
           var l_data;
-          var l_select = $("<select style='width:100%;' class='form-control'/>");
+          var l_select = $("<select style='width:100%;' class='form-control input-sm'/>");
 
           if (undefined != settings.sAjaxSource)
             l_data = l_table.fnGetServerColumnsData(p_colIndex);

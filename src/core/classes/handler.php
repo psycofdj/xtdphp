@@ -523,8 +523,6 @@ class Handler
             log::crit("core.handler", "invalid param %s = %s", $l_name, $l_value);
             return false;
           }
-          log::debug("core.handler.param", "ssprocess param name  : '%s'", $l_name);
-          log::debug("core.handler.param", "ssprocess param value : '%s'", $l_value);
           array_push($l_args, trim($l_value));
         }
 
@@ -545,8 +543,6 @@ class Handler
             log::crit("core.handler", "invalid param %s = %s", $l_name, $l_value);
             return false;
           }
-          log::debug("core.handler.param", "ssprocess param name  : '%s'", $l_name);
-          log::debug("core.handler.param", "ssprocess param value : '%s'", $l_value);
           array_push($l_args, trim($l_value));
         }
         call_user_func_array(array($l_mapper, "addSort"), $l_args);
@@ -709,14 +705,11 @@ class Handler
       }
       else
       {
-        log::debug("core.handler.param", "param name            : '%s'",  $l_paramName);
-        log::debug("core.handler.param", "param value origin    : '%s'", print_r($l_paramValue, true));
         if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue))
         {
           log::error("core.handler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue);
           return false;
         }
-        log::debug("core.handler.param", "param value validated : '%s'", print_r($l_paramValue, true));
       }
       array_push($l_callArgs, $l_paramValue);
     }

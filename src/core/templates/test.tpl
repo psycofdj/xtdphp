@@ -1,7 +1,6 @@
 <script type="text/javascript">
  $(document).ready(function() {
    $("#test").wapptable({
-     bForceColFilter : true,
      bCookie         : true,
      bServerSide     : true,
      sAjaxSource     : "/wappcore/test.php?action=test",
