@@ -4,7 +4,12 @@
   $.fn.wappconfirm = function(options) {
 
     var settings = $.extend({
-      title          : $.wapp.messages.confirm.title,
+      title          : function(p_el) {
+        var l_title = $(this).data("confirm");
+        if (undefined != l_title)
+          return l_title;
+        return $.wapp.messages.confirm.title;
+      },
       btnOkLabel     : $.wapp.messages.confirm.yes,
       btnCancelLabel : $.wapp.messages.confirm.no,
       container      : "body",
@@ -12,8 +17,10 @@
       singleton      : true,
       placement      : "bottom",
       onConfirm      : function(p_event, p_elem) {
-        var l_form = $(p_elem).parents("form");
-        l_form.attr("action", $(p_elem).attr("formaction"));
+        var l_form   = $(p_elem).parents("form");
+        var l_action = $(p_elem).attr("formaction");
+        if (undefined != l_action)
+          l_form.attr("action", l_action);
         l_form.submit();
       }
     }, options);

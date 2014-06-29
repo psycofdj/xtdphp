@@ -64,23 +64,23 @@
     if (!$.fn.popover || !$.fn.tooltip) throw new Error('Confirmation requires popover.js and tooltip.js');
 
     Confirmation.DEFAULTS = $.extend({}, $.fn.popover.Constructor.DEFAULTS, {
-      placement     : 'right',
-      title       : 'Are you sure?',
-      btnOkClass    : 'btn btn-sm btn-danger',
-      btnOkLabel    : 'Delete',
-      btnOkIcon     : 'glyphicon glyphicon-ok',
+      placement       : 'right',
+      title           : 'Are you sure?',
+      btnOkClass      : 'btn btn-sm btn-danger',
+      btnOkLabel      : 'Delete',
+      btnOkIcon       : 'glyphicon glyphicon-ok',
       btnCancelClass  : 'btn btn-sm btn-default',
       btnCancelLabel  : 'Cancel',
       btnCancelIcon   : 'glyphicon glyphicon-remove',
-      href      : '#',
-      target      : '_self',
-      singleton     : true,
-      popout      : true,
-      onShow      : function(event, element){},
-      onHide      : function(event, element){},
-      onConfirm     : function(event, element){},
-      onCancel    : function(event, element){},
-      template    :   '<div class="popover">'
+      href            : '#',
+      target          : '_self',
+      singleton       : true,
+      popout          : true,
+      onShow          : function(event, element) {},
+      onHide          : function(event, element) {},
+      onConfirm       : function(event, element) {},
+      onCancel        : function(event, element) {},
+      template        :   '<div class="popover">'
         + '<div class="arrow"></div>'
         + '  <h3 class="popover-title text-center"></h3>'
         + '  <div class="popover-content text-center">'
@@ -99,15 +99,15 @@
 
     Confirmation.prototype.getDefaults = function () {
       return Confirmation.DEFAULTS;
-    }
+    };
 
     Confirmation.prototype.setContent = function () {
-      var that = this;
-      var $tip    = this.tip();
-      var title   = this.getTitle();
-      var $btnOk      = $tip.find('[data-apply="confirmation"]');
-      var $btnCancel  = $tip.find('[data-dismiss="confirmation"]');
-      var options     = this.options
+      var that       = this;
+      var $tip       = this.tip();
+      var title      = this.getTitle();
+      var $btnOk     = $tip.find('[data-apply="confirmation"]');
+      var $btnCancel = $tip.find('[data-dismiss="confirmation"]');
+      var options    = this.options;
 
       $btnOk.addClass(this.getBtnOkClass())
         .html(this.getBtnOkLabel())

@@ -211,6 +211,8 @@ class Handler
     $this->reply();
   }
 
+
+  
   private function replyError(WappError $p_error)
   {
     if (false == ($l_content = $this->m_gen->resolveError($p_error)))

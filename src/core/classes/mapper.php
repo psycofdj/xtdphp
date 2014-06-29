@@ -40,13 +40,21 @@ class MapperParams
 
 
 
-class RawMapper
+class Mapper
 {
   public function __construct($p_params, $p_columns, $p_baseQuery)
   {
     $this->m_params    = $p_params;
     $this->m_columns   = $p_columns;
     $this->m_baseQuery = $p_baseQuery;
+    $this->m_conds     = array();
+    $this->m_condVars  = array();
+  }
+
+  public function addCond($p_cond, $p_vars)
+  {
+    array_push($this->m_conds, $p_cond);
+    $this->m_condVars = array_merge($this->m_condVars, $p_vars);
   }
 
   protected function getColName($p_idx)
@@ -56,8 +64,8 @@ class RawMapper
 
   protected function getConstriaints()
   {
-    $l_conds = array();
-    $l_vars  = array();
+    $l_conds = $this->m_conds;
+    $l_vars  = $this->m_condVars;
     foreach ($this->m_params->m_cols as $c_col)
     {
       $l_colName = $this->getColName($c_col->m_idx);
@@ -155,20 +163,20 @@ class RawMapper
     return $l_data["count"];
   }
 
-  private function getUniqueData($p_colName)
+  protected function getUniqueData($p_colName)
   {
     $l_query = sprintf("SELECT DISTINCT %s FROM (%s) as tmp ORDER BY %s ASC", $p_colName, $this->m_baseQuery, $p_colName);
     return R::getAll($l_query, $this->m_columns);
   }
 
-  public function process()
+  public function fetch()
   {
     if (0 == count($this->m_params->m_colInfo))
       return $this->processData();
     return $this->processColInfo();
   }
 
-  public function processColInfo()
+  protected function processColInfo()
   {
     $l_data = array();
     foreach ($this->m_params->m_colInfo as $c_colIdx)
@@ -183,7 +191,7 @@ class RawMapper
     return $l_data;
   }
 
-  public function processData()
+  protected function processData()
   {
     $l_vars = $this->m_columns;
     list($l_conds, $l_cvars) = $this->getConstriaints();
@@ -193,8 +201,16 @@ class RawMapper
     list($l_limit, $l_cvars) = $this->getLimit();
     $l_vars = array_merge($l_vars, $l_cvars);
 
+    $l_link = "";
+    if (count($l_conds))
+    {
+      $l_link = " WHERE ";
+      if (false === strpos($this->m_baseQuery))
+        $l_link = " AND ";
+    }
+
     $l_body = sprintf("%s %s %s %s",
-                      count($l_conds) ? "WHERE" : "",
+                      $l_link,
                       implode(" AND ", $l_conds),
                       $l_orders,
                       $l_limit);
@@ -219,7 +235,6 @@ class RawMapper
                  "iTotalRecords"        => $this->getTotal(),
                  "iTotalDisplayRecords" => $this->getFilteredTotal());
   }
-
 }
 
 ?>

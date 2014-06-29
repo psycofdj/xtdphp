@@ -53,7 +53,7 @@
          return false;
         });
 
-       $("[data-toggle=tooltip]").tooltip({ container: "body" });
+       $("[data-toggle~=tooltip]").tooltip({ container: "body" });
 
        $("button[data-form]").click(function() {
          var l_target = $(this).data("form");
