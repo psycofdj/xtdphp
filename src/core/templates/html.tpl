@@ -54,6 +54,7 @@
         });
 
        $("[data-toggle~=tooltip]").tooltip({ container: "body" });
+       $("[data-toggle~=confirmation]").wappconfirm();
 
        $("button[data-form]").click(function() {
          var l_target = $(this).data("form");

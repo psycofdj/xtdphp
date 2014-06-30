@@ -369,7 +369,6 @@ function escapeRegExp(str) {
 (function($) {
 
   $.fn.wapptable = function(options) {
-
     var settings = $.extend({
       "bColFilter"               : true,  // enable automatique creation of ciltering widgets
       "bCookie"                  : true,  // use cookie to save filtering options
