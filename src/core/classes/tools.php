@@ -21,5 +21,13 @@ class tools
 
     return $l_password;
   }
+
+  static function array_key_map($p_array, $p_callback)
+  {
+    $l_result = array();
+    foreach ($p_array as $c_key => $c_value)
+      $p_callback($l_result, $c_key, $c_value);
+    return $l_result;
+  }
 }
 ?>

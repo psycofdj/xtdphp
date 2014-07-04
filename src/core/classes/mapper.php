@@ -2,24 +2,33 @@
 
 require_once(dirname(__FILE__) . "/../../local.php");
 
+class MapperInfo
+{
+  public function __construct($p_colIdx, $p_colName)
+  {
+    $this->m_colIdx  = $p_colIdx;
+    $this->m_colName = $p_colName;
+  }
+}
+
 class MapperParams
 {
-  public function __construct($p_id, $p_start, $p_length, $p_search, $p_isRegex, $p_colInfo)
+  public function __construct($p_id, $p_start, $p_length, $p_search, $p_isRegex)
   {
     $this->m_id         = $p_id;
     $this->m_start      = $p_start;
     $this->m_length     = $p_length;
     $this->m_search     = $p_search;
     $this->m_isRegex    = $p_isRegex;
-    $this->m_colInfo    = $p_colInfo;
     $this->m_cols       = array();
     $this->m_sort       = array();
   }
 
-  public function addColumns($p_idx, $p_prop, $p_search, $p_isRegexp, $p_isSearchable, $p_isSortable)
+  public function addColumns($p_idx, $p_name, $p_prop, $p_search, $p_isRegexp, $p_isSearchable, $p_isSortable)
   {
     $l_col = new stdClass;
     $l_col->m_idx          = $p_idx;
+    $l_col->m_name         = $p_name;
     $l_col->m_prop         = $p_prop;
     $l_col->m_search       = $p_search;
     $l_col->m_isRegexp     = $p_isRegexp;
@@ -28,12 +37,13 @@ class MapperParams
     array_push($this->m_cols, $l_col);
   }
 
-  public function addSort($p_idx, $p_colIdx, $p_dir)
+  public function addSort($p_idx, $p_colName, $p_colIdx, $p_dir)
   {
     $l_sort = new stdClass;
-    $l_sort->m_idx    = $p_idx;
-    $l_sort->m_colIdx = $p_colIdx;
-    $l_sort->m_dir    = $p_dir;
+    $l_sort->m_idx     = $p_idx;
+    $l_sort->m_colIdx  = $p_colIdx;
+    $l_sort->m_colName = $p_colName;
+    $l_sort->m_dir     = $p_dir;
     array_push($this->m_sort, $l_sort);
   }
 }
@@ -59,6 +69,9 @@ class Mapper
 
   protected function getColName($p_idx)
   {
+    /* log::crit("core", print_r($this->m_params->m_cols, true)); */
+    if ("" != ($l_name = $this->m_params->m_cols[$p_idx]->m_name))
+      return $l_name;
     return $this->m_columns[$p_idx];
   }
 
@@ -171,7 +184,7 @@ class Mapper
 
   public function fetch()
   {
-    if (0 == count($this->m_params->m_colInfo))
+    if ($this->m_params instanceof MapperParams)
       return $this->processData();
     return $this->processColInfo();
   }
@@ -179,15 +192,11 @@ class Mapper
   protected function processColInfo()
   {
     $l_data = array();
-    foreach ($this->m_params->m_colInfo as $c_colIdx)
-    {
-      $l_key          = "0" + $c_colIdx;
-      $l_colName      = $this->m_columns[$c_colIdx];
-      $l_data[$l_key] = array();
-      $l_values       = $this->getUniqueData($l_colName);
-      foreach ($l_values as $c_value)
-        array_push($l_data[$l_key], $c_value[$l_colName]);
-    }
+    if (null == ($l_colName = $this->m_params->m_colName))
+      $l_colName = $this->m_columns[$this->m_params->m_colIdx];
+    $l_values = $this->getUniqueData($l_colName);
+    foreach ($l_values as $c_value)
+      array_push($l_data, $c_value[$l_colName]);
     return $l_data;
   }
 

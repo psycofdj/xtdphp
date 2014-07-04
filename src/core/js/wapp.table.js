@@ -248,29 +248,25 @@ if ( $.fn.DataTable.TableTools ) {
 
 
 $.fn.dataTableExt.oApi.fnGetServerColumnsData = function (oSettings, p_colIdx) {
-  var l_results;
 
+  var l_results;
+  var l_name = oSettings.aoColumns[p_colIdx].sName || "";
   var l_data = {
-    sEcho          : 0,
-    iColumns       : 0,
-    iDisplayStart  : 0,
-    iDisplayLength : 0,
-    sSearch        : "",
-    bRegex         : false,
-    iSortingCols   : 0
+    colIdx  : p_colIdx,
+    colName : l_name
   };
 
   $.ajax({
     dataType : "json",
     data     : l_data,
-    url      : oSettings.sAjaxSource + "&colInfo[]=" + p_colIdx,
+    url      : oSettings.sAjaxSource,
     async    : false,
     success  : function(p_data, p_status, p_xhr) {
      l_results = p_data;
     }
   });
 
-  return l_results[p_colIdx];
+  return l_results;
 };
 
 
@@ -320,7 +316,7 @@ $.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique,
 }
 
 
-function fnCreateSelect(aData, p_settings)
+function fnCreateSelect(aData, p_colIdx, p_settings)
 {
   var r = "";
   var i;
@@ -340,6 +336,11 @@ function fnCreateSelect(aData, p_settings)
   {
     var l_node  = aData[i];
     var l_label = l_node;
+    if ((undefined != p_settings.aoColumns[p_colIdx]) &&
+        (undefined != p_settings.aoColumns[p_colIdx].aFilterLabels) &&
+        (undefined != p_settings.aoColumns[p_colIdx].aFilterLabels[l_node]))
+      l_label = p_settings.aoColumns[p_colIdx].aFilterLabels[l_node];
+
     if ((l_label == null) || (l_label == ""))
       continue;
     r += '<option value="' + l_node + '">' + l_label + '</option>';
@@ -370,6 +371,7 @@ function escapeRegExp(str) {
 
     $.fn.wapptable = function(options) {
         var settings = $.extend({
+            bAutoWidth                 : false,
             "bColFilter"               : true,  // enable automatique creation of ciltering widgets
             "bCookie"                  : true,  // use cookie to save filtering options
             "dCookieTime"              : 365,   // when use cookie, expire time of the cookie
@@ -378,10 +380,18 @@ function escapeRegExp(str) {
             "sNotEmptyCellFilterLabel" : $.wapp.messages.table.notempty,
             "sNullCellFilterLabel"     : $.wapp.messages.table.null,
             "sNotNullCellFilterLabel"  : $.wapp.messages.table.notnull,
-            "bFilterAllowNull"         : true,
-            "bFilterAllowNotNull"      : true,
-            "bFilterAllowNotEmpty"     : true,
-            "bFilterAllowEmpty"        : true
+            "bFilterAllowNull"         : false,
+            "bFilterAllowNotNull"      : false,
+            "bFilterAllowNotEmpty"     : false,
+            "bFilterAllowEmpty"        : false,
+            "aoColumnDefs"             : [ { "sClass": "text-center", "aTargets": "_all" } ],
+            "fnDrawCallback"           : function(p_settings) {
+              $("form", this).wappform();
+              $("[data-toggle~=tooltip]", this).tooltip({ container: "body" });
+              $("[data-toggle~=confirmation]", this).wappconfirm();
+              $(this).trigger("wapptable.loaded");
+            }
+
         }, options);
 
     return this.each(function() {
@@ -476,7 +486,7 @@ function escapeRegExp(str) {
           else
             l_data = l_table.fnGetColumnData(p_colIndex, true, true, false);
 
-          l_select.html(fnCreateSelect(l_data, settings));
+          l_select.html(fnCreateSelect(l_data, p_colIndex, settings));
           l_select.change(function() {
             var l_val = $(this).val();
             if (l_val == "__any__")

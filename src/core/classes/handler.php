@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__) . "/../../local.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/tools.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/log.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/locale.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/types.php");
@@ -16,11 +17,11 @@ require_once(__WAPPCORE_DIR__  . "/core/libs/Zend/load.php");
  */
 class Handler
 {
-  private static $ms_defaultGenerator = null;
+  private static $ms_defaultGenerator = "WappHtmlGenerator";
 
-  /** List of headers to inlude in HTTP header response */
+  /** List of headers to include in HTTP header response */
   private $m_headers;
-  /** List of headers to inlude in HTTP header response */
+  /** List of headers to include in HTTP header response */
   private $m_statusCode;
   /** Content-Type HTTP value */
   private $m_contentType;
@@ -39,9 +40,6 @@ class Handler
 
     if ($this->m_gen == null)
       $this->m_gen = new self::$ms_defaultGenerator;
-
-    if ($this->m_gen == null)
-      $this->m_gen = new WappHtmlGenerator();
   }
 
   /* ---------------------------------------------- */
@@ -485,74 +483,111 @@ class Handler
 
   /* ---------------------------------------------- */
 
-  public function serverSideData($p_method,
-                                 $pu_sEcho,
-                                 $pu_iColumns,
-                                 $pu_iDisplayStart,
-                                 $pu_iDisplayLength,
-                                 $ps_sSearch,
-                                 $pb_bRegex,
-                                 $pu_iSortingCols,
-                                 $pau_colInfo = array())
+  private function validateArgs($p_params)
   {
-    $l_mapper = new MapperParams($pu_sEcho,          $pu_iDisplayStart,
-                                 $pu_iDisplayLength, $ps_sSearch,
-                                 $pb_bRegex,         $pau_colInfo);
+    $l_result = array();
 
-    if (0 == count($pau_colInfo))
+    foreach ($p_params as $c_name => $c_attr)
     {
-      for ($c_idx = 0; $c_idx < $pu_iColumns; $c_idx++)
+      if ((false === ($l_value = $this->getParam($c_name))) ||
+          (false === $this->validateParam($c_name, $c_attr, $l_value)))
       {
-        $l_args   = array($c_idx);
-        $l_params = array("mDataProp"   => "",  "sSearch"     => "s",
-                          "bRegex"      => "b", "bSearchable" => "b",
-                          "bSortable"   => "b");
-        foreach ($l_params as $c_name => $c_attr)
-        {
-          $l_name = sprintf("%s_%d", $c_name, $c_idx);
-          if ((false === ($l_value = $this->getParam($l_name))) ||
-              (false === $this->validateParam($l_name, $c_attr, $l_value)))
-          {
-            log::crit("core.handler", "invalid param %s = %s", $l_name, $l_value);
-            return false;
-          }
-          array_push($l_args, trim($l_value));
-        }
-
-        call_user_func_array(array($l_mapper, "addColumns"), $l_args);
+        log::crit("core.handler", "invalid param %s = %s", $c_name, $l_value);
+        return false;
       }
-
-      for ($c_idx = 0; $c_idx < $pu_iSortingCols; $c_idx++)
-      {
-        $l_args   = array($c_idx);
-        $l_params = array("iSortCol" => "u", "sSortDir" => "s");
-
-        foreach ($l_params as $c_name => $c_attr)
-        {
-          $l_name = sprintf("%s_%d", $c_name, $c_idx);
-          if ((false === ($l_value = $this->getParam($l_name))) ||
-              (false === $this->validateParam($l_name, $c_attr, $l_value)))
-          {
-            log::crit("core.handler", "invalid param %s = %s", $l_name, $l_value);
-            return false;
-          }
-          array_push($l_args, trim($l_value));
-        }
-        call_user_func_array(array($l_mapper, "addSort"), $l_args);
-      }
+      $l_result[$c_name] = $l_value;
     }
+    return $l_result;
+  }
 
-    if (false === ($l_data = $p_method->invokeArgs($this, array($l_mapper))))
+  public function serverSide($p_method)
+  {
+    if (false !== ($l_colIdx = $this->getParam("colIdx")))
+      $l_param = $this->serverSideInfo($p_method);
+    else
+      $l_param = $this->serverSideData($p_method);
+
+    if ((false === $l_param) ||
+        (false === ($l_data = $p_method->invokeArgs($this, array($l_param)))))
     {
       log::error("code.handler", "server side error");
       return false;
     }
 
+    /* log::crit("core", json_encode($l_data)); */
     $this->m_gen = new JsonGenerator(false);
     foreach ($l_data as $c_key => $c_value)
       $this->m_gen->setData($c_key, $c_value);
     return true;
   }
+
+
+  public function serverSideInfo($p_method)
+  {
+    $l_checks = array("colIdx"  => "u", "colName" => "s");
+
+    if (false === ($l_args = $this->validateArgs($l_checks)))
+      return false;
+
+    return new MapperInfo($l_args["colIdx"], $l_args["colName"]);
+  }
+
+
+  public function serverSideData($p_method)
+  {
+    $l_checks = array("sEcho"          => "u", "iColumns"       => "u",
+                      "sColumns"       => "s", "iDisplayStart"  => "u",
+                      "iDisplayLength" => "u", "sSearch"        => "s",
+                      "bRegex"         => "b", "iSortingCols"   => "u");
+
+    if (false === ($l_args = $this->validateArgs($l_checks)))
+      return false;
+
+    /* log::crit("core", "args : %s", json_encode($l_args)); */
+
+
+    $l_colNames = explode(",", $l_args["sColumns"]);
+    $l_param   = new MapperParams($l_args["sEcho"],          $l_args["iDisplayStart"],
+                                  $l_args["iDisplayLength"], $l_args["sSearch"],
+                                  $l_args["bRegex"]);
+
+    for ($c_idx = 0; $c_idx < $l_args["iColumns"]; $c_idx++)
+    {
+      $l_colArgs = array();
+      $l_checks  = array("mDataProp"   => "",  "sSearch"     => "s",
+                         "bRegex"      => "b", "bSearchable" => "b",
+                         "bSortable"   => "b");
+      $l_checks = tools::array_key_map($l_checks, function(&$p_result, $p_key, $p_value) use ($c_idx) {
+          $l_key            = sprintf("%s_%d", $p_key, $c_idx);
+          $p_result[$l_key] = $p_value;
+        });
+      if (false === ($l_colArgs = $this->validateArgs($l_checks)))
+        return false;
+      $l_colArgs = array_merge(array($c_idx, $l_colNames[$c_idx]), array_values($l_colArgs));
+      /* log::crit("core", "columns : %s", print_r($l_colArgs, true)); */
+      call_user_func_array(array($l_param, "addColumns"), $l_colArgs);
+    }
+
+
+    for ($c_idx = 0; $c_idx < $l_args["iSortingCols"]; $c_idx++)
+    {
+      $l_colArgs = array();
+      $l_checks  = array("iSortCol" => "u", "sSortDir" => "s");
+      $l_checks  = tools::array_key_map($l_checks, function(&$p_result, $p_key, $p_value) use ($c_idx) {
+          $l_key            = sprintf("%s_%d", $p_key, $c_idx);
+          $p_result[$l_key] = $p_value;
+        });
+      if (false === ($l_colArgs = $this->validateArgs($l_checks)))
+        return false;
+      $l_colArgs = array_merge(array($c_idx, $l_colNames[$c_idx]), array_values($l_colArgs));
+      /* log::crit("core", "sort : %s", print_r($l_colArgs, true)); */
+      call_user_func_array(array($l_param, "addSort"), $l_colArgs);
+    }
+
+    return $l_param;
+  }
+
+
 
   /**
    * Handle current request and render server response
@@ -665,7 +700,7 @@ class Handler
       try
       {
         $l_wrapped  = $l_reflex->getMethod(sprintf("s_%s", $l_action));
-        $l_method   = $l_reflex->getMethod("serverSideData");
+        $l_method   = $l_reflex->getMethod("serverSide");
       }
       catch (ReflectionException $l_error)
       {
