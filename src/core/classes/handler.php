@@ -212,7 +212,6 @@ class Handler
   }
 
 
-  
   private function replyError(WappError $p_error)
   {
     if (false == ($l_content = $this->m_gen->resolveError($p_error)))
@@ -371,16 +370,8 @@ class Handler
 
     $l_conf = sprintf("mysql:host=%s;dbname=%s;", $g_conf["mysql"]["host"], $g_conf["mysql"]["database"]);
     R::setup($l_conf, $g_conf["mysql"]["username"], $g_conf["mysql"]["password"]);
-
     R::getDatabaseAdapter()->getDatabase()->setDebugMode(true, new SqlLogger());
-
-    if ($g_conf["env"] != "dev")
-      R::freeze(true);
-    else
-    {
-      log::warn("core.sql", "initializing redbean with dynamic schemas, transactions will be auto-commited");
-      R::freeze(false);
-    }
+    R::freeze(true);
   }
 
 
@@ -513,7 +504,7 @@ class Handler
       for ($c_idx = 0; $c_idx < $pu_iColumns; $c_idx++)
       {
         $l_args   = array($c_idx);
-        $l_params = array("mDataProp"   => "u", "sSearch"     => "s",
+        $l_params = array("mDataProp"   => "",  "sSearch"     => "s",
                           "bRegex"      => "b", "bSearchable" => "b",
                           "bSortable"   => "b");
         foreach ($l_params as $c_name => $c_attr)
@@ -551,7 +542,12 @@ class Handler
       }
     }
 
-    $l_data = $p_method->invokeArgs($this, array($l_mapper));
+    if (false === ($l_data = $p_method->invokeArgs($this, array($l_mapper))))
+    {
+      log::error("code.handler", "server side error");
+      return false;
+    }
+
     $this->m_gen = new JsonGenerator(false);
     foreach ($l_data as $c_key => $c_value)
       $this->m_gen->setData($c_key, $c_value);

@@ -62,7 +62,7 @@ class Mapper
     return $this->m_columns[$p_idx];
   }
 
-  protected function getConstriaints()
+  protected function getConstraints()
   {
     $l_conds = $this->m_conds;
     $l_vars  = $this->m_condVars;
@@ -151,7 +151,7 @@ class Mapper
 
   protected function getFilteredTotal()
   {
-    list($l_conds, $l_vars) = $this->getConstriaints();
+    list($l_conds, $l_vars) = $this->getConstraints();
 
     $l_vars  = array_merge($this->m_columns, $l_vars);
     $l_query = sprintf("SELECT count(*) as count FROM (%s) as tmp %s %s",
@@ -194,7 +194,7 @@ class Mapper
   protected function processData()
   {
     $l_vars = $this->m_columns;
-    list($l_conds, $l_cvars) = $this->getConstriaints();
+    list($l_conds, $l_cvars) = $this->getConstraints();
     $l_vars = array_merge($l_vars, $l_cvars);
     list($l_orders, $l_cvars) = $this->getOrders();
     $l_vars = array_merge($l_vars, $l_cvars);
@@ -204,9 +204,10 @@ class Mapper
     $l_link = "";
     if (count($l_conds))
     {
-      $l_link = " WHERE ";
-      if (false === strpos($this->m_baseQuery))
-        $l_link = " AND ";
+      $l_link = " AND ";
+      if ((false === strpos($this->m_baseQuery, " WHERE ")) ||
+          (false === strpos($this->m_baseQuery, " where ")))
+        $l_link = " WHERE ";
     }
 
     $l_body = sprintf("%s %s %s %s",
@@ -216,24 +217,25 @@ class Mapper
                       $l_limit);
 
 
-    $l_query = sprintf("SELECT * FROM (%s) as tmp %s;", $this->m_baseQuery, $l_body);
-    $l_data    = R::getAll($l_query, $l_vars);
-    $l_results = array();
-    foreach ($l_data as $c_data)
-    {
-      $l_result  = array();
-      for ($c_idx = 0; $c_idx < count($this->m_columns); $c_idx++)
-      {
-        $l_colName = $this->m_columns[$c_idx];
-        array_push($l_result, $c_data[$l_colName]);
-      }
-      array_push($l_results, $l_result);
+    $l_query   = sprintf("SELECT * FROM (%s) as tmp %s;", $this->m_baseQuery, $l_body);
+
+
+    try {
+      if (false === ($l_data = R::getAll($l_query, $l_vars)))
+        return false;
+      if (false === ($l_total = $this->getTotal()))
+        return false;
+      if (false === ($l_filteredTotal = $this->getFilteredTotal()))
+        return false;
+    }
+    catch (Exception $l_error) {
+      return false;
     }
 
     return array("sEcho"                => $this->m_params->m_id,
-                 "aaData"               => $l_results,
-                 "iTotalRecords"        => $this->getTotal(),
-                 "iTotalDisplayRecords" => $this->getFilteredTotal());
+                 "aaData"               => $l_data,
+                 "iTotalRecords"        => $l_total,
+                 "iTotalDisplayRecords" => $l_filteredTotal);
   }
 }
 

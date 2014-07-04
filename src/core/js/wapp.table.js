@@ -368,21 +368,21 @@ function escapeRegExp(str) {
  */
 (function($) {
 
-  $.fn.wapptable = function(options) {
-    var settings = $.extend({
-      "bColFilter"               : true,  // enable automatique creation of ciltering widgets
-      "bCookie"                  : true,  // use cookie to save filtering options
-      "dCookieTime"              : 365,   // when use cookie, expire time of the cookie
-      "sAllCellFilterLabel"      : $.wapp.messages.table.nofilter,
-      "sEmptyCellFilterLabel"    : $.wapp.messages.table.empty,
-      "sNotEmptyCellFilterLabel" : $.wapp.messages.table.notempty,
-      "sNullCellFilterLabel"     : $.wapp.messages.table.null,
-      "sNotNullCellFilterLabel"  : $.wapp.messages.table.notnull,
-      "bFilterAllowNull"         : true,
-      "bFilterAllowNotNull"      : true,
-      "bFilterAllowNotEmpty"     : true,
-      "bFilterAllowEmpty"        : true
-    }, options);
+    $.fn.wapptable = function(options) {
+        var settings = $.extend({
+            "bColFilter"               : true,  // enable automatique creation of ciltering widgets
+            "bCookie"                  : true,  // use cookie to save filtering options
+            "dCookieTime"              : 365,   // when use cookie, expire time of the cookie
+            "sAllCellFilterLabel"      : $.wapp.messages.table.nofilter,
+            "sEmptyCellFilterLabel"    : $.wapp.messages.table.empty,
+            "sNotEmptyCellFilterLabel" : $.wapp.messages.table.notempty,
+            "sNullCellFilterLabel"     : $.wapp.messages.table.null,
+            "sNotNullCellFilterLabel"  : $.wapp.messages.table.notnull,
+            "bFilterAllowNull"         : true,
+            "bFilterAllowNotNull"      : true,
+            "bFilterAllowNotEmpty"     : true,
+            "bFilterAllowEmpty"        : true
+        }, options);
 
     return this.each(function() {
       // create datatable
