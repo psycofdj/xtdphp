@@ -250,7 +250,7 @@ if ( $.fn.DataTable.TableTools ) {
 $.fn.dataTableExt.oApi.fnGetServerColumnsData = function (oSettings, p_colIdx) {
 
   var l_results;
-  var l_name = oSettings.aoColumns[p_colIdx].sName || "";
+  var l_name = oSettings.aoColumns[p_colIdx].mData;
   var l_data = {
     colIdx  : p_colIdx,
     colName : l_name
@@ -394,8 +394,8 @@ function escapeRegExp(str) {
 
         }, options);
 
-    return this.each(function() {
-      // create datatable
+    // return this.each(function() {
+    //   // create datatable
       var l_tableID = $(this).prop("id") || null;
 
       if (null == l_tableID)
@@ -463,10 +463,16 @@ function escapeRegExp(str) {
 
           $(l_input).keyup(function () {
             l_table.fnFilter($(this).val(), p_colIndex);
-            $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
+            if ($(this).prop("disabled") == false)
+              $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
+            if ($(this).val() != "")
+              $(this).addClass("input-danger");
+            else
+              $(this).removeClass("input-danger");
           });
 
-          if ((true == settings.bCookie) && (l_cookieValue != undefined))
+
+          if ((true == settings.bCookie) && (l_cookieValue != undefined) && (l_cookieValue != ""))
             $(l_input).val(l_cookieValue).keyup();
 
           if ((null == l_placeholder) && (0 != l_title.length))
@@ -500,18 +506,22 @@ function escapeRegExp(str) {
             else
               l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
 
-            // if (l_val != "all")
-            //   l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
-            // else
-            //   l_table.fnFilter("^.*$", p_colIndex, true, false, false);
-            $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
+            if ($(this).prop("disabled") == false)
+              $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
+
+            if ($(this).val() != "__any__")
+              $(this).addClass("input-danger");
+            else
+              $(this).removeClass("input-danger");
           });
 
           if ((true == settings.bCookie) && (l_cookieValue != undefined))
           {
             var l_opt = $("option[value='" + l_cookieValue + "']", l_select);
             if (l_opt.length > 0)
-              l_select.val(l_cookieValue).change();
+              l_select.val(l_cookieValue);
+            if (l_cookieValue != "__any__")
+              l_select.change();
           }
 
           l_cell.append(l_select);
@@ -522,7 +532,8 @@ function escapeRegExp(str) {
       });
       if (0 != l_nbSearch)
         l_table.append(l_tfoot);
-    });
+    // });
+      return l_table;
   };
 
 }(jQuery));

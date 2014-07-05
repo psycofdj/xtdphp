@@ -85,3 +85,9 @@ body {
 .col-bottom {
     vertical-align:bottom;
 }
+
+
+.input-danger {
+    background-color : #E4B9B9;
+    border: 1px #a94442 solid;
+}

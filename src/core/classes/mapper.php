@@ -69,8 +69,9 @@ class Mapper
 
   protected function getColName($p_idx)
   {
+    /* log::crit("core", "col idx : %d", $p_idx); */
     /* log::crit("core", print_r($this->m_params->m_cols, true)); */
-    if ("" != ($l_name = $this->m_params->m_cols[$p_idx]->m_name))
+    if ("" != ($l_name = $this->m_params->m_cols[$p_idx]->m_prop))
       return $l_name;
     return $this->m_columns[$p_idx];
   }

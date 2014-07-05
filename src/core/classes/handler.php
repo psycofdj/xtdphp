@@ -514,7 +514,8 @@ class Handler
       return false;
     }
 
-    /* log::crit("core", json_encode($l_data)); */
+    /* log::crit("core", "reply : %s", json_encode($l_data)); */
+
     $this->m_gen = new JsonGenerator(false);
     foreach ($l_data as $c_key => $c_value)
       $this->m_gen->setData($c_key, $c_value);
@@ -544,7 +545,6 @@ class Handler
       return false;
 
     /* log::crit("core", "args : %s", json_encode($l_args)); */
-
 
     $l_colNames = explode(",", $l_args["sColumns"]);
     $l_param   = new MapperParams($l_args["sEcho"],          $l_args["iDisplayStart"],
@@ -580,6 +580,7 @@ class Handler
       if (false === ($l_colArgs = $this->validateArgs($l_checks)))
         return false;
       $l_colArgs = array_merge(array($c_idx, $l_colNames[$c_idx]), array_values($l_colArgs));
+
       /* log::crit("core", "sort : %s", print_r($l_colArgs, true)); */
       call_user_func_array(array($l_param, "addSort"), $l_colArgs);
     }
