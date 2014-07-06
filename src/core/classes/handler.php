@@ -178,6 +178,12 @@ class Handler
         $l_name = "bool";
         $l_status = types::to_bool($p_paramValue);
         break;
+      case 'j' :
+        $l_name   = "json";
+        $l_status = true;
+        if (null === $p_paramValue = json_decode($p_paramValue))
+          $l_status = false;
+        break;
       case 's' :
         $l_name = "string";
         $p_paramValue = (string)$p_paramValue;

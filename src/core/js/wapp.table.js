@@ -322,7 +322,7 @@ function fnCreateSelect(aData, p_colIdx, p_settings)
   var i;
   var iLen = aData.length;
 
-  r += '<option value="__any__">'      + p_settings.sAllCellFilterLabel + '</option>';
+  r += '<option value="__any__">' + p_settings.sAllCellFilterLabel + '</option>';
   if (p_settings.bFilterAllowEmpty)
     r += '<option value="">' + p_settings.sEmptyCellFilterLabel + '</option>';
   if (p_settings.bFilterAllowNotEmpty)
@@ -330,19 +330,21 @@ function fnCreateSelect(aData, p_colIdx, p_settings)
   if (p_settings.bFilterAllowNull)
     r += '<option value="__null__">' + p_settings.sNullCellFilterLabel + '</option>';
   if (p_settings.bFilterAllowNotNull)
-    r += '<option value="__notnull__">'  + p_settings.sNotNullCellFilterLabel + '</option>';
+    r += '<option value="__notnull__">' + p_settings.sNotNullCellFilterLabel + '</option>';
 
   for (i = 0 ; i < iLen ; i++ )
   {
-    var l_node  = aData[i];
+    var l_node  = aData[i] || "__null__";
     var l_label = l_node;
+
     if ((undefined != p_settings.aoColumns[p_colIdx]) &&
         (undefined != p_settings.aoColumns[p_colIdx].aFilterLabels) &&
         (undefined != p_settings.aoColumns[p_colIdx].aFilterLabels[l_node]))
       l_label = p_settings.aoColumns[p_colIdx].aFilterLabels[l_node];
 
-    if ((l_label == null) || (l_label == ""))
-      continue;
+    if (l_label == "__null__")
+      l_label = p_settings.sNullCellFilterLabel;
+
     r += '<option value="' + l_node + '">' + l_label + '</option>';
   }
   return r;
@@ -496,7 +498,7 @@ function escapeRegExp(str) {
           l_select.change(function() {
             var l_val = $(this).val();
             if (l_val == "__any__")
-              l_table.fnFilter("^.*$", p_colIndex, true, false, false);
+              l_table.fnFilter("__any__", p_colIndex, false, false, false);
             else if (l_val == "__notempty__")
               l_table.fnFilter("^.+$", p_colIndex, true, false, false);
             else if (l_val == "__null__")

@@ -35,6 +35,10 @@
     <script type="text/javascript">
      $("document").ready(function() {
        $("a").on("click", function() {
+         var l_href = $(this).attr('href');
+         if (undefined == l_href)
+           return;
+
          var p = $(this).attr('href').split('?');
          if (p.length == 1) {
            return true;

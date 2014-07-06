@@ -83,7 +83,7 @@ class Mapper
     foreach ($this->m_params->m_cols as $c_col)
     {
       $l_colName = $this->getColName($c_col->m_idx);
-      if (($c_col->m_isSearchable) && ($c_col->m_search != ""))
+      if (($c_col->m_isSearchable) && ($c_col->m_search != "") && ($c_col->m_search != "__any__"))
       {
         if ("__null__" == $c_col->m_search)
         {
