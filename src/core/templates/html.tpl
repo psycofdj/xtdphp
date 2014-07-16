@@ -35,7 +35,7 @@
     <script type="text/javascript">
      $("document").ready(function() {
 
-       {if $conf["web"]["cleanurl"]}
+       {if isset($conf) && $conf["web"]["cleanurl"]}
        $("a").on("click", function() {
          var l_href = $(this).attr('href');
          if (undefined == l_href)
@@ -60,7 +60,7 @@
         });
        {/if}
 
-       {if $isDesktop}
+       {if isset($isDesktop) && $isDesktop}
          $("[data-toggle~=tooltip]").tooltip({ container: "body" });
        {/if}
 
