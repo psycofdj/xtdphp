@@ -60,9 +60,9 @@
         });
        {/if}
 
-       {if isset($isDesktop) && $isDesktop}
+       if (false == $.wapp.mobile.isAny()) {
          $("[data-toggle~=tooltip]").tooltip({ container: "body" });
-       {/if}
+       }
 
        $("[data-toggle~=confirmation]").wappconfirm();
 

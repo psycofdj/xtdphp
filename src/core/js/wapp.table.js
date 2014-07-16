@@ -389,8 +389,10 @@ function escapeRegExp(str) {
             "aoColumnDefs"             : [ { "sClass": "text-center", "aTargets": "_all" } ],
             "fnDrawCallback"           : function(p_settings) {
               $("form", this).wappform();
-              $("[data-toggle~=tooltip]", this).tooltip({ container: "body" });
-              $("[data-toggle~=confirmation]", this).wappconfirm();
+              if (false == $.wapp.mobile.isAny()) {
+                $("[data-toggle~=tooltip]", this).tooltip({ container: "body" });
+                $("[data-toggle~=confirmation]", this).wappconfirm();
+              }
               $(this).trigger("wapptable.loaded");
             }
 
