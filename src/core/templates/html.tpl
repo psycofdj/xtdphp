@@ -34,11 +34,12 @@
 
     <script type="text/javascript">
      $("document").ready(function() {
+
+       {if $conf["web"]["cleanurl"]}
        $("a").on("click", function() {
          var l_href = $(this).attr('href');
          if (undefined == l_href)
            return;
-
          var p = $(this).attr('href').split('?');
          if (p.length == 1) {
            return true;
@@ -46,6 +47,7 @@
          var action = p[0];
          var params = p[1].split('&');
          var form = $(document.createElement('form')).attr('action', action);
+
          $('body').append(form);
          form.attr("method", "POST");
          for (var i in params) {
@@ -56,8 +58,12 @@
          $(form).submit();
          return false;
         });
+       {/if}
 
-       $("[data-toggle~=tooltip]").tooltip({ container: "body" });
+       {if $isDesktop}
+         $("[data-toggle~=tooltip]").tooltip({ container: "body" });
+       {/if}
+
        $("[data-toggle~=confirmation]").wappconfirm();
 
        $("button[data-form]").click(function() {

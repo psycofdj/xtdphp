@@ -7,6 +7,7 @@ require_once(__WAPPCORE_DIR__  . "/core/classes/types.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/error.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/app.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/smarty/Smarty.class.php");
+require_once(__WAPPCORE_DIR__  . "/core/libs/Mobile_Detect.php");
 
 /* -------------------------------------------------------------------------- */
 
@@ -526,6 +527,8 @@ class WappHtmlGenerator extends HtmlGenerator
 
   public function initialize()
   {
+    global $g_conf;
+
     if (locale::getName() == "fr")
     {
       $this
@@ -540,6 +543,13 @@ class WappHtmlGenerator extends HtmlGenerator
         ->addJs("jquery.dataTables.locale.en.js", "core")
         ->addJs("wapp.locale.en.js",              "core");
     }
+
+    $l_detector = new Mobile_Detect();
+    $this->setData("conf",      $g_conf);
+    $this->setData("isMobile",  $l_detector->isMobile());
+    $this->setData("isTablet",  $l_detector->isTablet());
+    $this->setData("isDesktop", !($l_detector->isTablet() || $l_detector->isMobile()));
+
     parent::initialize();
   }
 

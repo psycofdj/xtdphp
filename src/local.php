@@ -21,6 +21,9 @@ $g_conf["style"]["name"]      = "Wappcore";
 $g_conf["style"]["favicon"]   = "/wappcore/core/images/wappcore_logo.png";
 $g_conf["style"]["brand"]     = "/wappcore/core/images/wappcore.png";
 
+$g_conf["web"]                = array();
+$g_conf["web"]["cleanurl"]    = false;
+
 $g_conf["log"]                = array();
 $g_conf["log"]["level"]       = log::mc_levelCrit;
 
