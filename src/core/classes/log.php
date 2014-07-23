@@ -129,7 +129,7 @@ class log
     $l_level     = $l_args[0];
     $l_module    = $l_args[1];
     $l_srcFmt    = $l_args[2];
-    $l_dstFmt    = sprintf("%%9s (%%s) : %s [ at %%s:%%d ]", $l_srcFmt);
+    $l_dstFmt    = sprintf("%%9s (%%s) : %s at %%s:%%d", $l_srcFmt);
 
     if (self::getLevel($l_module) < $l_level)
       return;
@@ -147,8 +147,43 @@ class log
   }
 }
 
+
+function errors_to_str($p_errno)
+{
+  $l_errorStr = array();
+  $l_errors   = array(
+    "E_USER_DEPRECATED",
+    "E_DEPRECATED",
+    "E_RECOVERABLE_ERROR",
+    "E_STRICT",
+    "E_USER_NOTICE",
+    "E_USER_WARNING",
+    "E_USER_ERROR",
+    "E_COMPILE_WARNING",
+    "E_COMPILE_ERROR",
+    "E_CORE_WARNING",
+    "E_CORE_ERROR",
+    "E_NOTICE",
+    "E_PARSE",
+    "E_WARNING",
+    "E_ERROR");
+
+  foreach ($l_errors as $c_error)
+  {
+    $l_value = constant($c_error);
+    if ($p_errno & $l_value)
+      array_push($l_errorStr, $c_error);
+  }
+
+  return implode("|", $l_errorStr);
+}
+
 set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
-    log::doLogFile(log::mc_levelCrit, "core.php", "%s", $errstr, $errfile, $errline);
-  }, E_ALL | E_STRICT);
+      if (false == tools::ends_with($errfile, "core/libs/smarty/sysplugins/smarty_resource.php"))
+      {
+        log::doLogFile(log::mc_levelCrit, "core.php", "[%s] %s", errors_to_str($errno), $errstr, $errfile, $errline);
+        throw new Exception();
+      }
+    }, E_ALL | E_STRICT);
 
 ?>

@@ -40,7 +40,6 @@ class SqlImporter
     R::begin();
     R::exec($l_data);
     R::commit();
-
     return true;
   }
 }

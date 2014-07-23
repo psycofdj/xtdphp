@@ -4,7 +4,10 @@ class UserModel
 {
   static function getByID($p_id)
   {
-    return R::load("authuser", $p_id);
+    $l_user = R::load("authuser", $p_id);
+    if ($l_user->id == 0)
+      return false;
+    return $l_user;
   }
 
   static function delete($p_id)
@@ -46,7 +49,7 @@ class UserModel
 
   static function update($p_uid, $p_mail, $p_name, $p_password, &$p_isUpdated)
   {
-    $l_user = R::load("authuser", $p_uid);
+    $l_user = UserModel::getByID($p_uid);
 
     $p_isUpdated = ($l_user->mail != $p_mail) || ($l_user->name != $p_name);
 

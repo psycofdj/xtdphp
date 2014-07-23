@@ -11,6 +11,16 @@ class tools
     return $l_url;
   }
 
+  function starts_with($p_haystack, $p_needle)
+  {
+    return $p_needle === "" || strpos($p_haystack, $p_needle) === 0;
+  }
+
+  static function ends_with($p_haystack, $p_needle)
+  {
+    return $p_needle === "" || substr($p_haystack, -strlen($p_needle)) === $p_needle;
+  }
+
   static function genPassword($p_minSize, $p_maxSize)
   {
     $l_password       = '';

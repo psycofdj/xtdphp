@@ -225,7 +225,12 @@ class Handler
     $this->m_contentType = $this->m_gen->getContentType();
     $this->setStatusCode($p_error->getStatusCode());
 
-    $this->reply();
+    return $this->reply();
+  }
+
+  private function replyException(Exception $p_error)
+  {
+    return $this->replyInternalError();
   }
 
 
@@ -685,6 +690,10 @@ class Handler
     catch (WappError $l_error)
     {
       return $this->replyError($l_error);
+    }
+    catch (Exception $l_error)
+    {
+      return $this->replyException($l_error);
     }
 
     // 6.
