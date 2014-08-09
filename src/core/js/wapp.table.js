@@ -373,7 +373,8 @@ function escapeRegExp(str) {
 
     $.fn.wapptable = function(options) {
         var settings = $.extend({
-            bAutoWidth                 : false,
+            "sFilterPlace"             : "thead",
+            "bAutoWidth"               : false,
             "bColFilter"               : true,  // enable automatique creation of ciltering widgets
             "bCookie"                  : true,  // use cookie to save filtering options
             "dCookieTime"              : 365,   // when use cookie, expire time of the cookie
@@ -414,7 +415,7 @@ function escapeRegExp(str) {
       if ((true == settings.bCookie) && (undefined != l_cookieValue))
         settings.iDisplayLength = parseInt(l_cookieValue);
 
-      var l_table  = $(this).dataTable(settings);
+      var l_table = $(this).dataTable(settings);
 
       // 1.
       $("tbody", l_table).on("click", "tr", function() {
@@ -430,21 +431,26 @@ function escapeRegExp(str) {
       // 2.
       $("tbody", l_table).on("click", "tr td", function() {
         var l_current = l_table.data("current-cell");
-
         if (null != l_current)
           l_current.removeClass("warning");
         $(this).addClass("warning");
         l_table.data("current-cell", $(this));
       });
 
-
       // 3.
       if (false == settings.bColFilter)
         return;
 
-      var l_tfoot       = $("<tfoot><tr></tr></tfoot>");
-      var l_row         = $("tr", l_tfoot);
+
+      var l_head        = $("thead", l_table);
+      var l_row         = $("<tr></tr>");
       var l_nbSearch    = 0;
+
+      if (settings.sScrollY)
+      {
+        var l_wrapper = $("#" + l_table.prop("id") + "_wrapper");
+        l_head = $("div.dataTables_scrollHead table > thead", l_wrapper);
+      }
 
       $(l_cookieName).each(function() {
         $(this).change(function() {
@@ -453,14 +459,14 @@ function escapeRegExp(str) {
         });
       });
 
-      $("thead > tr > th", l_table).each(function(p_colIndex) {
+
+      $("> tr > th", l_head).each(function(p_colIndex) {
         var l_cell        = $("<th></th>");
         var l_cookieName  = "#" + l_tableID + ".wappt-col" + p_colIndex;
         var l_cookieValue = $.cookie(l_cookieName);
-
         if (true == $(this).hasClass("wp-search"))
         {
-          var l_input       = $("<input class='form-control input-sm' type='text'/>");
+          var l_input       = $("<input class='form-control input-sm' type='text' style='width:100%;'/>");
           var l_title       = $(this).text();
           var l_settings    = $.fn.dataTable.defaults;
           var l_placeholder = $(this).data("placeholder") || null;
@@ -527,16 +533,28 @@ function escapeRegExp(str) {
             if (l_cookieValue != "__any__")
               l_select.change();
           }
-
           l_cell.append(l_select);
           l_cell.css("text-align", "center");
           l_nbSearch += 1;
         }
         l_row.append(l_cell);
       });
+
       if (0 != l_nbSearch)
-        l_table.append(l_tfoot);
-    // });
+      {
+        var l_tfoot = null;
+        if (settings.sFilterPlace != "thead")
+        {
+          l_place = $("<tfoot></tfoot>");
+          l_place.append(l_row);
+          l_table.append(l_place);
+        }
+        else
+          l_head.append(l_row);
+        l_table.filters = l_row;
+      }
+
+
       return l_table;
   };
 

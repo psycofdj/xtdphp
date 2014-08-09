@@ -16,6 +16,7 @@ function core_en() {
         "core.free"                 => "Free",
         "core.mail"                 => "Email",
         "core.actions"              => "Actions",
+        "core.actions.advanced"     => "Advanced",
         "core.item"                 => "Item",
         "core.items"                => "Items",
         "core.quantity"             => "Quantity",

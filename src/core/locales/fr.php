@@ -16,6 +16,7 @@ function core_fr() {
         "core.free"                 => "Libre",
         "core.mail"                 => "Email",
         "core.actions"              => "Actions",
+        "core.actions.advanced"     => "Avancé",
         "core.item"                 => "Objet",
         "core.items"                => "Objets",
         "core.quantity"             => "Quantité",
