@@ -154,11 +154,11 @@ class authModule extends Module
   public function setup()
   {
     R::exec("SET FOREIGN_KEY_CHECKS=0");
-    R::exec("DROP TABLE IF EXISTS `authuser`");
+    R::exec("DROP TABLE IF EXISTS `authuser_authperm`");
+    R::exec("DROP TABLE IF EXISTS `authaction_authrole`");
     R::exec("DROP TABLE IF EXISTS `authaction`");
     R::exec("DROP TABLE IF EXISTS `authrole`");
-    R::exec("DROP TABLE IF EXISTS `authaction_authrole`");
-    R::exec("DROP TABLE IF EXISTS `authuser_authperm`");
+    R::exec("DROP TABLE IF EXISTS `authuser`");
     R::exec("SET FOREIGN_KEY_CHECKS=1");
 
     R::exec(<<<'EOT'
