@@ -65,6 +65,10 @@
        }
 
        $("[data-toggle~=confirmation]").wappconfirm();
+       $("[data-toggle~=dropdown]").dropdown();
+       $(".dropdown-menu").on("click", "[data-noclose=true]", function(e) {
+         e.stopPropagation();
+       });
 
        $("button[data-form]").click(function() {
          var l_target = $(this).data("form");

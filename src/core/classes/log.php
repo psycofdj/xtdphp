@@ -178,6 +178,7 @@ function errors_to_str($p_errno)
   return implode("|", $l_errorStr);
 }
 
+
 set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
       if (false == tools::ends_with($errfile, "core/libs/smarty/sysplugins/smarty_resource.php"))
       {

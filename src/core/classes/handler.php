@@ -678,7 +678,9 @@ class Handler
       // 4.
       $this->m_signals->emit("process", $this, $l_action);
       if (false === $l_method->invokeArgs($this, $l_callArgs))
+      {
         return $this->replyInternalError();
+      }
 
       // 5.
       if (true != $this->finalize())
