@@ -10,7 +10,7 @@ function core_fr() {
         "core.viewimage"            => "Voir image",
         "core.open"                 => "Ouvrir",
         "core.close"                => "Fermer",
-        "core.save"                 => "Sauvegarder",
+        "core.save"                 => "ENREGISTRER",
         "core.send"                 => "Envoyer",
         "core.total"                => "Total",
         "core.free"                 => "Libre",
