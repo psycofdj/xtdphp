@@ -3,6 +3,7 @@
 require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/mail.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/error.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/tools.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/user.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/role.php");
@@ -47,25 +48,30 @@ class Page extends Handler
     if (0 != $pi_uid)
     {
       $l_isUpdated = false;
-      $l_user      = UserModel::update($pi_uid, $pm_email, $p_name, $p_password, $l_isUpdated);
+      list($l_user, $l_err) = UserModel::update($pi_uid, $pm_email, $p_name, $p_password, $l_isUpdated);
     }
     else
     {
       $l_isUpdated = true;
-      $l_user      = UserModel::create($pm_email, $p_name, $p_password);
+      list($l_user, $l_err) = UserModel::create($pm_email, $p_name, $p_password);
     }
 
     if (false == $l_user)
     {
+      if ($l_err == 23000)
+      {
+        $l_msg= t("auth.user.add.error.alreadyexists", $pm_email);
+        throw new WappError($l_msg, 200, "/wappcore/auth/user.php");
+      }
       log::crit("auth.user.save", "error while accessing/creating user");
       return false;
     }
 
     if ($l_isUpdated)
     {
-      $l_mail = new MailTemplate("userinfo", $p_user->mail);
+      $l_mail = new MailTemplate("userinfo", $l_user->mail);
       $l_mail
-        ->setData("user",     $p_user)
+        ->setData("user",     $l_user)
         ->setData("password", $p_password)
         ->send();
     }
@@ -123,6 +129,7 @@ class Page extends Handler
   {
     $this->setContent("[auth]user_add.tpl");
     $this->setData("roles", RoleModel::getAll());
+    $this->setData("resources", App::get()->getModule("auth")->getResources());
     return true;
   }
 

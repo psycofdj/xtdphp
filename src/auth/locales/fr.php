@@ -40,6 +40,7 @@ function auth_fr() {
         "auth.user.add.name"                   => "Prénom / Nom",
         "auth.user.add.password"               => "Mot de passe",
         "auth.user.add.password_confirm"       => "Confirmer mot de passe",
+        "auth.user.add.error.alreadyexists"    => "L'email utilisateur '%s' éxiste déjà",
 
         "auth.user.recover.error.notfound" => "L'adresse %s n'a pas été trouvée.",
         "auth.user.recover.ok"             => "Bonjour %s, un nouveau mot de passe a été envoyé à votre adresse %s.",

@@ -40,6 +40,7 @@ function auth_en() {
         "auth.user.add.name"                 => "First name / Last name",
         "auth.user.add.password"             => "Password",
         "auth.user.add.password_confirm"     => "Confirm password",
+        "auth.user.add.error.alreadyexists"  => "User mail '%s' already exists",
 
         "auth.user.recover.error.notfound" => "The address %s was not found.",
         "auth.user.recover.ok"             => "Hi %s, A new password has been sent to your address %s;.",

@@ -1,7 +1,11 @@
 <script type="text/javascript">
   $("document").ready(function() {
     $(".alert button").click(function() {
-      window.location = "/";
+     {if isset($__redirect)}
+       window.location = "{$__redirect}";
+     {else}
+       window.location = "/";
+     {/if}
     });
   });
 </script>

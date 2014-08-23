@@ -30,6 +30,23 @@ class Page extends Handler
     return true;
   }
 
+  public function h_delete($pu_rid)
+  {
+    if (false == ($l_role = RoleModel::getByID($pu_rid)))
+    {
+      log::crit("auth.role.delete", "unable to get role of id '%d'", $pu_rid);
+      return false;
+    }
+
+    if (false == RoleModel::delete($l_role))
+    {
+      log::crit("auth.role.delete", "unable to delete role of id '%d'", $pu_rid);
+      return false;
+    }
+
+    return $this->redirect("/wappcore/auth/role.php");
+  }
+
   /* public function h_save($pi_uid = 0, $pm_email, $p_name, $p_password, $pau_perm = array()) */
   /* { */
   /*   if ((0 == $pu_uid) && (0 == strlen($p_password))) */
@@ -86,23 +103,6 @@ class Page extends Handler
   /*   $this->setData("resources", App::get()->getModule("auth")->getResources()); */
   /*   return true; */
   /* } */
-
-  public function h_delete($pu_rid)
-  {
-    if (false == ($l_role = RoleModel::getByID($pu_rid)))
-    {
-      log::crit("auth.role.delete", "unable to get role of id '%d'", $pu_rid);
-      return false;
-    }
-
-    if (false == RoleModel::delete($l_role))
-    {
-      log::crit("auth.role.delete", "unable to delete role of id '%d'", $pu_rid);
-      return false;
-    }
-
-    return $this->redirect("/wappcore/auth/role.php");
-  }
 
   /* public function h_add() */
   /* { */

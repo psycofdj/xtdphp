@@ -42,8 +42,14 @@ class UserModel
     $l_user->mail     = $p_mail;
     $l_user->name     = $p_name;
     $l_user->password = md5($p_password);
-    R::store($l_user);
-    return $l_user;
+
+    try {
+      R::store($l_user);
+    }
+    catch (RedBeanPHP\RedException\SQL $l_error) {
+      return array(false, $l_error->getSQLState());
+    }
+    return array($l_user, 0);
   }
 
 
@@ -61,8 +67,13 @@ class UserModel
       $l_user->password = md5($p_password);
     };
 
-    R::store($l_user);
-    return $l_user;
+    try {
+      R::store($l_user);
+    }
+    catch (RedBeanPHP\RedException\SQL $l_error) {
+      return array(false, $l_error->getSQLState());
+    }
+    return array($l_user, 0);
   }
 
   static function setPermissions(&$p_user, $p_perms)
