@@ -416,7 +416,7 @@ class Handler
    *  @param  string $p_value session value
    *  @return Handler $this
    */
-  protected function setSession($p_key, $p_value)
+  public function setSession($p_key, $p_value)
   {
     $_SESSION[$p_key] = $p_value;
     return $this;
@@ -695,11 +695,20 @@ class Handler
     }
     catch (Exception $l_error)
     {
+      log::crit("core.handler", "caugth exception : %s", $l_error->getMessage());
       return $this->replyException($l_error);
     }
 
-    // 6.
-    return $this->replySuccess();
+    try
+    {
+      // 6.
+      return $this->replySuccess();
+    }
+    catch (Exception $l_error)
+    {
+      log::crit("core.handler", "caugth exception : %s", $l_error->getMessage());
+      return $this->replyException($l_error);
+    }
   }
 
   private function getMethod()

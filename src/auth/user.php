@@ -14,12 +14,16 @@ class Page extends Handler
   {
     parent::__construct();
 
-    $l_auth = App::get()->getModule("auth");
-    $l_auth
-      ->registerPerm("default", "auth/user/view")
-      ->registerPerm("list",    "auth/user/view")
-      ->registerPerm("edit",    "auth/user/modify")
-      ->registerPerm("delete",  "auth/user/terminate");
+    if (false != ($l_auth = App::get()->getModule("auth")))
+    {
+      $l_auth
+        ->registerPerm("default", "auth/user/view")
+        ->registerPerm("list",    "auth/user/view")
+        ->registerPerm("edit",    "auth/user/modify")
+        ->registerPerm("save",    "auth/user/modify")
+        ->registerPerm("add",     "auth/user/modify")
+        ->registerPerm("delete",  "auth/user/terminate");
+    }
   }
 
 
@@ -31,14 +35,14 @@ class Page extends Handler
 
   public function h_list()
   {
-    $this->setContent("file:[auth]user_list.tpl");
+    $this->setContent("[auth]user_list.tpl");
     $this->setData("users", UserModel::getAll());
     return true;
   }
 
-  public function h_save($pi_uid = 0, $pm_email, $p_name, $p_password, $pau_perm = array())
-  {
 
+  public function h_save($pi_uid = 0, $pm_email, $p_name, $p_password, $pau_perm = array(), $pau_resource = array())
+  {
     if ((0 == $pi_uid) && (0 == strlen($p_password)))
     {
       log::crit("auth.user.save", "new users must have non-empty passwords");
@@ -67,6 +71,7 @@ class Page extends Handler
       return false;
     }
 
+    // 1.
     if ($l_isUpdated)
     {
       $l_mail = new MailTemplate("userinfo", $l_user->mail);
@@ -76,6 +81,8 @@ class Page extends Handler
         ->send();
     }
 
+
+    // 2.
     $l_perms = array();
     foreach ($pau_perm as $c_permIdx)
     {
@@ -100,14 +107,31 @@ class Page extends Handler
 
       array_push($l_perms, array("role" => $l_roleID, "data" => $l_dataID));
     }
-
     UserModel::setPermissions($l_user, $l_perms);
+
+    // 3.
+    $l_resources = array();
+    foreach ($pau_resource as $c_idx)
+    {
+      $l_nameName = sprintf("resource_%d_name", $c_idx);
+      $l_nameID   = sprintf("resource_%d_id",   $c_idx);
+
+      if ((false === ($l_name  = $this->getParam($l_nameName))) ||
+          (false === ($l_id    = $this->getParam($l_nameID))))
+      {
+        log::crit("auth.user.save", "could not find name '%s' and/or value '%s' for resoures id '%d'", $l_nameName, $l_nameID, $c_idx);
+        return false;
+      }
+      array_push($l_resources, array("name" => $l_name, "value" => $l_id));
+    }
+    UserModel::setResources($l_user, $l_resources);
+
     return $this->redirect("/wappcore/auth/user.php");
   }
 
   public function h_edit($pu_uid)
   {
-    $this->setContent("file:[auth]user_add.tpl");
+    $this->setContent("[auth]user_add.tpl");
     $this->setData("user",      UserModel::getByID($pu_uid));
     $this->setData("roles",     RoleModel::getAll());
     $this->setData("resources", App::get()->getModule("auth")->getResources());

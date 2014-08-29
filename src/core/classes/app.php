@@ -9,6 +9,7 @@ class App
 {
   private static $ms_instance = null;
   private $m_menu             = null;
+  private $m_handler          = null;
   private $m_modules          = Array();
 
   static public function get()
@@ -86,6 +87,16 @@ class App
     array_push($this->m_modules, new $l_className($p_baseDir, $p_moduleName));
   }
 
+  public function getHandler()
+  {
+    return $this->m_handler;
+  }
+
+  public function setHandler(Handler $p_handler)
+  {
+    $this->m_handler = $p_handler;
+  }
+
   public function connect($p_className, $p_signal, $p_slot)
   {
     ezcSignalStaticConnections::getInstance()->connect($p_className, $p_signal, $p_slot);
@@ -115,6 +126,7 @@ class App
   public function initialize($p_handler)
   {
     $this->m_menu->initialize($p_handler);
+    $this->m_handler = $p_handler;
   }
 }
 

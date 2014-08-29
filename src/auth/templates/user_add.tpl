@@ -49,11 +49,12 @@
     <ol class="breadcrumb">
       <li><a href="/">{t}core.menu.home{/t}</a></li>
       <li><a href="/wappcore/auth/user.php">{t}auth.menu.title{/t}</a></li>
+      <li><a href="/wappcore/auth/user.php">{t}auth.menu.users{/t}</a></li>
       <li class="active">
         {if isset($user)}
-        {$user.name}
+          {$user.name}
         {else}
-        {t}auth.user.add.title{/t}
+          {t}auth.user.add.title{/t}
         {/if}
         &nbsp;&nbsp;
         <button type="submit" class="btn btn-sm btn-success glyphicon" data-form="#add" data-toggle="tooltip" data-placement="right" data-title="{t}core.save{/t}">{t}core.save{/t}</button>
@@ -63,17 +64,19 @@
 
 
   {if isset($user)}
-    {assign uid $user->id}
-    {assign mail $user->mail}
-    {assign name $user->name}
-    {assign requiered ""}
-    {assign perms $user->ownAuthuserAuthpermList}
+    {assign uid           $user->id}
+    {assign mail          $user->mail}
+    {assign name          $user->name}
+    {assign requiered     ""}
+    {assign perms         $user->ownAuthuserAuthpermList}
+    {assign userresources $user->ownAuthuserAuthresourceList}
   {else}
-    {assign uid 0}
-    {assign mail ""}
-    {assign name ""}
-    {assign requiered "required"}
-    {assign perms array()}
+    {assign uid           0}
+    {assign mail          ""}
+    {assign name          ""}
+    {assign requiered     "required"}
+    {assign perms         array()}
+    {assign userresources array()}
   {/if}
 
   <div class="row">
@@ -83,7 +86,7 @@
 
       <div class="col-md-4 centered">
         <fieldset>
-          <legend>User informations</legend>
+          <legend>{t}auth.user.add.userinfo{/t}</legend>
           <div class="form-group has-feedback">
             <!-- mail -->
             <label class="col-xs-5 control-label" for="email">{t}core.mail{/t}</label>
@@ -121,12 +124,34 @@
               <span class="glyphicon  form-control-feedback"></span>
             </div>
           </div>
+
+          {foreach $resources as $c_res name=res}
+            <div class="form-group">
+              <input type="hidden" name="resource[]" value="{$smarty.foreach.res.index}"/>
+              <input type="hidden" name="resource_{$smarty.foreach.res.index}_name" value="{$c_res->getName()}"/>
+              <label class="col-xs-5 control-label">{t var="{$c_res->getTag()}"}auth.user.add.default{/t}</label>
+              <div class="col-xs-7">
+                <select class="form-control" name="resource_{$smarty.foreach.res.index}_id">
+                  {foreach $c_res->generate() as $c_value}
+                    {assign selected ""}
+                    {foreach $userresources as $c_setres}
+                      {if ($c_res->getName() == $c_setres->name) && ($c_setres->value == $c_value.id)}
+                        {assign selected "selected='selected'"}
+                      {/if}
+                    {/foreach}
+                    <option value="{$c_value.id}" {$selected}>{$c_value.label}</option>
+                  {/foreach}
+                </select>
+              </div>
+            </div>
+          {/foreach}
+
         </fieldset>
       </div> <!-- col-md-4 -->
 
       <div class="col-md-4 centered">
         <fieldset id="current" data-count="{count($perms)}">
-          <legend>User roles</legend>
+          <legend>{t}auth.user.add.roles.set{/t}</legend>
           {foreach $perms as $c_perm name=perm}
           {assign c_role $c_perm->authrole}
           <div class="row form-group">
@@ -135,6 +160,9 @@
             <input type="hidden" name="perm_{$smarty.foreach.perm.index}_data" value='{$c_perm->data}'/>
             <div class="col-xs-2 text-right">
               <button type="button" class="btn btn-default btn-warning glyphicon glyphicon-minus current_role"></button>
+            </div>
+            <div class="col-xs-4 form-text">
+              {$c_role->name}
             </div>
             {if $c_role->datatype}
             <div class="col-xs-6">
@@ -149,9 +177,6 @@
               </select>
             </div>
             {/if}
-            <div class="col-xs-4 form-text">
-              {$c_role->name}
-            </div>
           </div> <!-- form-group -->
           {/foreach}
         </fieldset>
@@ -160,13 +185,15 @@
 
     <div class="col-md-4 centered">
       <fieldset>
-        <legend>Available roles</legend>
-
+        <legend>{t}auth.user.add.roles.all{/t}</legend>
         {foreach $roles as $c_role}
         <div class="row form-group">
           <input name="role" value="{$c_role->id}" type="hidden"/>
           <div class="col-xs-2 text-right">
             <button type="button" class="btn btn-default btn-success glyphicon glyphicon-plus available_role"></button>
+          </div>
+          <div class="col-xs-4 form-text">
+            {$c_role->name}
           </div>
           {if $c_role->datatype}
           <div class="col-xs-6">
@@ -177,9 +204,6 @@
             </select>
           </div>
           {/if}
-          <div class="col-xs-4 form-text">
-            {$c_role->name}
-          </div>
         </div> <!-- form-group -->
         {/foreach}
 

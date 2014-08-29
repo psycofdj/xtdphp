@@ -16,50 +16,41 @@
 
     <ul class="nav navbar-nav">
       {foreach $__menu->getTabs() as $c_tab}
-
-      {assign acl null}
-      {if isset($auth_acl)}
-        {if false == $c_tab->isAllowed($auth_acl)}
+        {if false == $c_tab->isDisplayable()}
           {continue}
         {/if}
-      {else}
-        {if false == $c_tab->isAllowed()}
-          {continue}
+
+        {assign "active" ""}
+        {if $c_tab->isActiveUrl()}
+          {assign "active" "active"}
         {/if}
-      {/if}
 
-      {assign "active" ""}
-      {if $c_tab->isActiveUrl()}
-        {assign "active" "active"}
-      {/if}
-
-      {if $c_tab->hasTabs()}
-      <li class="dropdown {$active}">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          {t}{$c_tab->m_title}{/t}
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-          {foreach $c_tab->getTabs() as $c_subtab}
-            {if isset($auth_acl) && (false == $c_subtab->isAllowed($auth_acl)) }
-              {continue}
-            {/if}
-            {assign "subactive" ""}
-            {if $c_subtab->isActiveUrl()}
-              {assign "subactive" "active"}
-            {/if}
-          <li class="{$subactive}">
-            <a href="{$c_subtab->m_link}">{t}{$c_subtab->m_title}{/t}</a>
+        {if $c_tab->hasTabs()}
+          <li class="dropdown {$active}">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              {t}{$c_tab->m_title}{/t}
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              {foreach $c_tab->getTabs() as $c_subtab}
+                {if false == $c_subtab->isDisplayable() }
+                  {continue}
+                {/if}
+                {assign "subactive" ""}
+                {if $c_subtab->isActiveUrl()}
+                  {assign "subactive" "active"}
+                {/if}
+                <li class="{$subactive}">
+                  <a href="{$c_subtab->m_link}">{t}{$c_subtab->m_title}{/t}</a>
+                </li>
+              {/foreach}
+            </ul>
           </li>
-          {/foreach}
-        </ul>
-      </li>
-      {else}
-      <li class="{$active}">
-        <a href="{$c_tab->m_link}">{t}{$c_tab->m_title}{/t}</a>
-      </li>
-      {/if}
-
+        {else}
+          <li class="{$active}">
+            <a href="{$c_tab->m_link}">{t}{$c_tab->m_title}{/t}</a>
+          </li>
+        {/if}
       {/foreach}
     </ul>
 

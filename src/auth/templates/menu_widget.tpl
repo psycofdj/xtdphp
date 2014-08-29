@@ -30,6 +30,9 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
+   var l_modal = $("#auth_error").detach();
+   l_modal.appendTo($("body"));
+
     $("#auth_menu_widget").validate({
       rules: {
         password: { minlength: 8 }

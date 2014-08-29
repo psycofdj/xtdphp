@@ -3,6 +3,7 @@
 require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/role.php");
+require_once(__WAPPCORE_DIR__  . "/auth/models/action.php");
 
 class Page extends Handler
 {
@@ -10,12 +11,16 @@ class Page extends Handler
   {
     parent::__construct();
 
-    $l_auth = App::get()->getModule("auth");
-    $l_auth
-      ->registerPerm("default", "auth/user/view")
-      ->registerPerm("list",    "auth/user/view")
-      ->registerPerm("edit",    "auth/user/modify")
-      ->registerPerm("delete",  "auth/user/terminate");
+    if (false != ($l_auth = App::get()->getModule("auth")))
+    {
+      $l_auth
+        ->registerPerm("default", "auth/role/view")
+        ->registerPerm("list",    "auth/role/view")
+        ->registerPerm("delete",  "auth/role/terminate")
+        ->registerPerm("add",     "auth/role/modify")
+        ->registerPerm("edit",    "auth/role/modify")
+        ->registerPerm("save",    "auth/role/modify");
+    }
   }
 
   public function h_default()
@@ -25,7 +30,7 @@ class Page extends Handler
 
   public function h_list()
   {
-    $this->setContent("file:[auth]role_list.tpl");
+    $this->setContent("[auth]role_list.tpl");
     $this->setData("roles", RoleModel::getAll());
     return true;
   }
@@ -47,69 +52,54 @@ class Page extends Handler
     return $this->redirect("/wappcore/auth/role.php");
   }
 
-  /* public function h_save($pi_uid = 0, $pm_email, $p_name, $p_password, $pau_perm = array()) */
-  /* { */
-  /*   if ((0 == $pu_uid) && (0 == strlen($p_password))) */
-  /*   { */
-  /*     log::crit("new users must have non-empty passwords"); */
-  /*     return false; */
-  /*   } */
+  public function h_add()
+  {
+    $this->setContent("[auth]role_add.tpl");
 
-  /*   if (0 == $pu_uid) */
-  /*     $l_user = UserModel::create($pm_email, $p_name, $p_password); */
-  /*   else */
-  /*     $l_user = UserModel::update($pu_uid, $pm_email, $p_name, $p_password); */
+    $this->setData("actions",   ActionModel::getAll());
+    $this->setData("resources", App::get()->getModule("auth")->getResources());
+    return true;
+  }
 
-  /*   if (false == $l_user) */
-  /*   { */
-  /*     log::crit("error while accessing/creating user"); */
-  /*     return false; */
-  /*   } */
+  public function h_edit($pu_rid)
+  {
+    $this->setContent("[auth]role_add.tpl");
+    $this->setData("role",      RoleModel::getByID($pu_rid));
+    $this->setData("actions",   ActionModel::getAll());
+    return true;
+  }
 
-  /*   $l_perms = array(); */
-  /*   foreach ($pau_perm as $c_permIdx) */
-  /*   { */
-  /*     $l_roleName = sprintf("perm_%d_role", $c_permIdx); */
-  /*     $l_dataName = sprintf("perm_%d_data", $c_permIdx); */
+  public function h_save($pu_rid, $p_name, $pau_aid = array())
+  {
+    $l_actions = array();
+    foreach ($pau_aid as $c_aid)
+    {
+      if (false == ($l_action = ActionModel::getByID($c_aid)))
+      {
+        log::crit("auth.role", "unknown action id '%d'", $c_aid);
+        return false;
+      }
+      array_push($l_actions, $l_action);
+    }
 
-  /*     if ((false === ($l_roleID = $this->getParam($l_roleName))) || */
-  /*         (false === ($l_dataID = $this->getParam($l_dataName)))) */
-  /*     { */
-  /*       log::crit("could not find role '%s' and data '%s' id form permission index '%d'", $l_roleName, $l_dataName, $c_permIdx); */
-  /*       return false; */
-  /*     } */
+    if (0 == $pu_rid)
+      list($l_role, $l_error) = RoleModel::create($p_name, $l_actions);
+    else
+      list($l_role, $l_error) = RoleModel::update($pu_rid, $p_name, $l_actions);
 
-  /*     if ($l_dataID == "") */
-  /*       $l_dataID = null; */
+    if (false == $l_role)
+    {
+      if (23000 == $l_error)
+      {
+        $l_msg = t("auth.role.add.error.alreadyexists", $p_name);
+        throw new WappError($l_msg, 200, "/wappcore/auth/role.php");
+      }
+      log::crit("auth.role.save", "unable to create role");
+      return false;
+    }
 
-  /*     if (false == RoleModel::getByID($l_roleID)) */
-  /*     { */
-  /*       log::crit("unable to find roleID '%d'", $l_roleID); */
-  /*       return false; */
-  /*     } */
-
-  /*     array_push($l_perms, array("role" => $l_roleID, "data" => $l_dataID)); */
-  /*   } */
-
-  /*   UserModel::setPermissions($l_user, $l_perms); */
-  /*   return $this->redirect("/wappcore/auth/user.php"); */
-  /* } */
-
-  /* public function h_edit($pu_uid) */
-  /* { */
-  /*   $this->setContent("file:[auth]user_add.tpl"); */
-  /*   $this->setData("user",      UserModel::getByID($pu_uid)); */
-  /*   $this->setData("roles",     RoleModel::getAll()); */
-  /*   $this->setData("resources", App::get()->getModule("auth")->getResources()); */
-  /*   return true; */
-  /* } */
-
-  /* public function h_add() */
-  /* { */
-  /*   $this->setContent("file:[auth]user_add.tpl"); */
-  /*   $this->setData("roles", RoleModel::getAll()); */
-  /*   return true; */
-  /* } */
+    return $this->redirect("/wappcore/auth/role.php");
+  }
 }
 
 $l_page = new Page();

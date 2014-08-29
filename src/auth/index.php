@@ -39,12 +39,40 @@ class Page extends Handler
       {
         $l_role = $c_perm->authrole;
         $l_data = $c_perm->data;
-        foreach ($l_role->sharedAuthactionList as $c_action)
+
+        if (null != $l_data)
+        {
+          $l_datatype = $l_role->datatype;
+          $l_data     = sprintf("%s:%s", $l_datatype, $l_data);
+          if (false == $l_acl->hasResource($l_data))
+            $l_acl->addResource(new Resource($l_data));
+        }
+        foreach ($l_role->sharedAuthactionList as $c_action) {
+          log::crit("auth", "allowing for data %s : %s", $l_data, $c_action->tag);
           $l_acl->allow("user", $l_data, $c_action->tag);
+        }
+      }
+
+
+      foreach (App::get()->getModule("auth")->getResources() as $c_res)
+      {
+        foreach ($l_user->ownAuthuserAuthresourceList as $c_setres)
+        {
+          if ($c_res->getName() == $c_setres->name)
+          {
+            if (false == $c_res->setValue($this, $c_setres->value))
+            {
+              log::crit("auth.login", "value %d is invalid for resource %s", $c_setres->value, $c_setres->name);
+              return false;
+            }
+          }
+        }
       }
 
       $this->setSession("auth_user", $l_user);
       $this->setSession("auth_acl",  $l_acl);
+
+
       $this->setStatusCode(204);
       return true;
     }

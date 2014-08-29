@@ -1,5 +1,7 @@
 <?php
 
+require_once(__WAPPCORE_DIR__  . "/core/classes/tools.php");
+
 class log
 {
   public static  $ms_defaultLevel = 2;
@@ -89,11 +91,7 @@ class log
     return "unknown";
   }
 
-  /**
-   ** @details
-   ** p_level, p_file, p_line, p_fmt...
-   */
-  private static function doLog()
+  public static function logBuild()
   {
     $l_args      = func_get_args();
     $l_callArgs  = array();
@@ -103,7 +101,7 @@ class log
     $l_dstFmt    = sprintf("%%9s (%%s) : %s at %%s:%%d", $l_srcFmt);
 
     if (self::getLevel($l_module) < $l_level)
-      return;
+      return false;
 
     array_push($l_callArgs, $l_dstFmt);
     array_push($l_callArgs, sprintf("[%s]", self::levelToString($l_level)));
@@ -113,16 +111,21 @@ class log
       array_push($l_callArgs, $l_args[$c_argIdx]);
 
     $l_stackInfo = debug_backtrace();
-    $l_stackInfo = $l_stackInfo[2];
-    array_push($l_callArgs, $l_stackInfo["file"]);
-    array_push($l_callArgs, $l_stackInfo["line"]);
+    $l_stackInfo = $l_stackInfo[4];
+    $l_file      = "(unknown file)";
+    $l_line      = 0;
 
-    $l_msg = call_user_func_array("sprintf", $l_callArgs);
-    array_push(self::$ms_lines, $l_msg);
-    error_log($l_msg);
+    if (true == array_key_exists("file", $l_stackInfo))
+      $l_file = $l_stackInfo["file"];
+    if (true == array_key_exists("line", $l_stackInfo))
+      $l_line = $l_stackInfo["line"];
+    array_push($l_callArgs, $l_file);
+    array_push($l_callArgs, $l_line);
+
+    return call_user_func_array("sprintf", $l_callArgs);
   }
 
-  public static function doLogFile()
+  public static function logBuildFile()
   {
     $l_args      = func_get_args();
     $l_callArgs  = Array();
@@ -132,7 +135,7 @@ class log
     $l_dstFmt    = sprintf("%%9s (%%s) : %s at %%s:%%d", $l_srcFmt);
 
     if (self::getLevel($l_module) < $l_level)
-      return;
+      return false;
 
     array_push($l_callArgs, $l_dstFmt);
     array_push($l_callArgs, sprintf("[%s]", self::levelToString($l_level)));
@@ -141,9 +144,29 @@ class log
     for ($c_argIdx = 3; $c_argIdx < func_num_args(); $c_argIdx++)
       array_push($l_callArgs, $l_args[$c_argIdx]);
 
-    $l_msg = call_user_func_array("sprintf", $l_callArgs);
-    array_push(self::$ms_lines, $l_msg);
-    error_log($l_msg);
+    return call_user_func_array("sprintf", $l_callArgs);
+  }
+
+  /**
+   ** @details
+   ** p_level, p_file, p_line, p_fmt...
+   */
+  public static function doLog()
+  {
+    $l_args = func_get_args();
+    if (false != ($l_msg  = forward_static_call_array("self::logBuild", $l_args))) {
+      array_push(self::$ms_lines, $l_msg);
+      error_log($l_msg);
+    }
+  }
+
+  public static function doLogFile()
+  {
+    $l_args = func_get_args();
+    if (false != ($l_msg = forward_static_call_array("self::logBuildFile", $l_args))) {
+      array_push(self::$ms_lines, $l_msg);
+      error_log($l_msg);
+    }
   }
 }
 
@@ -180,11 +203,31 @@ function errors_to_str($p_errno)
 
 
 set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
-      if (false == tools::ends_with($errfile, "core/libs/smarty/sysplugins/smarty_resource.php"))
-      {
-        log::doLogFile(log::mc_levelCrit, "core.php", "[%s] %s", errors_to_str($errno), $errstr, $errfile, $errline);
-        throw new Exception();
-      }
-    }, E_ALL | E_STRICT);
+    $l_silent =
+      array("core/libs/smarty/sysplugins/smarty_resource.php",
+            "core/libs/phpmailer/class.phpmailer.php");
+    foreach ($l_silent as $c_silent)
+      if (true == tools::ends_with($errfile, $c_silent))
+        return;
+    log::doLogFile(log::mc_levelCrit, "core.php", "[%s] %s", errors_to_str($errno), $errstr, $errfile, $errline);
+    $l_stack = debug_backtrace();
+    for ($c_idx = 0; $c_idx < count($l_stack); $c_idx++)
+    {
+      $l_class = "";
+      $l_file  = "";
+      $l_line  = 0;
+      $l_func  = "<unknown>";
+      if (true == array_key_exists("class", $l_stack[$c_idx]))
+        $l_class = sprintf("%s->", $l_stack[$c_idx]["class"]);
+      if (true == array_key_exists("file", $l_stack[$c_idx]))
+        $l_file = $l_stack[$c_idx]["file"];
+      if (true == array_key_exists("line", $l_stack[$c_idx]))
+        $l_file = $l_stack[$c_idx]["line"];
+      if (true == array_key_exists("function", $l_stack[$c_idx]))
+        $l_func = $l_stack[$c_idx]["function"];
+      log::doLogFile(log::mc_levelCrit, "core.php", "  % 3d. %s%s(...)", $c_idx, $l_class, $l_func, $l_file, $l_line);
+    }
+    throw new Exception();
+  }, E_ALL | E_STRICT);
 
 ?>

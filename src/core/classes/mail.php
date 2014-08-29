@@ -104,16 +104,9 @@ class MailTemplate extends TemplateGenerator
 
   public function send()
   {
-    try {
-      if (false == $this->_send())
-      {
-        log::crit("core.mail", "unable to send mail to %s (txtTpl=%s, htmlTpl=%s)", $this->m_to, $this->m_txtTpl, $this->m_htmlTpl);
-        return false;
-      }
-    }
-    catch (Exception $l_error)
+    if (false == $this->_send())
     {
-      log::crit("core.mail", "error while sending mail to %s (txtTpl=%s, htmlTpl=%s) : %s", $this->m_to, $this->m_txtTpl, $this->m_htmlTpl, $l_error->getMessage());
+      log::crit("core.mail", "unable to send mail to %s (txtTpl=%s, htmlTpl=%s)", $this->m_to, $this->m_txtTpl, $this->m_htmlTpl);
       return false;
     }
     return true;

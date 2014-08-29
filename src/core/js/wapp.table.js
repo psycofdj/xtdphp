@@ -337,7 +337,8 @@ function fnCreateSelect(aData, p_colIdx, p_settings)
     var l_node  = aData[i] || "__null__";
     var l_label = l_node;
 
-    if ((undefined != p_settings.aoColumns[p_colIdx]) &&
+    if ((undefined != p_settings.aoColumns) &&
+        (undefined != p_settings.aoColumns[p_colIdx]) &&
         (undefined != p_settings.aoColumns[p_colIdx].aFilterLabels) &&
         (undefined != p_settings.aoColumns[p_colIdx].aFilterLabels[l_node]))
       l_label = p_settings.aoColumns[p_colIdx].aFilterLabels[l_node];
@@ -505,16 +506,34 @@ function escapeRegExp(str) {
           l_select.html(fnCreateSelect(l_data, p_colIndex, settings));
           l_select.change(function() {
             var l_val = $(this).val();
-            if (l_val == "__any__")
-              l_table.fnFilter("__any__", p_colIndex, false, false, false);
-            else if (l_val == "__notempty__")
-              l_table.fnFilter("^.+$", p_colIndex, true, false, false);
-            else if (l_val == "__null__")
-              l_table.fnFilter("__null__", p_colIndex, false, false, false);
-            else if (l_val == "__notnull__")
-              l_table.fnFilter("__notnull__", p_colIndex, false, false, false);
+
+            if (undefined != settings.sAjaxSource)
+            {
+              if (l_val == "__any__")
+                l_table.fnFilter("__any__", p_colIndex, false, false, false);
+              else if (l_val == "__notempty__")
+                l_table.fnFilter("^.+$", p_colIndex, true, false, false);
+              else if (l_val == "__null__")
+                l_table.fnFilter("__null__", p_colIndex, false, false, false);
+              else if (l_val == "__notnull__")
+                l_table.fnFilter("__notnull__", p_colIndex, false, false, false);
+              else
+                l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+            }
             else
-              l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+            {
+              if (l_val == "__any__")
+                l_table.fnFilter(".*", p_colIndex, true, false, false);
+              else if (l_val == "__notempty__")
+                l_table.fnFilter("^.+$", p_colIndex, true, false, false);
+              else if (l_val == "__null__")
+                l_table.fnFilter("^$", p_colIndex, true, false, false);
+              else if (l_val == "__notnull__")
+                l_table.fnFilter("^.+$", p_colIndex, true, false, false);
+              else
+                l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+            }
+
 
             if ($(this).prop("disabled") == false)
               $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});

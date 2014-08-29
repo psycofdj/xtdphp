@@ -67,21 +67,20 @@ class MenuTab
   public $m_title;
   public $m_link;
   public $m_subTabs;
-  public $m_role;
   public $m_priority;
 
-  function __construct($p_title, $p_link = "/", $p_action = null)
+  function __construct($p_title, $p_link = "/", $p_displayable = null)
   {
-    $this->m_title    = $p_title;
-    $this->m_link     = $p_link;
-    $this->m_subTabs  = array();
-    $this->m_action   = $p_action;
-    $this->m_priority = 0;
+    $this->m_title       = $p_title;
+    $this->m_link        = $p_link;
+    $this->m_subTabs     = array();
+    $this->m_displayable = $p_displayable;
+    $this->m_priority    = 0;
   }
 
-  function addSubTab($p_title, $p_link = "/", $p_action = null)
+  function addSubTab($p_title, $p_link = "/", $p_displayable = null)
   {
-    array_push($this->m_subTabs, new MenuTab($p_title, $p_link, $p_action));
+    array_push($this->m_subTabs, new MenuTab($p_title, $p_link, $p_displayable));
     return $this;
   }
 
@@ -106,22 +105,17 @@ class MenuTab
     return $this->m_subTabs;
   }
 
-  function isAllowed($p_acl = null)
+  function isDisplayable()
   {
     if (true == $this->hasTabs())
-      return array_reduce($this->m_subTabs, function ($p_res, $p_obj) use (&$p_acl) {
-            $p_res = $p_res || $p_obj->isAllowed($p_acl);
+      return array_reduce($this->m_subTabs, function ($p_res, $p_obj) {
+            $p_res = $p_res || $p_obj->isDisplayable();
             return $p_res;
           }, false);
-    if (false == $this->m_action)
-      return true;
 
-    if ($this->m_action == null)
-      return true;
-
-    if ($p_acl == null)
-      return false;
-    return $p_acl->isAllowed("user", null, $this->m_action);
+    $l_functor = $this->m_displayable;
+    $l_result = ((null == $l_functor) || (true == $l_functor()));
+    return $l_result;
   }
 
   function isActiveUrl()

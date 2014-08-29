@@ -23,7 +23,7 @@ class UserModel
   static function getByMailPass($p_mail, $p_password)
   {
     return R::findOne("authuser", "mail = :mail and password = :password",
-        array("mail" => $p_mail, "password" => md5($p_password)));
+                      array("mail" => $p_mail, "password" => md5($p_password)));
   }
 
   static function getByMail($p_mail)
@@ -83,6 +83,20 @@ class UserModel
     {
       $l_role = RoleModel::getByID($c_perm["role"]);
       $p_user->link("authuser_authperm", array("data" => $c_perm["data"]))->authrole = $l_role;
+    }
+    R::store($p_user);
+  }
+
+
+  static function setResources(&$p_user, $p_resources)
+  {
+    $p_user->xownAuthuserAuthresourceList = array();
+    foreach ($p_resources as $c_res)
+    {
+      log::crit("test", "here");
+      $p_user->link("authuser_authresource", array(
+            "name"  => $c_res["name"],
+            "value" => $c_res["value"]));
     }
     R::store($p_user);
   }
