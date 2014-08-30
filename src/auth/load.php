@@ -5,7 +5,12 @@ require_once(__WAPPCORE_DIR__  . "/core/classes/module.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/app.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/menu.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/user.php");
+require_once(__WAPPCORE_DIR__  . "/auth/models/config.php");
 require_once(__WAPPCORE_DIR__  . "/auth/classes/resource.php");
+
+use Zend\Permissions\Acl\Acl;
+use Zend\Permissions\Acl\Role\GenericRole as Role;
+use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 
 class authModule extends Module
 {
@@ -34,6 +39,7 @@ class authModule extends Module
       ->addSubTab("auth.menu.users", "/wappcore/auth/user.php", $this->allower("auth/user/view"))
       ->addSubTab("auth.menu.roles", "/wappcore/auth/role.php", $this->allower("auth/role/view"));
 
+    App::get()->connect("Handler", "process",  array($this, "updatePerm"));
     App::get()->connect("Handler", "process",  array($this, "checkPerm"));
 
     $l_this = $this;
@@ -84,6 +90,21 @@ class authModule extends Module
     if ($l_inverse)
       $l_isAllowed = !$l_isAllowed;
     return ($l_isAllowed) ? $l_hasPerm : $l_elsePerm;
+  }
+
+  public function updatePerm(Handler $p_handler, $p_action)
+  {
+    if ((false != ($l_user       = $p_handler->getSession("auth_user"))) &&
+        (false != ($l_systemLast = ConfigModel::get("flush")))           &&
+        (false != ($l_userLast   = $p_handler->getSession("flush"))))
+    {
+      if ($l_systemLast > $l_userLast)
+      {
+        $l_user = UserModel::getByID($l_user->id);
+        $this->loadPrivileges($p_handler, $l_user);
+      }
+    }
+    return true;
   }
 
   /**
@@ -207,6 +228,61 @@ class authModule extends Module
     return $this;
   }
 
+  public function createWidget(Handler $p_handler)
+  {
+    $l_lastFlush = ConfigModel::get("flush");
+
+    $p_handler->setData("auth_user", null);
+    if (false != ($l_user = $p_handler->getSession("auth_user")))
+      $p_handler->setData("auth_user", $l_user);
+  }
+
+
+  public function loadPrivileges(Handler $p_handler, $p_user)
+  {
+    $l_perms   = $p_user->ownAuthuserAuthpermList;
+    $l_acl     = new Acl();
+
+    $l_acl->addRole(new Role("user"));
+    foreach ($l_perms as $c_perm)
+    {
+      $l_role = $c_perm->authrole;
+      $l_data = $c_perm->data;
+
+      if (null != $l_data)
+      {
+        $l_datatype = $l_role->datatype;
+        $l_data     = sprintf("%s:%s", $l_datatype, $l_data);
+        if (false == $l_acl->hasResource($l_data))
+          $l_acl->addResource(new Resource($l_data));
+      }
+      foreach ($l_role->sharedAuthactionList as $c_action) {
+        $l_acl->allow("user", $l_data, $c_action->tag);
+      }
+    }
+
+    foreach (App::get()->getModule("auth")->getResources() as $c_res)
+    {
+      foreach ($p_user->ownAuthuserAuthresourceList as $c_setres)
+      {
+        if ($c_res->getName() == $c_setres->name)
+        {
+          if (false == $c_res->setValue($p_handler, $c_setres->value))
+          {
+            log::crit("auth.login", "value %d is invalid for resource %s", $c_setres->value, $c_setres->name);
+            return false;
+          }
+        }
+      }
+    }
+
+    $p_handler->setSession("auth_user", $p_user);
+    $p_handler->setSession("auth_acl",  $l_acl);
+    $p_handler->setSession("flush",     sprintf("%s", time()));
+    return true;
+  }
+
+
   public function setup()
   {
     R::exec("SET FOREIGN_KEY_CHECKS=0");
@@ -216,6 +292,7 @@ class authModule extends Module
     R::exec("DROP TABLE IF EXISTS `authaction`");
     R::exec("DROP TABLE IF EXISTS `authrole`");
     R::exec("DROP TABLE IF EXISTS `authuser`");
+    R::exec("DROP TABLE IF EXISTS `authconfig`");
     R::exec("SET FOREIGN_KEY_CHECKS=1");
 
     R::exec(<<<'EOT'
@@ -228,6 +305,18 @@ class authModule extends Module
 
               PRIMARY KEY (`id`),
               UNIQUE(`mail`)
+            ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
+EOT
+    );
+
+    R::exec(<<<'EOT'
+            CREATE TABLE IF NOT EXISTS `authconfig`
+            (
+              `id`       int(11) unsigned                                        NOT NULL AUTO_INCREMENT,
+              `name`     varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+              `value`    varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY(`name`)
             ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 EOT
     );
@@ -255,6 +344,8 @@ EOT
             ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 EOT
     );
+
+    ConfigModel::create("flush", sprintf("%s", time()));
 
     $l_actions = array();
     foreach ($this->m_actions as $c_action)
@@ -291,16 +382,6 @@ EOT
     $l_user->link("authuser_authresource", array('name' => "garages", "value" => "12"));
     R::store($l_user);
 
-  }
-
-  public function createWidget(Handler $p_handler)
-  {
-    $p_handler->setData("auth_user", null);
-    $p_handler->setData("auth_perm", null);
-    if (false != ($l_user = $p_handler->getSession("auth_user")))
-      $p_handler->setData("auth_user",   $l_user);
-    if (false != ($l_acl = $p_handler->getSession("auth_acl")))
-      $p_handler->setData("auth_acl", $l_acl);
   }
 
 }

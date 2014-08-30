@@ -27,7 +27,7 @@
         <a
           href="/wappcore/auth/role.php?action=add" class="btn btn-sm btn-success glyphicon glyphicon-pencil"
           data-toggle="tooltip" data-placement="right" data-title="{t}auth.role.list.add{/t}"
-          {perm action="auth/role/modify" inverse="true"} disabled="disabled" {/perm}
+          {perm_if action="auth/role/modify"}
           ></a>
       </li>
     </ol>
@@ -54,13 +54,13 @@
                       formaction="/wappcore/auth/role.php?action=edit"
                       class="btn btn-warning btn-sm glyphicon glyphicon-pencil"
                       data-toggle="tooltip" data-placement="top" title="{t}auth.role.list.edit{/t}"
-                      {perm action="auth/role/modify" inverse="true"} disabled="disabled" {/perm}
+                      {perm_if action="auth/role/modify"}
                       />
                       <button
                         formaction="/wappcore/auth/role.php?action=delete"
                         class="btn btn-danger btn-sm glyphicon glyphicon-trash"
                         data-toggle="tooltip confirmation" data-placement="top" data-title="{t}auth.role.list.delete{/t}"
-                        {perm action="auth/role/terminate" inverse="true"} disabled="disabled" {/perm}
+                        {perm_if action="auth/role/terminate"}
                         />
                   </div>
                 </form>

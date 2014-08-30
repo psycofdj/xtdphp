@@ -14,16 +14,14 @@ class Page extends Handler
   {
     parent::__construct();
 
-    if (false != ($l_auth = App::get()->getModule("auth")))
-    {
-      $l_auth
-        ->registerPerm("default", "auth/user/view")
-        ->registerPerm("list",    "auth/user/view")
-        ->registerPerm("edit",    "auth/user/modify")
-        ->registerPerm("save",    "auth/user/modify")
-        ->registerPerm("add",     "auth/user/modify")
-        ->registerPerm("delete",  "auth/user/terminate");
-    }
+    $l_auth = App::get()->getModule("auth");
+    $l_auth
+      ->registerPerm("default", "auth/user/view")
+      ->registerPerm("list",    "auth/user/view")
+      ->registerPerm("edit",    "auth/user/modify")
+      ->registerPerm("save",    "auth/user/modify")
+      ->registerPerm("add",     "auth/user/modify")
+      ->registerPerm("delete",  "auth/user/terminate");
   }
 
 
@@ -125,6 +123,7 @@ class Page extends Handler
       array_push($l_resources, array("name" => $l_name, "value" => $l_id));
     }
     UserModel::setResources($l_user, $l_resources);
+    ConfigModel::set("flush", sprintf("%s", time()));
 
     return $this->redirect("/wappcore/auth/user.php");
   }
@@ -145,7 +144,7 @@ class Page extends Handler
       log::crit("auth.user.delete", "unable to delete user of id '%d'", $pu_uid);
       return false;
     }
-
+    ConfigModel::set("flush", sprintf("%s", time()));
     return $this->redirect("/wappcore/auth/user.php");
   }
 

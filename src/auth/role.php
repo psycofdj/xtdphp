@@ -4,6 +4,7 @@ require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/role.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/action.php");
+require_once(__WAPPCORE_DIR__  . "/auth/models/config.php");
 
 class Page extends Handler
 {
@@ -11,16 +12,14 @@ class Page extends Handler
   {
     parent::__construct();
 
-    if (false != ($l_auth = App::get()->getModule("auth")))
-    {
-      $l_auth
-        ->registerPerm("default", "auth/role/view")
-        ->registerPerm("list",    "auth/role/view")
-        ->registerPerm("delete",  "auth/role/terminate")
-        ->registerPerm("add",     "auth/role/modify")
-        ->registerPerm("edit",    "auth/role/modify")
-        ->registerPerm("save",    "auth/role/modify");
-    }
+    $l_auth = App::get()->getModule("auth");
+    $l_auth
+      ->registerPerm("default", "auth/role/view")
+      ->registerPerm("list",    "auth/role/view")
+      ->registerPerm("delete",  "auth/role/terminate")
+      ->registerPerm("add",     "auth/role/modify")
+      ->registerPerm("edit",    "auth/role/modify")
+      ->registerPerm("save",    "auth/role/modify");
   }
 
   public function h_default()
@@ -49,6 +48,7 @@ class Page extends Handler
       return false;
     }
 
+    ConfigModel::set("flush", sprintf("%s", time()));
     return $this->redirect("/wappcore/auth/role.php");
   }
 
@@ -97,7 +97,7 @@ class Page extends Handler
       log::crit("auth.role.save", "unable to create role");
       return false;
     }
-
+    ConfigModel::set("flush", sprintf("%s", time()));
     return $this->redirect("/wappcore/auth/role.php");
   }
 }

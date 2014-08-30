@@ -26,7 +26,7 @@
         <a
           href="/wappcore/auth/user.php?action=add" class="btn btn-sm btn-success glyphicon glyphicon-pencil"
           data-toggle="tooltip" data-placement="right" data-title="{t}auth.user.list.add{/t}"
-          {perm action="auth/user/modify" inverse="true"} disabled="disabled" {/perm}
+          {perm_if action="auth/user/modify"}
           ></a>
 
       </li>
@@ -54,13 +54,13 @@
                       formaction="/wappcore/auth/user.php?action=edit"
                       class="btn btn-warning btn-sm glyphicon glyphicon-pencil"
                       data-toggle="tooltip" data-placement="top" title="{t}auth.user.list.edit{/t}"
-                      {perm action="auth/user/modify" inverse="true"} disabled="disabled" {/perm}
+                      {perm_if action="auth/user/modify"}
                       />
                       <button
                         formaction="/wappcore/auth/user.php?action=delete"
                         class="btn btn-danger btn-sm glyphicon glyphicon-trash"
                         data-toggle="tooltip confirmation" data-placement="top" data-title="{t}auth.user.list.delete{/t}"
-                        {perm action="auth/user/terminate" inverse="true"} disabled="disabled" {/perm}
+                        {perm_if action="auth/user/terminate"}
                         />
                   </div>
                 </form>
