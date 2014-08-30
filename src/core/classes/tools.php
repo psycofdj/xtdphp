@@ -11,7 +11,7 @@ class tools
     return $l_url;
   }
 
-  function starts_with($p_haystack, $p_needle)
+  static function starts_with($p_haystack, $p_needle)
   {
     return $p_needle === "" || strpos($p_haystack, $p_needle) === 0;
   }
@@ -38,6 +38,32 @@ class tools
     foreach ($p_array as $c_key => $c_value)
       $p_callback($l_result, $c_key, $c_value);
     return $l_result;
+  }
+
+  static function url_construct($p_path, $p_query)
+  {
+    if ("" != $p_query)
+      return sprintf("%s?%s", $p_path, $p_query);
+    return $p_path;
+  }
+
+  static function url_normalize_index($p_url)
+  {
+    $l_parts = explode("?", $p_url);
+    $l_count = count($l_parts);
+
+    if ((0 == $l_count) || (2 > $l_count))
+      return false;
+
+    $l_index = "index.php";
+    $l_path   = $l_parts[0];
+    $l_query = "";
+
+    if (2 == $l_count)
+      $l_query = $l_parts[1];
+    if (true == self::ends_with($l_path, $l_index))
+      $l_path = str_replace($l_index, "", $l_path);
+    return self::url_construct($l_path, $l_query);
   }
 }
 ?>
