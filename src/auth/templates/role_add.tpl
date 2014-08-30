@@ -1,23 +1,23 @@
 <script type="text/javascript">
  $(document).ready(function() {
-   $("#add").wappform();
-   var l_table = $("#actions").wapptable({
-     "aoColumnDefs" : [
-       { "sClass"   : "", "aTargets" : "_all" }
-     ]
-   });
 
    function Role() {
      var role = this;
 
-     role.m_checkboxes = [];
+     role.m_form       = $("#add");
+     role.m_table      = $("#actions");
 
-     role.getChecked = function() {
-       return $("input[type=checkbox]:checked");
+     role.getAll     = function() {
+       l_res = role.m_table.$("input[type=checkbox]");
+       return l_res;
      };
-
+     role.getChecked = function() {
+       l_res = role.m_table.$("input[type=checkbox]:checked");
+       return l_res;
+     };
      role.getNotOf = function(p_type) {
-       return $("input[type=checkbox][data-type!=" + p_type + "]");
+       l_res = role.m_table.$("input[type=checkbox][data-type!=" + p_type + "]");
+       return l_res;
      };
 
      role.update = function(p_input) {
@@ -26,17 +26,34 @@
          role.getNotOf(l_data).prop("disabled", true);
        }
        if (0 == role.getChecked().length) {
-         role.m_checkboxes.prop("disabled", false);
+         role.getAll().prop("disabled", false);
        }
      };
 
+     role.submit = function() {
+       role.getChecked().each(function() {
+         var l_input = $(this).clone();
+         l_input.prop("type", "hidden");
+         role.m_form.append(l_input);
+       });
+     }
+
      role.init = function() {
-       role.m_checkboxes = $("input[type=checkbox]");
-       role.m_checkboxes.click(function() {
+       role.m_form.wappform();
+       role.m_table = role.m_table.wapptable({
+         "aoColumnDefs" : [
+           { "sClass"   : "", "aTargets" : "_all" }
+         ]
+       });
+
+       role.getAll().click(function() {
          role.update($(this));
        });
        role.getChecked().each(function() {
          role.update($(this));
+       });
+       role.m_form.submit(function() {
+         role.submit();
        });
        return role;
      };
@@ -77,22 +94,22 @@
   {/if}
 
   <div class="row">
-    <form id="add" class="form-horizontal" action="/wappcore/auth/role.php" role="form" method="post">
-      <input type="hidden" name="action" value="save"/>
-      <input type="hidden" name="rid" value="{$rid}"/>
-
       <div class="col-md-4 col-md-offset-4 centered">
-        <fieldset>
-          <legend>{t}auth.role.add.roleinfo{/t}</legend>
-          <div class="form-group has-feedback">
-            <!-- name -->
-            <label class="col-xs-2 control-label" for="name">{t}auth.role.add.name{/t}</label>
-            <div class="col-xs-10">
-              <input name="name" type="text" placeholder="{t}auth.role.add.name{/t}..." class="required form-control" value="{$name}"/>
-              <span class="glyphicon form-control-feedback"></span>
+        <form id="add" class="form-horizontal" action="/wappcore/auth/role.php" role="form" method="post">
+          <input type="hidden" name="action" value="save"/>
+          <input type="hidden" name="rid" value="{$rid}"/>
+          <fieldset>
+            <legend>{t}auth.role.add.roleinfo{/t}</legend>
+            <div class="form-group has-feedback">
+              <!-- name -->
+              <label class="col-xs-2 control-label" for="name">{t}auth.role.add.name{/t}</label>
+              <div class="col-xs-10">
+                <input name="name" type="text" placeholder="{t}auth.role.add.name{/t}..." class="required form-control" value="{$name}"/>
+                <span class="glyphicon form-control-feedback"></span>
+              </div>
             </div>
-          </div>
-        </fieldset>
+          </fieldset>
+        </form>
         <br/><br/>
         <fieldset>
           <legend>{t}auth.role.add.actions{/t}</legend>
@@ -124,7 +141,6 @@
         </fieldset>
       </div>
 
-    </form>
   </div> <!-- row -->
 </div> <!-- contrainer -->
 

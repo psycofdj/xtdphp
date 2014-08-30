@@ -210,22 +210,24 @@ set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
       if (true == tools::ends_with($errfile, $c_silent))
         return;
     log::doLogFile(log::mc_levelCrit, "core.php", "[%s] %s", errors_to_str($errno), $errstr, $errfile, $errline);
+
     $l_stack = debug_backtrace();
     for ($c_idx = 0; $c_idx < count($l_stack); $c_idx++)
     {
-      $l_class = "";
-      $l_file  = "";
+      $l_class = "<unknown class>";
+      $l_file  = "<unknown file>";
       $l_line  = 0;
-      $l_func  = "<unknown>";
+      $l_func  = "<unknown func>";
       if (true == array_key_exists("class", $l_stack[$c_idx]))
         $l_class = sprintf("%s->", $l_stack[$c_idx]["class"]);
       if (true == array_key_exists("file", $l_stack[$c_idx]))
         $l_file = $l_stack[$c_idx]["file"];
       if (true == array_key_exists("line", $l_stack[$c_idx]))
-        $l_file = $l_stack[$c_idx]["line"];
+        $l_line = $l_stack[$c_idx]["line"];
       if (true == array_key_exists("function", $l_stack[$c_idx]))
         $l_func = $l_stack[$c_idx]["function"];
-      log::doLogFile(log::mc_levelCrit, "core.php", "  % 3d. %s%s(...)", $c_idx, $l_class, $l_func, $l_file, $l_line);
+      $l_func = sprintf("%s%s(...)", $l_class, $l_func);
+      log::doLogFile(log::mc_levelCrit, "core.php", "  % 3d. %-35s", $c_idx, $l_func, $l_file, $l_line);
     }
     throw new Exception();
   }, E_ALL | E_STRICT);

@@ -511,28 +511,27 @@ class Handler
     return $l_result;
   }
 
-  public function serverSide($p_method)
+  public function serverSide($p_wrapped)
   {
     if (false !== ($l_colIdx = $this->getParam("colIdx")))
-      $l_param = $this->serverSideInfo($p_method);
+      $l_sParams = $this->serverSideInfo($p_wrapped);
     else
-      $l_param = $this->serverSideData($p_method);
+      $l_sParams = $this->serverSideData($p_wrapped);
 
-    if ((false === $l_param) ||
-        (false === ($l_data = $p_method->invokeArgs($this, array($l_param)))))
+    $l_callArgs = $this->methodGetArgs($p_wrapped, array("params" => $l_sParams));
+
+    if ((false === $l_callArgs) ||
+        (false === ($l_data = $p_wrapped->invokeArgs($this, $l_callArgs))))
     {
       log::error("code.handler", "server side error");
       return false;
     }
-
-    /* log::crit("core", "reply : %s", json_encode($l_data)); */
 
     $this->m_gen = new JsonGenerator(false);
     foreach ($l_data as $c_key => $c_value)
       $this->m_gen->setData($c_key, $c_value);
     return true;
   }
-
 
   public function serverSideInfo($p_method)
   {
@@ -555,8 +554,6 @@ class Handler
     if (false === ($l_args = $this->validateArgs($l_checks)))
       return false;
 
-    /* log::crit("core", "args : %s", json_encode($l_args)); */
-
     $l_colNames = explode(",", $l_args["sColumns"]);
     $l_param   = new MapperParams($l_args["sEcho"],          $l_args["iDisplayStart"],
                                   $l_args["iDisplayLength"], $l_args["sSearch"],
@@ -575,10 +572,8 @@ class Handler
       if (false === ($l_colArgs = $this->validateArgs($l_checks)))
         return false;
       $l_colArgs = array_merge(array($c_idx, $l_colNames[$c_idx]), array_values($l_colArgs));
-      /* log::crit("core", "columns : %s", print_r($l_colArgs, true)); */
       call_user_func_array(array($l_param, "addColumns"), $l_colArgs);
     }
-
 
     for ($c_idx = 0; $c_idx < $l_args["iSortingCols"]; $c_idx++)
     {
@@ -592,7 +587,6 @@ class Handler
         return false;
       $l_colArgs = array_merge(array($c_idx, $l_colNames[$c_idx]), array_values($l_colArgs));
 
-      /* log::crit("core", "sort : %s", print_r($l_colArgs, true)); */
       call_user_func_array(array($l_param, "addSort"), $l_colArgs);
     }
 
@@ -659,7 +653,7 @@ class Handler
       return $this->replyInternalError();
     }
 
-    if (false == ($l_data = $this->getMethod()))
+    if (false == ($l_data = $this->methodGet()))
     {
       log::error("core.handler", "unable to find method");
       return $this->replyInternalError();
@@ -667,7 +661,7 @@ class Handler
 
     list($l_method, $l_wrapped, $l_action) = $l_data;
 
-    if (false === ($l_callArgs = $this->checkMethod($l_method, $l_wrapped)))
+    if (false === ($l_callArgs = $this->methodGetArgs($l_method, array("wrapped" => $l_wrapped))))
     {
       log::error("core.handler", "paramters don't fit requested method");
       return $this->replyInternalError();
@@ -711,7 +705,8 @@ class Handler
     }
   }
 
-  private function getMethod()
+
+  private function methodGet()
   {
     if (false === ($l_action = $this->getParam("action")))
       $l_action = "default";
@@ -726,8 +721,8 @@ class Handler
     {
       try
       {
-        $l_wrapped  = $l_reflex->getMethod(sprintf("s_%s", $l_action));
         $l_method   = $l_reflex->getMethod("serverSide");
+        $l_wrapped  = $l_reflex->getMethod(sprintf("s_%s", $l_action));
       }
       catch (ReflectionException $l_error)
       {
@@ -739,7 +734,42 @@ class Handler
     return array($l_method, $l_wrapped, $l_action);
   }
 
-  private function checkMethod($p_method, $p_wrapped)
+  /* private function checkMethod($p_method, $p_wrapped) */
+  /* { */
+  /*   $l_params   = $p_method->getParameters(); */
+  /*   $l_callArgs = array(); */
+  /*   foreach ($l_params as $c_param) */
+  /*   { */
+  /*     list($l_paramAttr, $l_paramName) = explode("_", $c_param->getName(), 2); */
+  /*     if ($l_paramName == "method") */
+  /*     { */
+  /*       array_push($l_callArgs, $p_wrapped); */
+  /*       continue; */
+  /*     } */
+  /*     if (false === ($l_paramValue = $this->getParam($l_paramName))) */
+  /*     { */
+  /*       if (false == $c_param->isDefaultValueAvailable()) */
+  /*       { */
+  /*         log::error("core.handler", "requested param '%s' not available", $l_paramName); */
+  /*         return false; */
+  /*       } */
+  /*       $l_paramValue = $c_param->getDefaultValue(); */
+  /*     } */
+  /*     else */
+  /*     { */
+  /*       if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue)) */
+  /*       { */
+  /*         log::error("core.handler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue); */
+  /*         return false; */
+  /*       } */
+  /*     } */
+  /*     array_push($l_callArgs, $l_paramValue); */
+  /*   } */
+  /*   return $l_callArgs; */
+  /* } */
+
+
+  private function methodGetArgs($p_method, $p_params = array())
   {
     $l_params   = $p_method->getParameters();
     $l_callArgs = array();
@@ -747,10 +777,9 @@ class Handler
     foreach ($l_params as $c_param)
     {
       list($l_paramAttr, $l_paramName) = explode("_", $c_param->getName(), 2);
-
-      if ($l_paramName == "method")
+      if (true == array_key_exists($l_paramName, $p_params))
       {
-        array_push($l_callArgs, $p_wrapped);
+        array_push($l_callArgs, $p_params[$l_paramName]);
         continue;
       }
 
@@ -773,6 +802,7 @@ class Handler
       }
       array_push($l_callArgs, $l_paramValue);
     }
+
     return $l_callArgs;
   }
 

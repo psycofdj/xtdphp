@@ -69,8 +69,6 @@ class Mapper
 
   protected function getColName($p_idx)
   {
-    /* log::crit("core", "col idx : %d", $p_idx); */
-    /* log::crit("core", print_r($this->m_params->m_cols, true)); */
     if ("" != ($l_name = $this->m_params->m_cols[$p_idx]->m_prop))
       return $l_name;
     return $this->m_columns[$p_idx];
@@ -193,6 +191,7 @@ class Mapper
   protected function processColInfo()
   {
     $l_data = array();
+
     if (null == ($l_colName = $this->m_params->m_colName))
       $l_colName = $this->m_columns[$this->m_params->m_colIdx];
     $l_values = $this->getUniqueData($l_colName);

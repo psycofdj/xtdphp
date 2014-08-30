@@ -504,9 +504,9 @@ function escapeRegExp(str) {
             l_data = l_table.fnGetColumnData(p_colIndex, true, true, false);
 
           l_select.html(fnCreateSelect(l_data, p_colIndex, settings));
+
           l_select.change(function() {
             var l_val = $(this).val();
-
             if (undefined != settings.sAjaxSource)
             {
               if (l_val == "__any__")
