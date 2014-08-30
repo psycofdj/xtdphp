@@ -1,19 +1,21 @@
 <?php
 
+require_once(__WAPPCORE_DIR__. "/core/classes/tools.php");
+
 class Menu
 {
   private $m_tabs    = Array();
   private $m_widgets = Array();
   private $m_brand   = Array("title" => "Wappcore Corp",
-      "url"   => "/");
+                             "url"   => "/");
 
   public function addTab($p_tab, $p_priority = null)
   {
     if (null == $p_priority) {
       $p_priority = array_reduce($this->m_tabs, function ($p_s1, $p_s2) {
-            $p_s1 = max($p_s1, $p_s2);
-            return $p_s1;
-          }, 0) + 10;
+          $p_s1 = max($p_s1, $p_s2);
+          return $p_s1;
+        }, 0) + 10;
     }
     array_push($this->m_tabs, $p_tab->setPriority($p_priority));
     return $p_tab;
@@ -22,16 +24,16 @@ class Menu
   public function getTabs()
   {
     usort($this->m_tabs, function($p_tab1, $p_tab2) {
-          return $p_tab1->getPriority() > $p_tab2->getPriority();
-        });
+        return $p_tab1->getPriority() > $p_tab2->getPriority();
+      });
     return $this->m_tabs;
   }
 
   public function addWidget($p_template, $p_callback = null)
   {
     array_push($this->m_widgets,
-        array("tpl"      => $p_template,
-            "callback" => $p_callback));
+               array("tpl"      => $p_template,
+                     "callback" => $p_callback));
     return $this;
   }
 
@@ -110,8 +112,8 @@ class MenuTab
     if (true == $this->hasTabs())
       return array_reduce($this->m_subTabs, function ($p_res, $p_obj) {
             $p_res = $p_res || $p_obj->isDisplayable();
-            return $p_res;
-          }, false);
+          return $p_res;
+        }, false);
 
     $l_functor = $this->m_displayable;
     $l_result = ((null == $l_functor) || (true == $l_functor()));
@@ -122,19 +124,15 @@ class MenuTab
   {
     if (true == $this->hasTabs())
       return array_reduce($this->m_subTabs, function ($p_res, $p_obj) {
-            $p_res = $p_res || $p_obj->isActiveUrl();
-            return $p_res;
-          }, false);
+          $p_res = $p_res || $p_obj->isActiveUrl();
+          return $p_res;
+        }, false);
 
-    $l_needle       = "index.php";
-    $l_needleSize   = strlen($l_needle);
-    $l_current      = $_SERVER['PHP_SELF'];
-    $l_currentClean = $l_current;
+    $l_current = tools::url_construct($_SERVER['PHP_SELF'], $_SERVER['QUERY_STRING']);
+    $l_current = tools::url_normalize_index($l_current);
+    $l_link    = tools::url_normalize_index($this->m_link);
 
-    if ($l_needle == substr($l_current, - $l_needleSize, $l_needleSize)) // ends_with($l_current, $l_needle)
-      $l_currentClean = substr($l_current, 0, strlen($l_current) - $l_needleSize);
-
-    return ($l_currentClean == $this->m_link);
+    return $l_link == $l_current;
   }
 }
 
