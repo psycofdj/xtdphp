@@ -52,13 +52,12 @@ class tools
     $l_parts = explode("?", $p_url);
     $l_count = count($l_parts);
 
-    if ((0 == $l_count) || (2 > $l_count))
+    if ((0 == $l_count) || (2 < $l_count))
       return false;
 
     $l_index = "index.php";
-    $l_path   = $l_parts[0];
+    $l_path  = $l_parts[0];
     $l_query = "";
-
     if (2 == $l_count)
       $l_query = $l_parts[1];
     if (true == self::ends_with($l_path, $l_index))
