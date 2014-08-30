@@ -17,7 +17,8 @@
       singleton      : true,
       placement      : "bottom",
       onConfirm      : function(p_event, p_elem) {
-        var l_form   = $(p_elem).parents("form");
+        var l_form   = $(p_elem).closest("form");
+        //var l_form   = $(p_elem).parents("form");
         var l_action = $(p_elem).attr("formaction");
         if (undefined != l_action)
           l_form.attr("action", l_action);
