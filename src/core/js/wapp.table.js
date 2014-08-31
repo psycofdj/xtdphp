@@ -534,7 +534,6 @@ function escapeRegExp(str) {
                 l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
             }
 
-
             if ($(this).prop("disabled") == false)
               $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
 
