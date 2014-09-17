@@ -4,7 +4,7 @@
 
    function decorate(p_parent) {
      $("[data-toggle~=tooltip]", p_parent).tooltip({ container: "body" });
-     $("[data-toggle~=confirmation]", p_parent).wappconfirma({
+     $("[data-toggle~=confirmation]", p_parent).wappconfirm({
        title : "{t}auth.role.list.delete.confirm{/t}",
      });
    }
