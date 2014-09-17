@@ -11,17 +11,29 @@ class Setup extends Handler
     parent::__construct(new BinaryGenerator());
   }
 
-  public function h_default()
+  public function initialize()
   {
+    if (false == parent::initialize())
+    {
+      log::crit("setup", "unable to initialize handler");
+      return false;
+    }
+
     R::freeze(false);
     foreach (App::get()->getModules() as $c_module)
     {
       log::crit("core.setup", "installing module '%s'", $c_module->getName());
       $c_module->setup();
     }
+    return true;
+  }
+
+  public function h_default()
+  {
     return $this->redirect("/");
   }
 }
+
 
 
 $l_page = new Setup();
