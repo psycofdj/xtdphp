@@ -11,6 +11,7 @@ function core_en() {
         "core.open"                 => "Open",
         "core.close"                => "Close",
         "core.save"                 => "SAVE",
+        "core.select"               => "Select",
         "core.send"                 => "Send",
         "core.total"                => "Total",
         "core.free"                 => "Free",

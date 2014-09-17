@@ -13,6 +13,7 @@ function core_fr() {
         "core.save"                 => "ENREGISTRER",
         "core.send"                 => "Envoyer",
         "core.total"                => "Total",
+        "core.select"               => "Selectionner",
         "core.free"                 => "Libre",
         "core.mail"                 => "Email",
         "core.actions"              => "Actions",
