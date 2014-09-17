@@ -378,8 +378,8 @@ EOT
     $l_user->name           = "Super Admin";
     $l_user->password       = md5("sasasasa");
     $l_user->link("authuser_authperm",     array('data' => null))->authrole = $l_roleAdmin;
-    $l_user->link("authuser_authperm",     array('data' => "12"))->authrole = $l_roleOther;
-    $l_user->link("authuser_authresource", array('name' => "garages", "value" => "12"));
+    $l_user->link("authuser_authperm",     array('data' => "84"))->authrole = $l_roleOther;
+    $l_user->link("authuser_authresource", array('name' => "garages", "value" => "84"));
     R::store($l_user);
 
   }
