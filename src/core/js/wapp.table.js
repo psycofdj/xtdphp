@@ -495,6 +495,7 @@ function escapeRegExp(str) {
         }
         else if (true == $(this).hasClass("wp-filter"))
         {
+          var l_regExp = $(this).hasClass("wp-regexp");
           var l_data;
           var l_select = $("<select style='width:100%;' class='form-control input-sm'/>");
 
@@ -517,8 +518,13 @@ function escapeRegExp(str) {
                 l_table.fnFilter("__null__", p_colIndex, false, false, false);
               else if (l_val == "__notnull__")
                 l_table.fnFilter("__notnull__", p_colIndex, false, false, false);
-              else
-                l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+              else {
+                if (!l_regExp) {
+                  l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+                } else {
+                  l_table.fnFilter("^" + escapeRegExp($(this).val()) + ".*", p_colIndex, true, false, false);
+                }
+              }
             }
             else
             {
@@ -530,8 +536,13 @@ function escapeRegExp(str) {
                 l_table.fnFilter("^$", p_colIndex, true, false, false);
               else if (l_val == "__notnull__")
                 l_table.fnFilter("^.+$", p_colIndex, true, false, false);
-              else
-                l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+              else {
+                if (!l_regExp) {
+                  l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
+                } else {
+                  l_table.fnFilter("^" + escapeRegExp($(this).val()) + ".*", p_colIndex, true, false, false);
+                }
+              }
             }
 
             if ($(this).prop("disabled") == false)
