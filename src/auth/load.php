@@ -193,8 +193,8 @@ class authModule extends Module
   public function getResourceOfAction($p_action)
   {
     $l_actions = array_filter($this->m_actions, function($p_el) use ($p_action) {
-          return ($p_el["action"] == $p_action);
-        });
+        return ($p_el["action"] == $p_action);
+      });
 
     if (0 != count($l_actions))
     {
@@ -222,9 +222,9 @@ class authModule extends Module
 
     array_push($this->m_actions,
                array(
-                 "action" => $p_action,
-                 "tag"    => $p_tag,
-                 "data"   => $p_dataName));
+                     "action" => $p_action,
+                     "tag"    => $p_tag,
+                     "data"   => $p_dataName));
     return $this;
   }
 
@@ -307,7 +307,7 @@ class authModule extends Module
               UNIQUE(`mail`)
             ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 EOT
-    );
+           );
 
     R::exec(<<<'EOT'
             CREATE TABLE IF NOT EXISTS `authconfig`
@@ -319,7 +319,7 @@ EOT
               UNIQUE KEY(`name`)
             ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 EOT
-    );
+           );
 
     R::exec(<<<'EOT'
             CREATE TABLE `authrole` (
@@ -330,7 +330,7 @@ EOT
               UNIQUE KEY `UQ_name` (`name`)
             ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 EOT
-    );
+           );
 
     R::exec(<<<'EOT'
             CREATE TABLE `authuser_authresource` (
@@ -343,7 +343,7 @@ EOT
               CONSTRAINT `c_fk_authuser_authresource_authuser_id` FOREIGN KEY (`authuser_id`) REFERENCES `authuser` (`id`)  ON DELETE CASCADE
             ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 EOT
-    );
+           );
 
     ConfigModel::create("flush", sprintf("%s", time()));
 
@@ -358,29 +358,70 @@ EOT
       array_push($l_actions, $l_action);
     }
 
-    $l_roleAdmin                       = R::dispense("authrole");
-    $l_roleAdmin->name                 = "Super Admin";
-    $l_roleAdmin->sharedAuthactionList = array_filter($l_actions, function($p_el) {
-        return $p_el->datatype == null;
-      });
-    R::store($l_roleAdmin);
+    $l_types = array();
+    foreach ($l_actions as $c_action)
+    {
+      $l_key = $c_action->datatype;
+      if (null == $l_key)
+        $l_key = "all";
+      if (false == array_key_exists($l_key, $l_types))
+        $l_types[$l_key] = array();
+      array_push($l_types[$l_key], $c_action);
+    }
 
-    $l_roleOther                       = R::dispense("authrole");
-    $l_roleOther->name                 = "Super Garages";
-    $l_roleOther->datatype             = "garages";
-    $l_roleOther->sharedAuthactionList = array_filter($l_actions, function($p_el) {
-        return $p_el->datatype == "garages";
-      });
-    R::store($l_roleOther);
 
     $l_user                 = R::dispense("authuser", 1);
     $l_user->mail           = "sa@sa.com";
     $l_user->name           = "Super Admin";
     $l_user->password       = md5("sasasasa");
-    $l_user->link("authuser_authperm",     array('data' => null))->authrole = $l_roleAdmin;
-    $l_user->link("authuser_authperm",     array('data' => "84"))->authrole = $l_roleOther;
-    $l_user->link("authuser_authresource", array('name' => "garages", "value" => "84"));
+
+
+    foreach ($l_types as $c_name => $c_actions)
+    {
+      $l_role                       = R::dispense("authrole");
+      $l_role->name                 = sprintf("Super admin for '%s'", $c_name);
+      $l_role->sharedAuthactionList = $c_actions;
+      if ($c_name == "all")
+        $c_name = null;
+      $l_role->datatype = $c_name;
+      R::store($l_role);
+
+      if ($c_name == null)
+      {
+        $l_user->link("authuser_authperm", array('data' => $c_name))->authrole = $l_role;
+      }
+      else
+      {
+        $l_first    = true;
+        $l_resource = $this->getResource($c_name);
+        foreach ($l_resource->generate() as $c_item)
+        {
+          $l_user->link("authuser_authperm", array('data' => $c_item["id"]))->authrole = $l_role;
+          if ($l_first == true)
+          {
+            $l_user->link("authuser_authresource", array('name' => $c_name, "value" => $c_item["id"]));
+            $l_first = false;
+          }
+        }
+      }
+    }
     R::store($l_user);
+
+
+    /* $l_roleAdmin                       = R::dispense("authrole"); */
+    /* $l_roleAdmin->name                 = "Super Admin"; */
+    /* $l_roleAdmin->sharedAuthactionList = array_filter($l_actions, function($p_el) { */
+    /*     return $p_el->datatype == null; */
+    /*   }); */
+    /* R::store($l_roleAdmin); */
+
+    /* $l_roleOther                       = R::dispense("authrole"); */
+    /* $l_roleOther->name                 = "Super Garages"; */
+    /* $l_roleOther->datatype             = "garages"; */
+    /* $l_roleOther->sharedAuthactionList = array_filter($l_actions, function($p_el) { */
+    /*     return $p_el->datatype == "garages"; */
+    /*   }); */
+    /* R::store($l_roleOther); */
 
   }
 

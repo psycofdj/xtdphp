@@ -93,7 +93,6 @@ class UserModel
     $p_user->xownAuthuserAuthresourceList = array();
     foreach ($p_resources as $c_res)
     {
-      log::crit("test", "here");
       $p_user->link("authuser_authresource", array(
             "name"  => $c_res["name"],
             "value" => $c_res["value"]));
