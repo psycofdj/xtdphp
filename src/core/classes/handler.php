@@ -316,23 +316,6 @@ class Handler
   }
 
   /**
-   * Redirect to given destination if given session key dosen't exist
-   *
-   * @param  $p_sessionKey session key name
-   * @param  $p_url destination url
-   * @return true if redirect occurs, false otherwhise
-   */
-  protected function checkSessionOrRedirect($p_sessionKey, $p_url)
-  {
-    if (false == $this->getSession($p_sessionKey))
-    {
-      $this->redirect($p_url);
-      return true;
-    }
-    return false;
-  }
-
-  /**
    *  Initialize request
    *
    *  Child classe may override this function if it need to perform operations
@@ -345,7 +328,7 @@ class Handler
     $this->initSession();
     $this->initLocale();
     $this->initSql();
-    $this->m_gen->initialize();
+    $this->m_gen->initialize($this);
 
     if (false == ($this->m_gen instanceof RawGenerator))
       App::get()->initialize($this);

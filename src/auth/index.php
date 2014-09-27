@@ -36,8 +36,7 @@ class Page extends Handler
 
   public function h_logout($p_dest = "/")
   {
-    $this->deleteSession("auth_user");
-    $this->deleteSession("auth_acl");
+    session_destroy();
     return $this->redirect($p_dest);
   }
 

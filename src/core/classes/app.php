@@ -36,6 +36,8 @@ class App
 
     foreach ($this->m_modules as $c_module)
     {
+      $c_module->initialize($this);
+
       // 2.
       foreach (Array("fr", "en") as $c_lang)
       {
@@ -50,11 +52,18 @@ class App
     }
   }
 
+  public function initialize($p_handler)
+  {
+    $this->m_menu->initialize($p_handler);
+    $this->m_handler = $p_handler;
+  }
+
   /**
    * Find modules in source directory
    */
   private function loadModules($p_baseDir)
   {
+    $l_result = array();
     if (false == $l_handle = opendir($p_baseDir))
     {
       log::error("core.app", "unable to open directory %s", $p_baseDir);
@@ -121,12 +130,6 @@ class App
   public function getMenu()
   {
     return $this->m_menu;
-  }
-
-  public function initialize($p_handler)
-  {
-    $this->m_menu->initialize($p_handler);
-    $this->m_handler = $p_handler;
   }
 }
 

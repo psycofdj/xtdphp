@@ -43,6 +43,9 @@ class Module
     return substr($l_modulePath, strlen($l_appPath));
   }
 
+  public function initialize($p_app)
+  {
+  }
 
   public function setup()
   {

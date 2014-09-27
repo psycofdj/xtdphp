@@ -21,7 +21,10 @@ class authModule extends Module
   public function __construct($p_baseDir, $p_name)
   {
     parent::__construct($p_baseDir, $p_name, 100);
+  }
 
+  public function initialize($p_app)
+  {
     $this
       ->registerAction("auth/user/view",        "auth.action.user.view",      null)
       ->registerAction("auth/user/modify",      "auth.action.user.modify",    null)
@@ -31,20 +34,19 @@ class authModule extends Module
       ->registerAction("auth/role/terminate",   "auth.action.role.terminate", null)
       ;
 
-    App::get()->getMenu()
+    $p_app->getMenu()
       ->addWidget("[auth]menu_widget.tpl", array($this, "createWidget"));
 
-    App::get()->getMenu()
+    $p_app->getMenu()
       ->addTab(new MenuTab("auth.menu.title"), 80)
       ->addSubTab("auth.menu.users", "/wappcore/auth/user.php", $this->allower("auth/user/view"))
       ->addSubTab("auth.menu.roles", "/wappcore/auth/role.php", $this->allower("auth/role/view"));
 
-    App::get()->connect("Handler", "process",  array($this, "updatePerm"));
-    App::get()->connect("Handler", "process",  array($this, "checkPerm"));
+    $p_app->connect("Handler", "process",  array($this, "updatePerm"));
+    $p_app->connect("Handler", "process",  array($this, "checkPerm"));
 
     $l_this = $this;
-
-    App::get()->connect("TemplateGenerator", "initialize", function(TemplateGenerator $p_gen) use (&$l_this) {
+    $p_app->connect("TemplateGenerator", "initialize", function(TemplateGenerator $p_gen) use (&$l_this) {
         $p_gen->addPlugin("block",    "perm",          array($l_this, "pluginPerm"));
         $p_gen->addPlugin("function", "permelse",      array($l_this, "pluginPermElse"));
         $p_gen->addPlugin("function", "perm_if",       array($l_this, "pluginPermIf"));
@@ -165,9 +167,32 @@ class authModule extends Module
       list($l_isAllowed, $l_errorKey) = $l_this->isAllowed($l_handler, $p_action, $p_dataName);
       return $l_isAllowed;
     };
-
     return $l_functor;
   }
+
+  public function allowerFor($p_action, $p_resource)
+  {
+    $l_this    = $this;
+    $l_functor = function ($p_value) use ($l_this, $p_action, $p_resource) {
+      $l_handler = App::get()->getHandler();
+      list($l_isAllowed, $l_errorKey) = $l_this->isAllowedFor($l_handler, $p_action, $p_resource, $p_value);
+      return $l_isAllowed;
+    };
+    return $l_functor;
+  }
+
+  public function isAllowedFor($p_handler, $p_action, $p_resource, $p_value)
+  {
+    if (false == ($l_acl = $p_handler->getSession("auth_acl")))
+      return array(false, "auth.error.loginrequiered");
+    $l_label = sprintf("%s:%s", $p_resource->getName(), $p_value);
+    if (false == $l_acl->hasResource($l_label))
+      return array(false, "auth.error.unauthorized");
+    if (false == $l_acl->isAllowed("user", $l_label, $p_action))
+      return array(false, "auth.error.unauthorized");
+    return array(true, "");
+  }
+
 
   public function isAllowed($p_handler, $p_action, $p_dataName = null)
   {
@@ -177,12 +202,10 @@ class authModule extends Module
     if (null != $p_dataName)
     {
       if (false == ($l_resource = $this->getResource($p_dataName)))
-        throw Exception(sprintf("resource %s is unknown", $p_dataName));
-      if (false == ($l_value = $l_resource->getValue($p_handler, $this)))
-        throw Exception(sprintf("resource %s has no value", $p_dataName));
-      $p_dataName = sprintf("%s:%s", $p_dataName, $l_value);
-      if (false == $l_acl->hasResource($p_dataName))
-        return array(false, "auth.error.unauthorized");
+        throw new Exception(sprintf("resource %s is unknown", $p_dataName));
+      if (false == ($l_value = $l_resource->getValue($p_handler)))
+        throw new Exception(sprintf("resource %s has no value", $p_dataName));
+      return $this->isAllowedFor($p_handler, $p_action, $l_resource, $l_value);
     }
 
     if (false == $l_acl->isAllowed("user", $p_dataName, $p_action))
@@ -285,16 +308,6 @@ class authModule extends Module
 
   public function setup()
   {
-    R::exec("SET FOREIGN_KEY_CHECKS=0");
-    R::exec("DROP TABLE IF EXISTS `authuser_authperm`");
-    R::exec("DROP TABLE IF EXISTS `authuser_authresource`");
-    R::exec("DROP TABLE IF EXISTS `authaction_authrole`");
-    R::exec("DROP TABLE IF EXISTS `authaction`");
-    R::exec("DROP TABLE IF EXISTS `authrole`");
-    R::exec("DROP TABLE IF EXISTS `authuser`");
-    R::exec("DROP TABLE IF EXISTS `authconfig`");
-    R::exec("SET FOREIGN_KEY_CHECKS=1");
-
     R::exec(<<<'EOT'
             CREATE TABLE IF NOT EXISTS `authuser`
             (
@@ -375,7 +388,6 @@ EOT
     $l_user->name           = "Super Admin";
     $l_user->password       = md5("sasasasa");
 
-
     foreach ($l_types as $c_name => $c_actions)
     {
       $l_role                       = R::dispense("authrole");
@@ -406,23 +418,6 @@ EOT
       }
     }
     R::store($l_user);
-
-
-    /* $l_roleAdmin                       = R::dispense("authrole"); */
-    /* $l_roleAdmin->name                 = "Super Admin"; */
-    /* $l_roleAdmin->sharedAuthactionList = array_filter($l_actions, function($p_el) { */
-    /*     return $p_el->datatype == null; */
-    /*   }); */
-    /* R::store($l_roleAdmin); */
-
-    /* $l_roleOther                       = R::dispense("authrole"); */
-    /* $l_roleOther->name                 = "Super Garages"; */
-    /* $l_roleOther->datatype             = "garages"; */
-    /* $l_roleOther->sharedAuthactionList = array_filter($l_actions, function($p_el) { */
-    /*     return $p_el->datatype == "garages"; */
-    /*   }); */
-    /* R::store($l_roleOther); */
-
   }
 
 }

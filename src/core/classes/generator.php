@@ -16,7 +16,7 @@ interface Generator
   public function getContentType();
   public function resolve();
   public function resolveError(WappError $p_error);
-  public function initialize();
+  public function initialize(Handler $p_handler);
 }
 
 interface RawGenerator extends Generator
@@ -31,7 +31,7 @@ class BinaryGenerator implements RawGenerator
   private $m_contentType = "application/octet-stream";
   private $m_binData     = false;
 
-  public function initialize()
+  public function initialize(Handler $p_handler)
   {
   }
 
@@ -119,7 +119,7 @@ class JsonGenerator implements Generator
     $this->m_forceObject = $p_forceObject;
   }
 
-  public function initialize()
+  public function initialize(Handler $p_handler)
   {
   }
 
@@ -198,7 +198,7 @@ class TemplateGenerator implements Generator
     $this->m_smarty->registerPlugin($p_type, $p_name, $p_callback);
   }
 
-  public function initialize()
+  public function initialize(Handler $p_handler)
   {
     $this->m_signals->emit("initialize", $this);
   }
@@ -358,9 +358,9 @@ class HtmlGenerator extends TemplateGenerator
     $this->setData("lang", locale::getName());
   }
 
-  public function initialize()
+  public function initialize(Handler $p_handler)
   {
-    parent::initialize();
+    parent::initialize($p_handler);
   }
 
   public function setBase($p_base = null, $p_isHttp = null)
@@ -526,7 +526,7 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addCss("wapp.css",                             "core");
   }
 
-  public function initialize()
+  public function initialize(Handler $p_handler)
   {
     global $g_conf;
 
@@ -551,7 +551,7 @@ class WappHtmlGenerator extends HtmlGenerator
     $this->setData("isTablet",  $l_detector->isTablet());
     $this->setData("isDesktop", !($l_detector->isTablet() || $l_detector->isMobile()));
 
-    parent::initialize();
+    parent::initialize($p_handler);
   }
 
   public function resolve()
