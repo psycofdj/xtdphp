@@ -43,7 +43,6 @@ class authModule extends Module
     App::get()->connect("Handler", "process",  array($this, "checkPerm"));
 
     $l_this = $this;
-
     App::get()->connect("TemplateGenerator", "initialize", function(TemplateGenerator $p_gen) use (&$l_this) {
         $p_gen->addPlugin("block",    "perm",          array($l_this, "pluginPerm"));
         $p_gen->addPlugin("function", "permelse",      array($l_this, "pluginPermElse"));
