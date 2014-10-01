@@ -4,10 +4,7 @@ class ConfigModel
 {
   static function getByID($p_id)
   {
-    $l_conf = R::load("authconfig", $p_id);
-    if ($l_conf->id == 0)
-      return false;
-    return $l_conf;
+    return R::safeload("authconfig", $p_id);
   }
 
   static function getByName($p_name)

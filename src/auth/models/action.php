@@ -4,10 +4,7 @@ class ActionModel
 {
   static function getByID($p_rid)
   {
-    $l_role = R::load("authaction", $p_rid);
-    if ($l_role->id == 0)
-      return false;
-    return $l_role;
+    return R::safeload("authaction", $p_rid);
   }
 
   static function getAll()

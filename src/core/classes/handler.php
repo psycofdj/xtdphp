@@ -327,7 +327,7 @@ class Handler
   {
     $this->initSession();
     $this->initLocale();
-    $this->initSql();
+    sql::initialize();
     $this->m_gen->initialize($this);
 
     if (false == ($this->m_gen instanceof RawGenerator))
@@ -358,12 +358,7 @@ class Handler
    */
   private function initSql()
   {
-    global $g_conf;
 
-    $l_conf = sprintf("mysql:host=%s;dbname=%s;", $g_conf["mysql"]["host"], $g_conf["mysql"]["database"]);
-    R::setup($l_conf, $g_conf["mysql"]["username"], $g_conf["mysql"]["password"]);
-    R::getDatabaseAdapter()->getDatabase()->setDebugMode(true, new SqlLogger());
-    R::freeze(true);
   }
 
 

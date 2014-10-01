@@ -4,10 +4,7 @@ class RoleModel
 {
   static function getByID($p_rid)
   {
-    $l_role = R::load("authrole", $p_rid);
-    if ($l_role->id == 0)
-      return false;
-    return $l_role;
+    return R::safeload("authrole", $p_rid);
   }
 
   static function getAll()

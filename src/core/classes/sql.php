@@ -31,6 +31,35 @@ class SqlLogger implements RedBeanPHP\Logger
 }
 
 
+class sql
+{
+
+  static function initialize()
+  {
+    global $g_conf;
+
+    $l_conf = sprintf("mysql:host=%s;dbname=%s;", $g_conf["mysql"]["host"], $g_conf["mysql"]["database"]);
+    R::setup($l_conf, $g_conf["mysql"]["username"], $g_conf["mysql"]["password"]);
+    R::getDatabaseAdapter()->getDatabase()->setDebugMode(true, new SqlLogger());
+    R::freeze(true);
+    R::ext("safeload", function($p_model, $p_id) {
+        return sql::safeLoad($p_model, $p_id);
+      });
+  }
+
+  static function safeLoad($p_model, $p_id)
+  {
+    $l_item = R::load($p_model, $p_id);
+    if ($l_item->id == 0)
+    {
+      log::error(sprintf("%s.model", $p_model), "unable to get %s id '%d'", $p_model, $p_id);
+      return false;
+    }
+    return $l_item;
+  }
+}
+
+
 class SqlImporter
 {
   public function load($p_file)

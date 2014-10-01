@@ -4,10 +4,7 @@ class UserModel
 {
   static function getByID($p_id)
   {
-    $l_user = R::load("authuser", $p_id);
-    if ($l_user->id == 0)
-      return false;
-    return $l_user;
+    return R::safeload("authuser", $p_id);
   }
 
   static function delete($p_id)
