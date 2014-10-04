@@ -667,7 +667,10 @@ class Handler
     }
     catch (Exception $l_error)
     {
-      log::crit("core.handler", "caugth exception : %s", $l_error->getMessage());
+      log::crit("core.handler", "caught exception");
+      log::doLogFile(log::mc_levelCrit, "core.handler", "    %s", $l_error->getMessage(), $l_error->getFile(), $l_error->getLine());
+      log::crit("core.handler", "exception backtrace");
+      log::logStack(log::mc_levelCrit, "core.handler", $l_error->getTrace());
       return $this->replyException($l_error);
     }
 

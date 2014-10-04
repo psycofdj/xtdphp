@@ -39,11 +39,21 @@ class Setup extends Handler
 EOF
             , array($g_conf["mysql"]["database"]));
 
-    foreach (App::get()->getModules() as $c_module)
-    {
-      log::crit("core.setup", "installing module '%s'", $c_module->getName());
-      $c_module->setup();
+    try {
+      foreach (App::get()->getModules() as $c_module)
+      {
+        log::crit("core.setup", "installing module '%s'", $c_module->getName());
+        $c_module->setup();
+      }
     }
+    catch (Exception $l_error) {
+      log::crit("core.setup", "caught exception");
+      log::doLogFile(log::mc_levelCrit, "core.setup", "    %s", $l_error->getMessage(), $l_error->getFile(), $l_error->getLine());
+      log::crit("core.setup", "exception backtrace");
+      log::logStack(log::mc_levelCrit, "core.setup", $l_error->getTrace());
+      return false;
+    }
+
     return true;
   }
 
