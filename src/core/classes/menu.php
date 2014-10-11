@@ -21,6 +21,16 @@ class Menu
     return $p_tab;
   }
 
+  public function getTab($p_title)
+  {
+    $l_tabs = array_filter($this->m_tabs, function($p_el) use ($p_title) {
+        return $p_el->m_title == $p_title;
+      });
+    if (0 == count($l_tabs))
+      return false;
+    return array_shift($l_tabs);
+  }
+
   public function getTabs()
   {
     usort($this->m_tabs, function($p_tab1, $p_tab2) {
