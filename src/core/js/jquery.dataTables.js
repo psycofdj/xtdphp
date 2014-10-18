@@ -5296,7 +5296,6 @@
       else {
         api.column( iColumn ).search( sInput, bRegex, bSmart, bCaseInsensitive );
       }
-
       api.draw();
     };
 

@@ -418,14 +418,18 @@ function escapeRegExp(str) {
 
       var l_table = $(this).dataTable(settings);
 
-      // 1.
-      $("tbody", l_table).on("click", "tr", function() {
-        var l_current = l_table.data("current-row");
 
+      l_table.setCurrentRow = function(p_row) {
+        var l_current = this.data("current-row");
         if (null != l_current)
           l_current.removeClass("active");
-        $(this).addClass("active");
-        l_table.data("current-row", $(this));
+        p_row.addClass("active");
+        this.data("current-row", p_row);
+      };
+
+      // 1.
+      $("tbody", l_table).on("click", "tr", function() {
+        l_table.setCurrentRow($(this));
       });
 
 
@@ -508,6 +512,7 @@ function escapeRegExp(str) {
 
           l_select.change(function() {
             var l_val = $(this).val();
+
             if (undefined != settings.sAjaxSource)
             {
               if (l_val == "__any__")
