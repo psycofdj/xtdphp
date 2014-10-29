@@ -360,7 +360,7 @@ function escapeRegExp(str) {
 
 /**
  * Creates a bootstrap compatible datatable.
- * See : http://datatables.net/ for construct options
+ * See : http://legacy.datatables.net/ for construct options
  *
  * 0. Disable filters, paginate and length change for small tables
  * 1. Add live click handler on rows
@@ -397,7 +397,6 @@ function escapeRegExp(str) {
               }
               $(this).trigger("wapptable.loaded");
             }
-
         }, options);
 
     // return this.each(function() {

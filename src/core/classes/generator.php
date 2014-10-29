@@ -344,6 +344,7 @@ class HtmlGenerator extends TemplateGenerator
 
   public function __construct()
   {
+    global $g_conf;
     parent::__construct("text/html");
     $this->m_content        = null;
     $this->m_jsList         = Array();
@@ -355,7 +356,10 @@ class HtmlGenerator extends TemplateGenerator
     $this->m_base           = null;
     $this->m_header         = null;
     $this->m_metaHttpEquivs = Array();
-    $this->setData("lang", locale::getName());
+    $this->m_version        = $g_conf["version"];
+
+    $this->setData("lang",    locale::getName());
+    $this->setData("version", $this->m_version);
   }
 
   public function initialize(Handler $p_handler)
