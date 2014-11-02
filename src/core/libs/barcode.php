@@ -8,12 +8,9 @@
  *  Usage:
  *	  <img src="/barcode.php?text=testing" alt="testing" />
  */
-	
-	// Get pararameters that are passed in through $_GET or set to the default value
-	$text = (isset($_GET["text"])?$_GET["text"]:"0");
-	$size = (isset($_GET["size"])?$_GET["size"]:"20");
-	$orientation = (isset($_GET["orientation"])?$_GET["orientation"]:"horizontal");
-	$code_type = (isset($_GET["codetype"])?$_GET["codetype"]:"code128");
+
+function gen_barcode($text, $size, $orientation, $code_type, $output = null)
+{
 	$code_string = "";
 
 	// Translate the $text into barcode the correct $code_type
@@ -108,7 +105,29 @@
 		$location = $cur_size;
 	}
 	// Draw barcode to the screen
-	header ('Content-type: image/png');
-	imagepng($image);
+  if (null == $output)
+  {
+    header ('Content-type: image/png');
+    imagepng($image);
+  }
+  else
+  {
+    imagepng($image, $output);
+  }
 	imagedestroy($image);
+}
+
+
+
+if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"]))
+{
+  // Get pararameters that are passed in through $_GET or set to the default value
+  $text = (isset($_GET["text"])?$_GET["text"]:"0");
+  $size = (isset($_GET["size"])?$_GET["size"]:"20");
+  $orientation = (isset($_GET["orientation"])?$_GET["orientation"]:"horizontal");
+  $code_type = (isset($_GET["codetype"])?$_GET["codetype"]:"code128");
+  gen_barcode($text, $size, $orientation, $code_type, null);
+}
+
+
 ?>
