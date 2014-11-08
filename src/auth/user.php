@@ -72,7 +72,7 @@ class Page extends Handler
     // 1.
     if ($l_isUpdated)
     {
-      $l_mail = new MailTemplate("userinfo", $l_user->mail);
+      $l_mail = new MailTemplate("userinfo", $l_user->mail, true, $this);
       $l_mail
         ->setData("user",     $l_user)
         ->setData("password", $p_password)

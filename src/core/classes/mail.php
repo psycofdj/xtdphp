@@ -12,12 +12,12 @@ class MailTemplate extends TemplateGenerator
   private $m_images  = array();
   private $m_files   = array();
 
-  function __construct($p_mailName, $p_dest, $p_brandLogo = true)
+  function __construct($p_mailName, $p_dest, $p_brandLogo = true, $p_handler)
   {
     global $g_conf;
 
     parent::__construct("dummy");
-    parent::initialize();
+    parent::initialize($p_handler);
 
     $this->m_mail             = new PHPMailer();
     $this->m_to               = $p_dest;
