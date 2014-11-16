@@ -1,9 +1,34 @@
 (function($) {
   // extends jquery validation plugin
   // http://jqueryvalidation.org/
+
   $.fn.wappform = function(options) {
 
+    var methods = {
+      clear : function() {
+        this.each(function() {
+          $("div.form-group", this).each(function() {
+            if ($(this).tooltip) {
+              $(this).tooltip("destroy");
+            }
+            $(this).removeClass("has-error");
+            $(this)
+              .find("span.form-control-feedback")
+              .removeClass("glyphicon-remove");
+          });
+        });
+      }
+    };
+
+    if (methods[options]) {
+      return methods[options].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+
     var settings = $.extend({
+      tooltip : {
+        placement : "auto",
+        container : "body"
+      },
      errorClass : "has-error",
      validClass : "has-success",
      success : function(p_succes, p_el) {
@@ -28,10 +53,12 @@
        $(p_el)
          .parents("div.form-group")
          .tooltip("destroy")
-         .tooltip({ title     : $(p_error).text(),
-                    placement : "auto",
-                    container : "body",
-                    trigger   : "manual" })
+         .tooltip({
+           title     : $(p_error).text(),
+           placement : settings.tooltip.placement,
+           container : settings.tooltip.container,
+           trigger   : "manual"
+         })
          .tooltip("show");
     }}, options);
 

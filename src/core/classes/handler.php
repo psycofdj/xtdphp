@@ -775,10 +775,15 @@ class Handler
       }
       else
       {
-        if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue))
+        if (($l_paramValue == "") && ($c_param->isDefaultValueAvailable()))
+          $l_paramValue = $c_param->getDefaultValue();
+        else
         {
-          log::error("core.handler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue);
-          return false;
+          if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue))
+          {
+            log::error("core.handler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue);
+            return false;
+          }
         }
       }
       array_push($l_callArgs, $l_paramValue);

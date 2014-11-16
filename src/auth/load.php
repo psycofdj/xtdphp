@@ -404,9 +404,10 @@ EOT
       }
       else
       {
-        $l_first    = true;
-        $l_resource = $this->getResource($c_name);
-        foreach ($l_resource->generate() as $c_item)
+        $l_first     = true;
+        $l_resources = $this->getResource($c_name)->generate();
+        $l_resources = array_reverse($l_resources);
+        foreach ($l_resources as $c_item)
         {
           $l_user->link("authuser_authperm", array('data' => $c_item["id"]))->authrole = $l_role;
           if ($l_first == true)

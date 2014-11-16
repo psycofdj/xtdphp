@@ -390,7 +390,6 @@ function escapeRegExp(str) {
             "bFilterAllowEmpty"        : false,
             "aoColumnDefs"             : [ { "sClass": "text-center", "aTargets": "_all" } ],
             "fnDrawCallback"           : function(p_settings) {
-              $("form", this).wappform();
               if (false == $.wapp.mobile.isAny()) {
                 $("[data-toggle~=tooltip]", this).tooltip({ container: "body" });
                 $("[data-toggle~=confirmation]", this).wappconfirm();

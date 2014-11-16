@@ -13,19 +13,16 @@
       btnOkLabel     : $.wapp.messages.confirm.yes,
       btnCancelLabel : $.wapp.messages.confirm.no,
       container      : "body",
-      popout         : true,
-      singleton      : true,
       placement      : "bottom",
       onConfirm      : function(p_event, p_elem) {
         var l_form   = $(p_elem).closest("form");
-        //var l_form   = $(p_elem).parents("form");
         var l_action = $(p_elem).attr("formaction");
         if (undefined != l_action)
           l_form.attr("action", l_action);
         l_form.submit();
       },
       onCancel : function(p_event, p_elem) {
-        $(this).confirmation('hide');
+        $(this).confirmation('destroy');
       }
     }, options);
 
