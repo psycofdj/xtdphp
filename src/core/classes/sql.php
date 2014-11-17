@@ -33,6 +33,9 @@ class SqlLogger implements RedBeanPHP\Logger
 
 class sql
 {
+  const success   = 0;
+  const duplicate = 1;
+  const unknown   = 2;
 
   static function initialize()
   {
@@ -45,6 +48,9 @@ class sql
     R::ext("safeload", function($p_model, $p_id) {
         return sql::safeLoad($p_model, $p_id);
       });
+    R::ext("safestore", function($p_bean) {
+        return sql::safeStore($p_bean);
+      });
   }
 
   static function safeLoad($p_model, $p_id)
@@ -56,6 +62,27 @@ class sql
       return false;
     }
     return $l_item;
+  }
+
+  static function safeStore($p_bean)
+  {
+    try {
+      R::store($p_bean);
+    }
+    catch (RedBeanPHP\RedException\SQL $l_error) {
+      switch ($l_error->getSQLState())
+      {
+      case 23000:
+        $l_errorType = self::duplicate;
+        break;
+      default:
+        $l_errorType = self::unknown;
+        break;
+      }
+      return array($l_errorType, $p_bean);
+    }
+
+    return array(self::success, $p_bean);
   }
 }
 
