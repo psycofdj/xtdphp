@@ -42,6 +42,9 @@ function core_en() {
         "core.time.year"            => "year",
         "core.time.years"           => "years",
 
+        "core.upload.upload_files"  => "Add files",
+        "core.upload.select_files"  => "Select files",
+
         "core.error.file.toobig"    => "Size of given file is too big.",
         "core.error.file.transfert" => "An error occured during file transfert.",
         "core.error.file.internal"  => "An internal server error occured.",

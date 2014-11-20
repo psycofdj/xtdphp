@@ -517,8 +517,10 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addJs("wapp.form.js",                      "core")
       ->addJs("wapp.table.js",                     "core")
       ->addJs("wapp.confirm.js",                   "core")
+      ->addJs("jquery.fileupload.js", "core")
       ;
 
+      //->addJs("wapp.fileupload.js",                "core") a voir après pour wappcoriser
     $this
       ->addCss("jquery-ui.css",                        "core")
       ->addCss("jquery-ui-timepicker-addon.css",       "core")
@@ -527,7 +529,9 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addCss("bootstrap-theme.css",                  "core")
       ->addCss("bootstrap.multiselect.css",            "core")
       ->addCss("jquery.dataTables.bootstrap.css",      "core")
-      ->addCss("wapp.css",                             "core");
+      ->addCss("wapp.css",                             "core")
+      ->addCss("jquery.fileupload.css", "core")
+;
   }
 
   public function initialize(Handler $p_handler)
