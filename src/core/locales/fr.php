@@ -43,6 +43,7 @@ function core_fr() {
         "core.time.years"           => "années",
 
         "core.upload.upload_files"  => "Ajouter des fichiers",
+        "core.upload.uploaded_files"  => "Fichiers uploadés",
         "core.upload.select_files"  => "Selectionner les fichiers",
 
         "core.error.file.toobig"    => "La taille du fichier est trop grande.",
