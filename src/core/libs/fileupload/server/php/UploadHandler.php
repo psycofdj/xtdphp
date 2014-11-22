@@ -1055,6 +1055,7 @@ class UploadHandler
                         FILE_APPEND
                     );
                 } else {
+ //echo $file_path;die();
                     move_uploaded_file($uploaded_file, $file_path);
                 }
             } else {
