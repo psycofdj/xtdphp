@@ -13,13 +13,50 @@ class Setup extends Handler
 
   public function initialize()
   {
-    global $g_conf;
 
     if (false == parent::initialize())
     {
       log::crit("setup", "unable to initialize handler");
       return false;
     }
+
+    return true;
+  }
+
+  public function h_update($p_version)
+  {
+    $l_version = str_replace(".", "_", $p_version);
+
+    try {
+      foreach (App::get()->getModules() as $c_module)
+      {
+        $l_methodName = sprintf("update_%s", $l_version);
+        log::crit("core.setup", "updating module  module '%s' with function %s", $c_module->getName(), $l_methodName);
+        $l_reflex  = new ReflectionClass($c_module);
+
+        try {
+          $l_method  = $l_reflex->getMethod($l_methodName);
+        }
+        catch (ReflectionException $l_error)
+        {
+          continue;
+        }
+        $l_method->invokeArgs($c_module, array());
+      }
+    }
+    catch (Exception $l_error) {
+      log::crit("core.setup", "caught exception");
+      log::doLogFile(log::mc_levelCrit, "core.setup", "    %s", $l_error->getMessage(), $l_error->getFile(), $l_error->getLine());
+      log::crit("core.setup", "exception backtrace");
+      log::logStack(log::mc_levelCrit, "core.setup", $l_error->getTrace());
+      return false;
+    }
+    return $this->redirect("/");
+  }
+
+  public function h_default()
+  {
+    global $g_conf;
 
     R::freeze(false);
 
@@ -54,11 +91,6 @@ EOF
       return false;
     }
 
-    return true;
-  }
-
-  public function h_default()
-  {
     return $this->redirect("/");
   }
 }

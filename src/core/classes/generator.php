@@ -512,6 +512,7 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addJs("bootstrap.js",                      "core")
       ->addJs("bootstrap.multiselect.js",          "core")
       ->addJs("bootstrap.confirmation.js",         "core")
+      ->addJs("bootstrap.typeahead.js",            "core")
       ->addJs("wapp.detector.js",                  "core")
       ->addJs("wapp.tools.js",                     "core")
       ->addJs("wapp.form.js",                      "core")
