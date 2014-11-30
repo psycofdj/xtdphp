@@ -38,7 +38,7 @@ function core_en() {
           "core.color.red"      => "Red",
           "core.color.yellow"   => "Yellow",
           "core.color.white"    => "White",
-          "core.color.charcoal" => "Charcoal Gray",
+          "core.color.charcoal" => "Charcoal",
           "core.color.other"    => "Other",
 
           "core.payment.taxrate"       => "Tax rate",
