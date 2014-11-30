@@ -31,7 +31,6 @@ class Setup extends Handler
       foreach (App::get()->getModules() as $c_module)
       {
         $l_methodName = sprintf("update_%s", $l_version);
-        log::crit("core.setup", "updating module  module '%s' with function %s", $c_module->getName(), $l_methodName);
         $l_reflex  = new ReflectionClass($c_module);
 
         try {
@@ -41,6 +40,7 @@ class Setup extends Handler
         {
           continue;
         }
+        log::crit("core.setup", "updating module  module '%s' with function %s", $c_module->getName(), $l_methodName);
         $l_method->invokeArgs($c_module, array());
       }
     }

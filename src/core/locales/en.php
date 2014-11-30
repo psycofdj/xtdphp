@@ -2,7 +2,8 @@
 
 function core_en() {
   return
-    array("0.4 => 0.5" => "0.4 => 0.5",
+    array("0.4 => 0.5"                 => "0.4 => 0.5",
+          "0.5 => 0.6"                 => "0.5 => 0.6",
           "core.yes"                   => "Yes",
           "core.no"                    => "No",
           "core.cancel"                => "Cancel",

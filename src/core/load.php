@@ -18,7 +18,8 @@ class coreModule extends Module
     App::get()->getMenu()
       ->addTab(new MenuTab("core.menu.setup"), 120)
       ->addSubTab("core.menu.setup.install", "/wappcore/core/setup.php")
-      ->addSubTab("0.4 => 0.5", "/wappcore/core/setup.php?action=update&version=0.5");
+      ->addSubTab("0.4 => 0.5", "/wappcore/core/setup.php?action=update&version=0.5")
+      ->addSubTab("0.5 => 0.6", "/wappcore/core/setup.php?action=update&version=0.6");
   }
 }
 

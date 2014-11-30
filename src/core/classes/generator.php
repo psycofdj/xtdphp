@@ -506,6 +506,7 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addJs("jquery.validate.methods.js",        "core")
       ->addJs("jquery.validate.methods-custom.js", "core")
       ->addJs("jquery.dataTables.js",              "core")
+      ->addJs("jquery.scrollTo.js",                "core")
       ->addJs("jquery-ui-timepicker-addon.js",     "core")
       ->addJs("jquery-ui-sliderAccess.js",         "core")
       ->addJs("jquery.cookie.js",                  "core")
