@@ -9,6 +9,8 @@
     var Confirmation = function (element, options) {
       var that = this;
 
+      options = $.extend($.fn.confirmation.Constructor.DEFAULTS, options);
+
       this.init('confirmation', element, options);
 
 
@@ -59,7 +61,7 @@
       $(element).on('click', function(e) {
         e.preventDefault();
       });
-    }
+    };
 
     if (!$.fn.popover || !$.fn.tooltip) throw new Error('Confirmation requires popover.js and tooltip.js');
 
@@ -203,7 +205,7 @@
 
       if(popout == 'false') popout = false;
 
-      return popout
+      return popout;
     }
 
 
