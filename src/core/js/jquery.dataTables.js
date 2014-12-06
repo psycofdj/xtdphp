@@ -2281,8 +2281,21 @@
       "error": function (xhr, error, thrown) {
         var log = oSettings.oApi._fnLog;
 
+        log( oSettings, 0, JSON.stringify(data), 0 );
         if ( error == "parsererror" ) {
           log( oSettings, 0, 'Invalid JSON response', 1 );
+          if (thrown) {
+            log( oSettings, 0, 'thrown : ' + thrown, 0 );
+          }
+          if (xhr.statusText) {
+            log( oSettings, 0, 'status text : ' + xhr.statusText, 0 );
+          }
+          if (xhr.responseText) {
+            log( oSettings, 0, 'response text : ' + xhr.responseText, 0 );
+          }
+          if (xhr.responseXML) {
+            log( oSettings, 0, 'response xml : ' + xhr.responseXML, 0 );
+          }
         }
         else {
           log( oSettings, 0, 'Ajax error', 7 );

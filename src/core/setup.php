@@ -8,7 +8,7 @@ class Setup extends Handler
 {
   public function __construct()
   {
-    parent::__construct(new BinaryGenerator());
+    parent::__construct();
   }
 
   public function initialize()
@@ -20,6 +20,10 @@ class Setup extends Handler
       return false;
     }
 
+    App::get()->getModule("auth")
+      //->registerPerm("update",  "core/setup")
+      ->registerPerm("default", "core/setup")
+      ;
     return true;
   }
 

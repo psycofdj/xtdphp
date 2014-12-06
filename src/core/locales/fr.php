@@ -2,9 +2,7 @@
 
 function core_fr() {
   return
-    array("0.4 => 0.5"                 => "0.4 => 0.5",
-          "0.5 => 0.6"                 => "0.5 => 0.6",
-          "core.yes"                   => "Oui",
+    array("core.yes"                   => "Oui",
           "core.no"                    => "Non",
           "core.cancel"                => "Annuler",
           "core.date"                  => "Date",
@@ -62,6 +60,8 @@ function core_fr() {
           "core.time.months"           => "mois",
           "core.time.year"             => "année",
           "core.time.years"            => "années",
+
+          "core.auth.install"          => "Installation",
 
           "core.upload.upload_files"   => "Ajouter des fichiers",
           "core.upload.uploaded_files" => "Fichiers uploadés",

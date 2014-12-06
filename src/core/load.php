@@ -10,17 +10,16 @@ class coreModule extends Module
   public function __construct($p_baseDir, $p_name)
   {
     parent::__construct($p_baseDir, $p_name, 0);
-    App::get()->getMenu()
+  }
+
+  public function initialize($p_app)
+  {
+    $p_app->getMenu()
       ->addTab(new MenuTab("core.menu.lang"), 100)
       ->addSubTab("core.menu.lang.en", "/wappcore/core/lang.php?lang=en")
       ->addSubTab("core.menu.lang.fr", "/wappcore/core/lang.php?lang=fr");
-
-    App::get()->getMenu()
-      ->addTab(new MenuTab("core.menu.setup"), 120)
-      ->addSubTab("core.menu.setup.install", "/wappcore/core/setup.php")
-      ->addSubTab("0.4 => 0.5", "/wappcore/core/setup.php?action=update&version=0.5")
-      ->addSubTab("0.5 => 0.6", "/wappcore/core/setup.php?action=update&version=0.6");
   }
+
 }
 
 ?>

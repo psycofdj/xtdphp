@@ -21,11 +21,10 @@ class SqlLogger implements RedBeanPHP\Logger
       }
       $c_arg = str_replace("\n", " ",  $c_arg);
       $c_arg = preg_replace('/( +)/s', ' ', $c_arg);
-      if (false != strstr($c_arg, "SQLSTATE")) {
+      if (false != strstr($c_arg, "SQLSTATE"))
         log::crit("core.sql", "sql error : %s", $c_arg);
-      }
       else
-        log::debug("core.sql", "executing sql query : %s", $c_arg);
+        log::debug("core.sql", "executing sql format query : %s", $c_arg);
     }
   }
 }

@@ -2,9 +2,7 @@
 
 function core_en() {
   return
-    array("0.4 => 0.5"                 => "0.4 => 0.5",
-          "0.5 => 0.6"                 => "0.5 => 0.6",
-          "core.yes"                   => "Yes",
+    array("core.yes"                   => "Yes",
           "core.no"                    => "No",
           "core.cancel"                => "Cancel",
           "core.date"                  => "Date",
@@ -61,6 +59,8 @@ function core_en() {
           "core.time.months"           => "months",
           "core.time.year"             => "year",
           "core.time.years"            => "years",
+
+          "core.auth.install"          => "Installation",
 
           "core.upload.upload_files"   => "Add files",
           "core.upload.uploaded_files" => "Uploaded files",

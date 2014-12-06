@@ -39,7 +39,9 @@ class locale
 
   static public function resolve($p_key)
   {
-    $l_keys = explode(":", $p_key);
+    if (0 === strpos($p_key, "{dnt}"))
+      return substr($p_key, 5);
+
     $l_data = self::$ms_locale;
 
     if (false == array_key_exists($p_key, $l_data))
