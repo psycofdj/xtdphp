@@ -38,7 +38,7 @@
       <table id="users" cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-hover table-condensed table-responsive" id="example">
         <thead>
           <tr>
-            <th class="col-xs-1">{t}auth.user.list.actions{/t}</th>
+            <th class="col-xs-1" style="min-width:100px">{t}auth.user.list.actions{/t}</th>
             <th class="wp-search">{t}auth.menu.mail{/t}</th>
             <th class="wp-search">{t}auth.user.list.name{/t}</th>
           </tr>
