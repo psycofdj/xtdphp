@@ -24,7 +24,7 @@ class types
 
   public static function xml_to_obj(&$p_value)
   {
-    if (false == ($l_value = simplexml_load_string($p_value)))
+    if (false === ($l_value = simplexml_load_string($p_value)))
       return false;
     $p_value = $l_value;
     return true;

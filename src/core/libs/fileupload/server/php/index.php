@@ -15,3 +15,4 @@ require('UploadHandler.php');
 $custom_dir = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['custom_dir'];
 $upload_handler = new UploadHandler(array('upload_dir' => $custom_dir, 'image_versions' => array()));
 
+
