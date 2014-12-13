@@ -61,6 +61,7 @@ function core_en() {
           "core.time.years"            => "years",
 
           "core.auth.install"          => "Installation",
+          "core.auth.dev"              => "Developpment",
 
           "core.upload.upload_files"   => "Add files",
           "core.upload.uploaded_files" => "Uploaded files",

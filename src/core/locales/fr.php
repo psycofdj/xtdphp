@@ -62,6 +62,7 @@ function core_fr() {
           "core.time.years"            => "années",
 
           "core.auth.install"          => "Installation",
+          "core.auth.dev"              => "Développment",
 
           "core.upload.upload_files"   => "Ajouter des fichiers",
           "core.upload.uploaded_files" => "Fichiers uploadés",
