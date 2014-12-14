@@ -43,7 +43,8 @@ function core_en() {
           "core.payment.taxrate"       => "Tax rate",
           "core.payment.gross"         => "Gross",
           "core.payment.tax"           => "Tax",
-          "core.payment.net"           => "net",
+          "core.payment.net"           => "Net",
+          "core.payment.type"          => "Type",
 
           "core.time.second"           => "second",
           "core.time.seconds"          => "seconds",

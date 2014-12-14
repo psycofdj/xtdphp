@@ -45,6 +45,7 @@ function core_fr() {
           "core.payment.gross"         => "Brut",
           "core.payment.tax"           => "Taxe",
           "core.payment.net"           => "Net",
+          "core.payment.type"          => "Type",
 
           "core.time.second"           => "seconde",
           "core.time.seconds"          => "secondes",
