@@ -20,7 +20,7 @@
       <script type="text/javascript" src="{$c_js}?version={$version}"></script>
     {/foreach}
     {foreach $__css_list as $c_css}
-      <link rel="stylesheet" type="text/css" href="{$c_css}?version={$version}" media="screen"/>
+      <link rel="stylesheet" type="text/css" href="{$c_css}?version={$version}" media="all"/>
     {/foreach}
 
     {if isset($__meta_descr)}
