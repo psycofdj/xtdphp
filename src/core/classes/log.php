@@ -234,7 +234,6 @@ function errors_to_str($p_errno)
 
 
 set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
-    log::crit("log", "here %d : ", error_reporting());
     if (0 == error_reporting())
       return;
 
