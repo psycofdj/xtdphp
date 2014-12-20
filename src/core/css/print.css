@@ -1,5 +1,5 @@
 body {
-  width : 550px;
+  width : 400px;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
@@ -40,6 +40,11 @@ h3 {
 .panel-body{
 
 }
+
+.badge.pull-right{
+    float:right;
+}
+
 
 table 
 {
