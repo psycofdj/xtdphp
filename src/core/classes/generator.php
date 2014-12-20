@@ -11,7 +11,7 @@ require_once(__WAPPCORE_DIR__  . "/core/libs/Mobile_Detect.php");
 
 /* -------------------------------------------------------------------------- */
 
-interface Generator
+interface OutputGenerator
 {
   public function getContentType();
   public function resolve();
@@ -19,7 +19,7 @@ interface Generator
   public function initialize(Handler $p_handler);
 }
 
-interface RawGenerator extends Generator
+interface RawGenerator extends OutputGenerator
 {
 }
 
@@ -108,7 +108,7 @@ class BinaryGenerator implements RawGenerator
  * Generate a json answer from current data and set content-type header to
  * application/json
  */
-class JsonGenerator implements Generator
+class JsonGenerator implements OutputGenerator
 {
   private $m_contentType = "application/json";
   private $m_data        = array();
@@ -162,7 +162,7 @@ class JsonGenerator implements Generator
  * Smarty engine will be initialized with the custum function plugin named
  * <b>{t}</b> which allow to generate localized output
  */
-class TemplateGenerator implements Generator
+class TemplateGenerator implements OutputGenerator
 {
   private   $m_contentType;
   protected $m_data;

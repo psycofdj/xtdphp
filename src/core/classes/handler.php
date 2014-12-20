@@ -30,7 +30,7 @@ class Handler
 
   private $m_signals = null;
 
-  protected function __construct(Generator $p_gen = null)
+  protected function __construct(OutputGenerator $p_gen = null)
   {
     $this->m_gen         = $p_gen;
     $this->m_headers     = Array();
