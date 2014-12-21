@@ -34,7 +34,7 @@ class WappSqlSessionHandler
 
   public function destroy($p_sid)
   {
-    if (false != ($l_session = $this->get($p_sid)))
+    if (false != ($l_session = $this->__getSession($p_sid)))
       R::trash($l_session);
     return true;
   }
