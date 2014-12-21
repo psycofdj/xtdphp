@@ -17,10 +17,10 @@
       <meta http-equiv="{$c_equiv}" content="{$c_content}"/>
     {/foreach}
     {foreach $__js_list as $c_js}
-      <script type="text/javascript" src="{$c_js}?version={$version}"></script>
+      <script type="text/javascript" src="{$c_js}"></script>
     {/foreach}
     {foreach $__css_list as $c_css}
-     <link rel="stylesheet" type="text/css" href="{$c_css}?version={$version}" media="all"/>
+     <link rel="stylesheet" type="text/css" href="{$c_css}" media="all"/>
     {/foreach}
 
     {if isset($__meta_descr)}
