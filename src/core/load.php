@@ -20,6 +20,22 @@ class coreModule extends Module
       ->addSubTab("core.menu.lang.fr", "/wappcore/core/lang.php?lang=fr");
   }
 
+  function update_0_13()
+  {
+    R::exec(<<<EOF
+      CREATE TABLE `session` (
+        `id`        int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `sid`       varchar(256)     NOT NULL,
+        `timestamp` int(11) unsigned NOT NULL,
+        `data`      longtext             NOT NULL,
+        PRIMARY KEY (`id`),
+        KEY         `sid`       (`sid`(255)),
+        KEY         `timestamp` (`timestamp`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+EOF
+           );
+  }
+
 }
 
 ?>

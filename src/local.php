@@ -16,6 +16,8 @@ require_once(__WAPPCORE_DIR__ . "/core/classes/log.php");
 $g_conf                       = array();
 $g_conf["env"]                = "prod";
 $g_conf["version"]            = "0";
+$g_conf["session"]            = array();
+$g_conf["session"]["handler"] = "default";
 
 $g_conf["style"]              = array();
 $g_conf["style"]["name"]      = "Wappcore";
