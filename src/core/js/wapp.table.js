@@ -256,6 +256,7 @@ $.fn.dataTableExt.oApi.fnGetServerColumnsData = function (oSettings, p_colIdx) {
     colName : l_name
   };
 
+  console.log("here : " + p_colIdx);
   $.ajax({
     dataType : "json",
     data     : l_data,
@@ -475,13 +476,15 @@ function escapeRegExp(str) {
           var l_placeholder = $(this).data("placeholder") || null;
 
           $(l_input).keyup(function () {
-            l_table.fnFilter($(this).val(), p_colIndex);
-            if ($(this).prop("disabled") == false)
-              $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
             if ($(this).val() != "")
               $(this).addClass("input-danger");
             else
               $(this).removeClass("input-danger");
+
+            if ($(this).prop("disabled") == false)
+              $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
+
+            l_table.fnFilter($(this).val(), p_colIndex);
           });
 
 
