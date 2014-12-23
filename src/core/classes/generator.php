@@ -358,8 +358,9 @@ class HtmlGenerator extends TemplateGenerator
     $this->m_metaHttpEquivs = Array();
     $this->m_version        = $g_conf["version"];
 
-    $this->setData("lang",    locale::getName());
-    $this->setData("version", $this->m_version);
+    $this
+      ->setData("lang",    locale::getName())
+      ->setData("version", $this->m_version);
   }
 
   public function initialize(Handler $p_handler)
