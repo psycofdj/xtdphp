@@ -42,7 +42,6 @@ class WappSqlSessionHandler
   public function open($p_savepath , $p_name)
   {
     log::info("core.session", "initializing : %s", $p_name);
-    $this->gc(60 * 10);
     return true;
   }
 
