@@ -9,6 +9,7 @@ require_once(__WAPPCORE_DIR__  . "/core/classes/error.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/sql.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/app.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/generator.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/session.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/RedBeanPHP/loader.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/Zend/load.php");
 
@@ -30,7 +31,7 @@ class Handler
 
   private $m_signals = null;
 
-  protected function __construct(Generator $p_gen = null)
+  protected function __construct(OutputGenerator $p_gen = null)
   {
     $this->m_gen         = $p_gen;
     $this->m_headers     = Array();
@@ -325,9 +326,9 @@ class Handler
    */
   protected function initialize()
   {
+    sql::initialize();
     $this->initSession();
     $this->initLocale();
-    sql::initialize();
     $this->m_gen->initialize($this);
 
     if (false == ($this->m_gen instanceof RawGenerator))
@@ -345,7 +346,7 @@ class Handler
   {
     $l_sessionID = session_id();
     if (empty($l_sessionID))
-      session_start();
+      WappSqlSessionHandler::session_start();
     log::debug("core.handler", "SESSION ID: " . session_id());
   }
 

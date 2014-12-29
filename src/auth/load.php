@@ -135,7 +135,7 @@ class authModule extends Module
     {
       list($l_isAllowed, $l_errorKey) = $this->isAllowed($p_handler, $c_check["role"], $c_check["data"]);
       if (false == $l_isAllowed)
-        throw new WappError(Locale::resolve($l_errorKey));
+        throw new WappError(Locale::resolve($l_errorKey), 401);
     }
     return true;
   }

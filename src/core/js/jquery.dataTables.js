@@ -2281,8 +2281,13 @@
       "error": function (xhr, error, thrown) {
         var log = oSettings.oApi._fnLog;
 
-        log( oSettings, 0, JSON.stringify(data), 0 );
+        if (xhr.status == 401) {
+          window.location = "/";
+          return;
+        }
+
         if ( error == "parsererror" ) {
+          log( oSettings, 0, JSON.stringify(data), 0 );
           log( oSettings, 0, 'Invalid JSON response', 1 );
           if (thrown) {
             log( oSettings, 0, 'thrown : ' + thrown, 0 );
@@ -2298,7 +2303,7 @@
           }
         }
         else {
-          log( oSettings, 0, 'Ajax error', 7 );
+          // log( oSettings, 0, 'Ajax error : ' + error, 7 );
         }
       }
     };

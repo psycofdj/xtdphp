@@ -108,7 +108,7 @@ if ($.fn.dataTable.Api)
       $(host).empty().html('<ul class="pagination"/>').children('ul'),
       buttons
     );
-  }
+  };
 }
 else
 {
@@ -246,10 +246,25 @@ if ( $.fn.DataTable.TableTools ) {
   } );
 }
 
+$.fn.dataTableExt.oApi.setColFilter = function(oSettings, sInput, iColumn, bRegex) {
+  oSettings.aoPreSearchCols[iColumn].sSearch = sInput;
+  oSettings.aoPreSearchCols[iColumn].bRegex  = bRegex;
+};
+
+
 
 $.fn.dataTableExt.oApi.fnGetServerColumnsData = function (oSettings, p_colIdx) {
+  var l_results = [];
 
-  var l_results;
+  if ((undefined != oSettings.aoColumns[p_colIdx]) &&
+      (undefined != oSettings.aoColumns[p_colIdx].aFilterLabels))
+  {
+    $.each(oSettings.aoColumns[p_colIdx].aFilterLabels, function(p_key, p_value) {
+      l_results.push(p_key);
+    });
+    return l_results;
+  }
+
   var l_name = oSettings.aoColumns[p_colIdx].mData;
   var l_data = {
     colIdx  : p_colIdx,
@@ -270,7 +285,7 @@ $.fn.dataTableExt.oApi.fnGetServerColumnsData = function (oSettings, p_colIdx) {
 };
 
 
-$.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
+$.fn.dataTableExt.oApi.fnGetColumnData = function (oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
   // check that we have a column id
   if ( typeof iColumn == "undefined" ) return new Array();
   // by default we only want unique data
@@ -313,47 +328,240 @@ $.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique,
   }
 
   return asResultData;
-}
-
-
-function fnCreateSelect(aData, p_colIdx, p_settings)
-{
-  var r = "";
-  var i;
-  var iLen = aData.length;
-
-  r += '<option value="__any__">' + p_settings.sAllCellFilterLabel + '</option>';
-  if (p_settings.bFilterAllowEmpty)
-    r += '<option value="">' + p_settings.sEmptyCellFilterLabel + '</option>';
-  if (p_settings.bFilterAllowNotEmpty)
-    r += '<option value="__notempty__">' + p_settings.sNotEmptyCellFilterLabel + '</option>';
-  if (p_settings.bFilterAllowNull)
-    r += '<option value="__null__">' + p_settings.sNullCellFilterLabel + '</option>';
-  if (p_settings.bFilterAllowNotNull)
-    r += '<option value="__notnull__">' + p_settings.sNotNullCellFilterLabel + '</option>';
-
-  for (i = 0 ; i < iLen ; i++ )
-  {
-    var l_node  = aData[i] || "__null__";
-    var l_label = l_node;
-
-    if ((undefined != p_settings.aoColumns) &&
-        (undefined != p_settings.aoColumns[p_colIdx]) &&
-        (undefined != p_settings.aoColumns[p_colIdx].aFilterLabels) &&
-        (undefined != p_settings.aoColumns[p_colIdx].aFilterLabels[l_node]))
-      l_label = p_settings.aoColumns[p_colIdx].aFilterLabels[l_node];
-
-    if (l_label == "__null__")
-      l_label = p_settings.sNullCellFilterLabel;
-
-    r += '<option value="' + l_node + '">' + l_label + '</option>';
-  }
-  return r;
-}
+};
 
 
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
+
+function WappFilter(p_target, p_th, p_table, p_tableID, p_colIdx, p_settings) {
+  var self = p_target;
+
+  self.m_th       = p_th;
+  self.m_table    = p_table;
+  self.m_tableID  = p_tableID;
+  self.m_colIdx   = p_colIdx;
+  self.m_settings = p_settings;
+  self.m_name     = "#" + self.m_tableID + ".wappt-col" + self.m_colIdx;
+  self.m_cell     = $("<th></th>");
+
+
+  self.__getElement = function() {
+    return undefined;
+  };
+
+  self.__isDisabled = function() {
+    return true == self.__getElement().prop("disabled");
+  };
+
+  self.__isValueValid = function(p_value) {
+    return true;
+  };
+
+  self.__isValueDanger = function(p_value) {
+    return (0 != p_value.length);
+  };
+
+  self.__filterValue = function(p_value) {
+    self.m_table.setColFilter(p_value, self.m_colIdx, false);
+  };
+
+  self.__getDefaultValue = function(p_value) {
+    return "";
+  };
+
+  self.save = function(p_value) {
+    if (false == self.m_settings.bCookie) return;
+    if (true == self.__isDisabled())      return;
+    $.cookie(self.m_name, p_value);
+  };
+
+  self.update = function(p_value) {
+    if (false == self.__isValueValid(p_value)) return;
+
+    var l_el = self.__getElement();
+    l_el.val(p_value);
+
+    if (self.__isValueDanger(p_value)) {
+      l_el.addClass("input-danger");
+    } else {
+      l_el.removeClass("input-danger");
+    }
+    self.__filterValue(p_value);
+    self.save(p_value);
+    $(self).trigger("wapptable.filter.updated");
+  };
+
+  self.reset = function(p_value) {
+    self.update(self.__getDefaultValue());
+  };
+
+  self.load = function() {
+    if (false == self.m_settings.bCookie) return;
+    var l_value = $.cookie(self.m_name) || undefined;
+    if (undefined != l_value) {
+      self.update(l_value);
+    }
+  };
+
+  self.getCell = function() {
+    return self.m_cell;
+  };
+
+  self.__init = function() {
+  };
+
+  self.init = function() {
+    self.__init();
+    self.m_cell.append(self.__getElement());
+    self.load();
+  };
+};
+
+function WappFilterSelect(p_th, p_table, p_tableID, p_colIdx, p_settings) {
+  var self = this;
+
+  WappFilter(self, p_th, p_table, p_tableID, p_colIdx, p_settings);
+  self.m_isRegExp = p_th.hasClass("wp-regexp");
+  self.m_select   = $("<select style='width:100%;' class='form-control input-sm'/>");
+
+  self.__getDefaultValue = function(p_value) {
+    return "__any__";
+  };
+
+  self.__isValueDanger = function(p_value) {
+    return ("__any__" != p_value);
+  };
+
+  self.__isValueValid = function(p_value) {
+    var l_opt = $("option[value='" + p_value + "']", self.m_select);
+    return (0 != l_opt.length);
+  };
+
+  self.__getElement = function() {
+    return self.m_select;
+  };
+
+  self.__filterValue = function(p_value) {
+    if (p_value == "__any__") {
+      if (undefined != self.m_settings.sAjaxSource) {
+        self.m_table.setColFilter("__any__", self.m_colIdx, false);
+      } else {
+        self.m_table.setColFilter(".*", self.m_colIdx, true);
+      }
+    } else if (p_value == "__notempty__") {
+      self.m_table.setColFilter("^.+$", self.m_colIdx, true);
+    } else if (p_value == "__null__") {
+      self.m_table.setColFilter("__null__", self.m_colIdx, false);
+    } else if (p_value == "__notnull__") {
+      self.m_table.setColFilter("__notnull__", self.m_colIdx, false);
+    } else {
+      if (false == self.m_isRegExp) {
+        self.m_table.setColFilter("^" + escapeRegExp(p_value) + "$", self.m_colIdx, true);
+      } else {
+        self.m_table.setColFilter("^" + escapeRegExp(p_value) + ".*", self.m_colIdx, true);
+      }
+    }
+  };
+
+  self.getColumnsValues = function() {
+    if (undefined != self.m_settings.sAjaxSource) {
+      return self.m_table.fnGetServerColumnsData(self.m_colIdx);
+    }
+    return self.m_table.fnGetColumnData(self.m_colIdx, true, true, false);
+  };
+
+  self.createSelectOptions = function(p_values)
+  {
+    var r = "";
+    var i;
+    var iLen = p_values.length;
+
+    r += '<option value="__any__">' + self.m_settings.sAllCellFilterLabel + '</option>';
+    if (self.m_settings.bFilterAllowEmpty)
+      r += '<option value="">' + self.m_settings.sEmptyCellFilterLabel + '</option>';
+    if (self.m_settings.bFilterAllowNotEmpty)
+      r += '<option value="__notempty__">' + self.m_settings.sNotEmptyCellFilterLabel + '</option>';
+    if (self.m_settings.bFilterAllowNull)
+      r += '<option value="__null__">' + self.m_settings.sNullCellFilterLabel + '</option>';
+    if (self.m_settings.bFilterAllowNotNull)
+      r += '<option value="__notnull__">' + self.m_settings.sNotNullCellFilterLabel + '</option>';
+
+    for (i = 0 ; i < iLen ; i++ )
+    {
+      var l_node  = p_values[i] || "__null__";
+      var l_label = l_node;
+
+      if ((undefined != self.m_settings.aoColumns) &&
+          (undefined != self.m_settings.aoColumns[p_colIdx]) &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].aFilterLabels) &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].aFilterLabels[l_node]))
+        l_label = self.m_settings.aoColumns[p_colIdx].aFilterLabels[l_node];
+
+      if (l_label == "__null__")
+        l_label = self.m_settings.sNullCellFilterLabel;
+
+      r += '<option value="' + l_node + '">' + l_label + '</option>';
+    }
+    return r;
+  };
+
+  self.__init = function() {
+    var l_values = self.getColumnsValues();
+    self.m_select.html(self.createSelectOptions(l_values));
+    self.m_select.change(function() {
+      self.update($(this).val());
+      $(this).trigger("wapptable.filter.edited");
+      self.m_table.api().draw();
+    });
+    self.m_cell.css("text-align", "center");
+  };
+
+  self.init();
+}
+
+function WappFilterInput(p_th, p_table, p_tableID, p_colIdx, p_settings) {
+  var self = this;
+
+  WappFilter(self, p_th, p_table, p_tableID, p_colIdx, p_settings);
+  self.m_input = $("<input class='form-control input-sm' type='text' style='width:100%;'/>");
+
+  self.__getElement = function() {
+    return self.m_input;
+  };
+
+  self.initPlaceholder = function() {
+    var l_placeholder = self.m_th.data("placeholder") || "";
+    var l_title       = p_th.text()                   || "";
+    if ((0 == l_placeholder.length) && (0 != l_title.length)) {
+      l_placeholder = $.sprintf("%s %s ...", self.m_settings.oLanguage.sSearch, l_title);
+      self.m_input.attr("placeholder", l_placeholder);
+    }
+  };
+
+  self.__init = function() {
+    self.initPlaceholder();
+    self.m_input.keyup(function() {
+      self.update($(this).val());
+      $(this).trigger("wapptable.filter.edited");
+      self.m_table.api().draw();
+    });
+  };
+
+  self.init();
+}
+
+
+function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
+  var self = this;
+
+  WappFilter(self, p_th, p_table, p_tableID, p_colIdx, p_settings);
+  self.__getElement = function() {
+    return self.m_cell;
+  };
+  self.init();
 }
 
 
@@ -371,223 +579,154 @@ function escapeRegExp(str) {
  *    of thead headers.
  */
 (function($) {
-
-    $.fn.wapptable = function(options) {
-        var settings = $.extend({
-            "sFilterPlace"             : "thead",
-            "bAutoWidth"               : false,
-            "bColFilter"               : true,  // enable automatique creation of ciltering widgets
-            "bCookie"                  : true,  // use cookie to save filtering options
-            "dCookieTime"              : 365,   // when use cookie, expire time of the cookie
-            "sAllCellFilterLabel"      : $.wapp.messages.table.nofilter,
-            "sEmptyCellFilterLabel"    : $.wapp.messages.table.empty,
-            "sNotEmptyCellFilterLabel" : $.wapp.messages.table.notempty,
-            "sNullCellFilterLabel"     : $.wapp.messages.table.null,
-            "sNotNullCellFilterLabel"  : $.wapp.messages.table.notnull,
-            "bFilterAllowNull"         : false,
-            "bFilterAllowNotNull"      : false,
-            "bFilterAllowNotEmpty"     : false,
-            "bFilterAllowEmpty"        : false,
-            "aoColumnDefs"             : [ { "sClass": "text-center", "aTargets": "_all" } ],
-            "fnDrawCallback"           : function(p_settings) {
-              if (false == $.wapp.mobile.isAny()) {
-                $("[data-toggle~=tooltip]", this).tooltip({ container: "body" });
-                $("[data-toggle~=confirmation]", this).wappconfirm();
-              }
-              $(this).trigger("wapptable.loaded");
-            }
-        }, options);
-
-    // return this.each(function() {
-    //   // create datatable
-      var l_tableID = $(this).prop("id") || null;
-
-      if (null == l_tableID)
-      {
-        alert("wapptables need table id");
-        return;
+  $.fn.wapptable = function(options) {
+    var self        = this;
+    self.m_id       = self.prop("id") || null;
+    self.m_settings = $.extend($.fn.dataTable.defaults, {
+      "sFilterPlace"             : "thead",
+      "bAutoWidth"               : false,
+      "bColFilter"               : true,  // enable automatique creation of ciltering widgets
+      "bCookie"                  : true,  // use cookie to save filtering options
+      "dCookieTime"              : 365,   // when use cookie, expire time of the cookie
+      "sAllCellFilterLabel"      : $.wapp.messages.table.nofilter,
+      "sEmptyCellFilterLabel"    : $.wapp.messages.table.empty,
+      "sNotEmptyCellFilterLabel" : $.wapp.messages.table.notempty,
+      "sNullCellFilterLabel"     : $.wapp.messages.table.null,
+      "sNotNullCellFilterLabel"  : $.wapp.messages.table.notnull,
+      "bFilterAllowNull"         : false,
+      "bFilterAllowNotNull"      : false,
+      "bFilterAllowNotEmpty"     : false,
+      "bFilterAllowEmpty"        : false,
+      "aoColumnDefs"             : [ { "sClass": "text-center", "aTargets": "_all" } ],
+      "fnDrawCallback"           : function(p_settings) {
+        $(this).trigger("wapptable.loaded");
       }
+    });
+    self.m_settings = $.extend(self.m_settings, options);
 
-      var l_cookieName  = "#" + l_tableID + "_length";
-      var l_cookieValue = $.cookie(l_cookieName);
+    self.wappize = function(p_target) {
+      if (false == $.wapp.mobile.isAny()) {
+        $("[data-toggle~=tooltip]", p_target).tooltip({ container: "body" });
+        $("[data-toggle~=confirmation]", p_target).wappconfirm();
+      }
+    };
 
-      if ((true == settings.bCookie) && (undefined != l_cookieValue))
-        settings.iDisplayLength = parseInt(l_cookieValue);
+    self.load = function() {
+      if (false == self.m_settings.bCookie) return;
+      var l_name  = $.sprintf("#%s_length", self.m_id);
+      var l_value = $.cookie(l_name) || undefined;
+      if (undefined != l_value) {
+        self.m_settings.iDisplayLength = parseInt(l_value);
+      }
+    };
 
-      var l_table = $(this).dataTable(settings);
+    self.highlighRow = function(p_row) {
+      var l_current = self.m_table.data("current-row");
+      if (null != l_current)
+        l_current.removeClass("active");
+      p_row.addClass("active");
+      self.m_table.data("current-row", p_row);
+    };
 
 
-      l_table.setCurrentRow = function(p_row) {
-        var l_current = this.data("current-row");
-        if (null != l_current)
-          l_current.removeClass("active");
-        p_row.addClass("active");
-        this.data("current-row", p_row);
-      };
+    self.highlighCell = function(p_cell) {
+      var l_current = self.m_table.data("current-cell");
+      if (null != l_current)
+        l_current.removeClass("warning");
+      p_cell.addClass("warning");
+      self.m_table.data("current-cell", p_cell);
+    };
 
-      // 1.
-      $("tbody", l_table).on("click", "tr", function() {
-        l_table.setCurrentRow($(this));
+    self.create = function() {
+      self.m_table = $(self).dataTable(self.m_settings);
+    };
+
+    self.bind = function() {
+      $("tbody", self.m_table).on("click", "tr", function() {
+        self.highlighRow($(this));
       });
 
-
-      // 2.
-      $("tbody", l_table).on("click", "tr td", function() {
-        var l_current = l_table.data("current-cell");
-        if (null != l_current)
-          l_current.removeClass("warning");
-        $(this).addClass("warning");
-        l_table.data("current-cell", $(this));
+      $("tbody", self.m_table).on("click", "tr td", function() {
+        self.highlighCell($(this));
       });
 
-      // 3.
-      if (false == settings.bColFilter)
-        return;
+      self.m_table.on("wapptable.loaded", function() {
+        self.wappize(this);
+      });
 
+      var l_name = $.sprintf("#%s_length", self.m_id);
+      $(l_name).change(function() {
+        var l_value = $("option:selected", this).val();
+        $.cookie(l_name, l_value);
+      });
+    };
 
-      var l_head        = $("thead", l_table);
-      var l_row         = $("<tr></tr>");
-      var l_nbSearch    = 0;
-
-      if (settings.sScrollY)
+    self.getHead = function() {
+      var l_head  = $("thead", self.m_table);
+      if (self.m_settings.sScrollY)
       {
-        var l_wrapper = $("#" + l_table.prop("id") + "_wrapper");
+        var l_wrapper = $("#" + self.m_id + "_wrapper");
         l_head = $("div.dataTables_scrollHead table > thead", l_wrapper);
       }
+      return l_head;
+    };
 
-      $(l_cookieName).each(function() {
-        $(this).change(function() {
-          l_cookieValue = $(this).find(":selected").text();
-          $.cookie(l_cookieName, l_cookieValue, {expires : settings.dCookieTime});
-        });
-      });
+    self.initFilters = function() {
+      if (false == self.m_settings.bColFilter) return;
 
+      var l_head    = self.getHead();
+      var l_row     = $("<tr></tr>");
+      var l_tfoot   = null;
+      var l_filters = [];
 
       $("> tr > th", l_head).each(function(p_colIndex) {
-        var l_cell        = $("<th></th>");
-        var l_cookieName  = "#" + l_tableID + ".wappt-col" + p_colIndex;
-        var l_cookieValue = $.cookie(l_cookieName);
-        if (true == $(this).hasClass("wp-search"))
-        {
-          var l_input       = $("<input class='form-control input-sm' type='text' style='width:100%;'/>");
-          var l_title       = $(this).text();
-          var l_settings    = $.fn.dataTable.defaults;
-          var l_placeholder = $(this).data("placeholder") || null;
+        var l_cell   = $("<th></th>");
+        var l_filter = null;
 
-          $(l_input).keyup(function () {
-            l_table.fnFilter($(this).val(), p_colIndex);
-            if ($(this).prop("disabled") == false)
-              $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
-            if ($(this).val() != "")
-              $(this).addClass("input-danger");
-            else
-              $(this).removeClass("input-danger");
-          });
-
-
-          if ((true == settings.bCookie) && (l_cookieValue != undefined) && (l_cookieValue != ""))
-            $(l_input).val(l_cookieValue).keyup();
-
-          if ((null == l_placeholder) && (0 != l_title.length))
-            l_placeholder = l_settings.oLanguage.sSearch + " " + l_title.toLowerCase() + " ...";
-          if ("none" != l_placeholder)
-            $(l_input).attr("placeholder", l_placeholder);
-          l_cell.append(l_input);
-          l_nbSearch += 1;
+        if (true == $(this).hasClass("wp-search")) {
+          l_filter = new WappFilterInput($(this), self.m_table, self.m_id, p_colIndex, self.m_settings);
+        } else if (true == $(this).hasClass("wp-filter")) {
+          l_filter = new WappFilterSelect($(this), self.m_table, self.m_id, p_colIndex, self.m_settings);
+        } else {
+          l_filter = new WappFilterNull($(this), self.m_table, self.m_id, p_colIndex, self.m_settings);
         }
-        else if (true == $(this).hasClass("wp-filter"))
-        {
-          var l_regExp = $(this).hasClass("wp-regexp");
-          var l_data;
-          var l_select = $("<select style='width:100%;' class='form-control input-sm'/>");
 
-          if (undefined != settings.sAjaxSource)
-            l_data = l_table.fnGetServerColumnsData(p_colIndex);
-          else
-            l_data = l_table.fnGetColumnData(p_colIndex, true, true, false);
-
-          l_select.html(fnCreateSelect(l_data, p_colIndex, settings));
-
-          l_select.change(function() {
-            var l_val = $(this).val();
-
-            if (undefined != settings.sAjaxSource)
-            {
-              if (l_val == "__any__")
-                l_table.fnFilter("__any__", p_colIndex, false, false, false);
-              else if (l_val == "__notempty__")
-                l_table.fnFilter("^.+$", p_colIndex, true, false, false);
-              else if (l_val == "__null__")
-                l_table.fnFilter("__null__", p_colIndex, false, false, false);
-              else if (l_val == "__notnull__")
-                l_table.fnFilter("__notnull__", p_colIndex, false, false, false);
-              else {
-                if (!l_regExp) {
-                  l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
-                } else {
-                  l_table.fnFilter("^" + escapeRegExp($(this).val()) + ".*", p_colIndex, true, false, false);
-                }
-              }
-            }
-            else
-            {
-              if (l_val == "__any__")
-                l_table.fnFilter(".*", p_colIndex, true, false, false);
-              else if (l_val == "__notempty__")
-                l_table.fnFilter("^.+$", p_colIndex, true, false, false);
-              else if (l_val == "__null__")
-                l_table.fnFilter("^$", p_colIndex, true, false, false);
-              else if (l_val == "__notnull__")
-                l_table.fnFilter("^.+$", p_colIndex, true, false, false);
-              else {
-                if (!l_regExp) {
-                  l_table.fnFilter("^" + escapeRegExp($(this).val()) + "$", p_colIndex, true, false, false);
-                } else {
-                  l_table.fnFilter("^" + escapeRegExp($(this).val()) + ".*", p_colIndex, true, false, false);
-                }
-              }
-            }
-
-            if ($(this).prop("disabled") == false)
-              $.cookie(l_cookieName, $(this).val(), {expires : settings.dCookieTime});
-
-            if ($(this).val() != "__any__")
-              $(this).addClass("input-danger");
-            else
-              $(this).removeClass("input-danger");
-          });
-
-          if ((true == settings.bCookie) && (l_cookieValue != undefined))
-          {
-            var l_opt = $("option[value='" + l_cookieValue + "']", l_select);
-            if (l_opt.length > 0)
-              l_select.val(l_cookieValue);
-            if (l_cookieValue != "__any__")
-              l_select.change();
-          }
-          l_cell.append(l_select);
-          l_cell.css("text-align", "center");
-          l_nbSearch += 1;
+        if (null != l_filter) {
+          l_cell = l_filter.getCell();
         }
         l_row.append(l_cell);
+        l_filters.push(l_filter);
       });
 
-      if (0 != l_nbSearch)
+      if (self.m_settings.sFilterPlace != "thead")
       {
-        var l_tfoot = null;
-        if (settings.sFilterPlace != "thead")
-        {
-          l_place = $("<tfoot></tfoot>");
-          l_place.append(l_row);
-          l_table.append(l_place);
-        }
-        else
-          l_head.append(l_row);
-        l_table.filters = l_row;
+        l_place = $("<tfoot></tfoot>");
+        l_place.append(l_row);
+        l_table.append(l_place);
       }
+      else {
+        l_head.append(l_row);
+      }
+      self.m_table.filters = $(l_filters);
+    };
 
+    self.init = function() {
+      if (self.m_id == null) {
+        throw "wapptables need table id attribute";
+      }
+      self.load();
+      self.create();
+      self.bind();
+      self.initFilters();
+      self.m_table.filter = function(p_idx) {
+        return self.m_table.filters[p_idx];
+      };
+      self.m_table.highlighCell = self.highlighCell;
+      self.m_table.highlighRow  = self.highlighRow;
+    };
 
-      return l_table;
+    self.init();
+    return self.m_table;
   };
 
 }(jQuery));
