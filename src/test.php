@@ -5,7 +5,7 @@ require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/mapper.php");
 require_once(__APP_DIR__       . "/classes/generator.php");
 
-class TestPage extends Handler
+class TestPage extends HTTPHandler
 {
   public function __construct()
   {

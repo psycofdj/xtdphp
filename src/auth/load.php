@@ -42,8 +42,8 @@ class authModule extends Module
       ->addSubTab("auth.menu.users", "/wappcore/auth/user.php", $this->allower("auth/user/view"))
       ->addSubTab("auth.menu.roles", "/wappcore/auth/role.php", $this->allower("auth/role/view"));
 
-    $p_app->connect("Handler", "process",  array($this, "updatePerm"));
-    $p_app->connect("Handler", "process",  array($this, "checkPerm"));
+    $p_app->connect("HTTPHandler", "process",  array($this, "updatePerm"));
+    $p_app->connect("HTTPHandler", "process",  array($this, "checkPerm"));
 
     $l_this = $this;
     $p_app->connect("TemplateGenerator", "initialize", function(TemplateGenerator $p_gen) use (&$l_this) {
@@ -94,7 +94,7 @@ class authModule extends Module
     return ($l_isAllowed) ? $l_hasPerm : $l_elsePerm;
   }
 
-  public function updatePerm(Handler $p_handler, $p_action)
+  public function updatePerm(HTTPHandler $p_handler, $p_action)
   {
     if ((false != ($l_user       = $p_handler->getSession("auth_user"))) &&
         (false != ($l_systemLast = ConfigModel::get("flush")))           &&
@@ -122,7 +122,7 @@ class authModule extends Module
    * @param p_action  handler queried action
    * @return true if permission is ok, false otherwise
    */
-  public function checkPerm(Handler $p_handler, $p_action)
+  public function checkPerm(HTTPHandler $p_handler, $p_action)
   {
     $l_checks = array_filter($this->m_perms, function($p_el) use (&$p_action) {
         return ($p_el["action"] == $p_action);
@@ -251,7 +251,7 @@ class authModule extends Module
     return $this;
   }
 
-  public function createWidget(Handler $p_handler)
+  public function createWidget(HTTPHandler $p_handler)
   {
     $l_lastFlush = ConfigModel::get("flush");
 
@@ -261,7 +261,7 @@ class authModule extends Module
   }
 
 
-  public function loadPrivileges(Handler $p_handler, $p_user)
+  public function loadPrivileges(HTTPHandler $p_handler, $p_user)
   {
     $l_perms   = $p_user->ownAuthuserAuthpermList;
     $l_acl     = new Acl();

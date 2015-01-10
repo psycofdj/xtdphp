@@ -5,7 +5,7 @@ require_once(__WAPPCORE_DIR__  . "/core/classes/locale.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/log.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 
-class LangPage extends Handler
+class LangPage extends HTTPHandler
 {
   public function __construct()
   {

@@ -16,7 +16,7 @@ interface OutputGenerator
   public function getContentType();
   public function resolve();
   public function resolveError(WappError $p_error);
-  public function initialize(Handler $p_handler);
+  public function initialize(HTTPHandler $p_handler);
 }
 
 interface RawGenerator extends OutputGenerator
@@ -31,7 +31,7 @@ class BinaryGenerator implements RawGenerator
   private $m_contentType = "application/octet-stream";
   private $m_binData     = false;
 
-  public function initialize(Handler $p_handler)
+  public function initialize(HTTPHandler $p_handler)
   {
   }
 
@@ -119,7 +119,7 @@ class JsonGenerator implements OutputGenerator
     $this->m_forceObject = $p_forceObject;
   }
 
-  public function initialize(Handler $p_handler)
+  public function initialize(HTTPHandler $p_handler)
   {
   }
 
@@ -198,7 +198,7 @@ class TemplateGenerator implements OutputGenerator
     $this->m_smarty->registerPlugin($p_type, $p_name, $p_callback);
   }
 
-  public function initialize(Handler $p_handler)
+  public function initialize(HTTPHandler $p_handler)
   {
     $this->m_signals->emit("initialize", $this);
   }
@@ -363,7 +363,7 @@ class HtmlGenerator extends TemplateGenerator
       ->setData("version", $this->m_version);
   }
 
-  public function initialize(Handler $p_handler)
+  public function initialize(HTTPHandler $p_handler)
   {
     parent::initialize($p_handler);
   }
@@ -537,7 +537,7 @@ class WappHtmlGenerator extends HtmlGenerator
 ;
   }
 
-  public function initialize(Handler $p_handler)
+  public function initialize(HTTPHandler $p_handler)
   {
     global $g_conf;
 

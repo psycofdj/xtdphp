@@ -4,7 +4,7 @@ require_once(dirname(__FILE__) . "/../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 
 
-class Setup extends Handler
+class Setup extends HTTPHandler
 {
   public function __construct()
   {
@@ -13,7 +13,6 @@ class Setup extends Handler
 
   public function initialize()
   {
-
     if (false == parent::initialize())
     {
       log::crit("setup", "unable to initialize handler");

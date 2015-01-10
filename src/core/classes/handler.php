@@ -13,10 +13,100 @@ require_once(__WAPPCORE_DIR__  . "/core/classes/session.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/RedBeanPHP/loader.php");
 require_once(__WAPPCORE_DIR__  . "/core/libs/Zend/load.php");
 
+
+
+class Handler
+{
+  protected function initialize()
+  {
+    sql::initialize();
+    return true;
+  }
+
+  protected function finalize()
+  {
+    return true;
+  }
+
+  public function process()
+  {
+    try
+    {
+      // 1.
+      if (true != $this->initialize())
+      {
+        log::crit("core.handler", "unable to initialize handler");
+        return $this->replyInternalError();
+      }
+
+      // 2.
+      if (false === $this->run())
+      {
+        log::crit("core.handler", "error while running process");
+        return $this->replyInternalError();
+      }
+
+      // 3.
+      if (true != $this->finalize())
+      {
+        log::crit("core.handler", "unable to finalize handler");
+        return $this->replyInternalError();
+      }
+
+      // 4.
+      return $this->replySuccess();
+    }
+    catch (WappError $l_error) {
+      return $this->replyError($l_error);
+    }
+    catch (Exception $l_error) {
+      log::crit("core.handler", "caught exception");
+      log::doLogFile(log::mc_levelCrit, "core.handler", "    %s", $l_error->getMessage(), $l_error->getFile(), $l_error->getLine());
+      log::crit("core.handler", "exception backtrace");
+      log::logStack(log::mc_levelCrit, "core.handler", $l_error->getTrace());
+      return $this->replyException($l_error);
+    }
+  }
+
+  protected function run()
+  {
+    throw new Exception("you must define a 'public function run()' method");
+  }
+
+  protected function replyInternalError()
+  {
+    global $g_conf;
+    if ($g_conf["env"] == "dev")
+    {
+      echo join("\n", log::getLines());
+      if (null != ($l_error = error_get_last()))
+        echo join("\n", $l_error);
+    }
+    exit(1);
+  }
+
+  protected function replyError(WappError $p_error)
+  {
+    return $this->replyException($p_error);
+  }
+
+  protected function replyException(Exception $p_error)
+  {
+    echo $p_error->getMessage() . "\n";
+    return $this->replyInternalError();
+  }
+
+  protected function replySuccess()
+  {
+    exit(0);
+  }
+}
+
+
 /**
  * Output generator
  */
-class Handler
+class HTTPHandler extends Handler
 {
   private static $ms_defaultGenerator = "WappHtmlGenerator";
 
@@ -193,14 +283,14 @@ class Handler
 
       if ($l_status == false)
       {
-        log::error("core.handler", "unable to convert param '%s' of value '%s' to %s", $p_paramName, $p_paramValue, $l_name);
+        log::error("core.httphandler", "unable to convert param '%s' of value '%s' to %s", $p_paramName, $p_paramValue, $l_name);
         return false;
       }
     }
     return true;
   }
 
-  private function replyInternalError()
+  protected function replyInternalError()
   {
     global $g_conf;
 
@@ -216,8 +306,7 @@ class Handler
     $this->reply();
   }
 
-
-  private function replyError(WappError $p_error)
+  protected function replyError(WappError $p_error)
   {
     if (false == ($l_content = $this->m_gen->resolveError($p_error)))
       return $this->replyInternalError();
@@ -229,13 +318,12 @@ class Handler
     return $this->reply();
   }
 
-  private function replyException(Exception $p_error)
+  protected function replyException(Exception $p_error)
   {
     return $this->replyInternalError();
   }
 
-
-  private function replySuccess()
+  protected function replySuccess()
   {
     if ($this->m_statusCode == 200)
     {
@@ -260,7 +348,7 @@ class Handler
    */
   private function reply()
   {
-    log::debug("core.handler", "replying with status %d", $this->m_statusCode);
+    log::debug("core.httphandler", "replying with status %d", $this->m_statusCode);
 
     // 1.
     array_push($this->m_headers, sprintf('HTTP/1.1 %s',         $this->translateStatus()));
@@ -310,7 +398,7 @@ class Handler
    */
   protected function redirect($p_dest)
   {
-    log::debug("core.handler", "redirecting with status 302 to %s", $p_dest);
+    log::debug("core.httphandler", "redirecting with status 302 to %s", $p_dest);
     array_push($this->m_headers, sprintf("Location: %s", $p_dest));
     $this->setStatusCode(302);
     return $this;
@@ -326,7 +414,7 @@ class Handler
    */
   protected function initialize()
   {
-    sql::initialize();
+    parent::initialize();
     $this->initSession();
     $this->initLocale();
     $this->m_gen->initialize($this);
@@ -347,21 +435,8 @@ class Handler
     $l_sessionID = session_id();
     if (empty($l_sessionID))
       WappSqlSessionHandler::session_start();
-    log::debug("core.handler", "SESSION ID: " . session_id());
+    log::debug("core.httphandler", "SESSION ID: " . session_id());
   }
-
-  /**
-   * Initialize sql engine
-   *
-   * - Conntect to mysql database according to local configuration
-   * - Configure logging handler to log request
-   * - Configure redbean "freeze" status according current environement
-   */
-  private function initSql()
-  {
-
-  }
-
 
   /**
    * Initialize locale engine
@@ -482,7 +557,7 @@ class Handler
       if ((false === ($l_value = $this->getParam($c_name))) ||
           (false === $this->validateParam($c_name, $c_attr, $l_value)))
       {
-        log::crit("core.handler", "invalid param %s = %s", $c_name, $l_value);
+        log::crit("core.httphandler", "invalid param %s = %s", $c_name, $l_value);
         return false;
       }
       $l_result[$c_name] = $l_value;
@@ -621,70 +696,92 @@ class Handler
    *
    * @return false in case of server error, true otherwise
    */
-  public function process()
+  /* public function process() */
+  /* { */
+  /*   log::debug("core.handler", "handling request..."); */
+
+  /*   // 1. */
+  /*   if (true != $this->initialize()) */
+  /*   { */
+  /*     log::crit("core.handler", "unable to initialize handler"); */
+  /*     return $this->replyInternalError(); */
+  /*   } */
+
+  /*   if (false == ($l_data = $this->methodGet())) */
+  /*   { */
+  /*     log::error("core.handler", "unable to find method"); */
+  /*     return $this->replyInternalError(); */
+  /*   } */
+
+  /*   list($l_method, $l_wrapped, $l_action) = $l_data; */
+
+  /*   if (false === ($l_callArgs = $this->methodGetArgs($l_method, array("wrapped" => $l_wrapped)))) */
+  /*   { */
+  /*     log::error("core.handler", "paramters don't fit requested method"); */
+  /*     return $this->replyInternalError(); */
+  /*   } */
+
+  /*   try */
+  /*   { */
+  /*     // 4. */
+  /*     $this->m_signals->emit("process", $this, $l_action); */
+  /*     if (false === $l_method->invokeArgs($this, $l_callArgs)) */
+  /*     { */
+  /*       return $this->replyInternalError(); */
+  /*     } */
+
+  /*     // 5. */
+  /*     if (true != $this->finalize()) */
+  /*     { */
+  /*       log::crit("core.handler", "unable to finalize handler"); */
+  /*       return $this->replyInternalError(); */
+  /*     } */
+  /*   } */
+  /*   catch (WappError $l_error) */
+  /*   { */
+  /*     return $this->replyError($l_error); */
+  /*   } */
+  /*   catch (Exception $l_error) */
+  /*   { */
+  /*     log::crit("core.handler", "caught exception"); */
+  /*     log::doLogFile(log::mc_levelCrit, "core.handler", "    %s", $l_error->getMessage(), $l_error->getFile(), $l_error->getLine()); */
+  /*     log::crit("core.handler", "exception backtrace"); */
+  /*     log::logStack(log::mc_levelCrit, "core.handler", $l_error->getTrace()); */
+  /*     return $this->replyException($l_error); */
+  /*   } */
+
+  /*   try */
+  /*   { */
+  /*     // 6. */
+  /*     return $this->replySuccess(); */
+  /*   } */
+  /*   catch (Exception $l_error) */
+  /*   { */
+  /*     log::crit("core.handler", "caugth exception : %s", $l_error->getMessage()); */
+  /*     return $this->replyException($l_error); */
+  /*   } */
+  /* } */
+
+  protected function run()
   {
-    log::debug("core.handler", "handling request...");
-
     // 1.
-    if (true != $this->initialize())
-    {
-      log::crit("core.handler", "unable to initialize handler");
-      return $this->replyInternalError();
-    }
-
     if (false == ($l_data = $this->methodGet()))
     {
-      log::error("core.handler", "unable to find method");
+      log::error("core.httphandler", "unable to find method");
       return $this->replyInternalError();
     }
-
     list($l_method, $l_wrapped, $l_action) = $l_data;
 
+    // 2.
     if (false === ($l_callArgs = $this->methodGetArgs($l_method, array("wrapped" => $l_wrapped))))
     {
-      log::error("core.handler", "paramters don't fit requested method");
+      log::error("core.httphandlerhandler", "paramters don't fit requested method");
       return $this->replyInternalError();
     }
 
-    try
-    {
-      // 4.
-      $this->m_signals->emit("process", $this, $l_action);
-      if (false === $l_method->invokeArgs($this, $l_callArgs))
-      {
-        return $this->replyInternalError();
-      }
-
-      // 5.
-      if (true != $this->finalize())
-      {
-        log::crit("core.handler", "unable to finalize handler");
-        return $this->replyInternalError();
-      }
-    }
-    catch (WappError $l_error)
-    {
-      return $this->replyError($l_error);
-    }
-    catch (Exception $l_error)
-    {
-      log::crit("core.handler", "caught exception");
-      log::doLogFile(log::mc_levelCrit, "core.handler", "    %s", $l_error->getMessage(), $l_error->getFile(), $l_error->getLine());
-      log::crit("core.handler", "exception backtrace");
-      log::logStack(log::mc_levelCrit, "core.handler", $l_error->getTrace());
-      return $this->replyException($l_error);
-    }
-
-    try
-    {
-      // 6.
-      return $this->replySuccess();
-    }
-    catch (Exception $l_error)
-    {
-      log::crit("core.handler", "caugth exception : %s", $l_error->getMessage());
-      return $this->replyException($l_error);
-    }
+    // 3.
+    $this->m_signals->emit("process", $this, $l_action);
+    return $l_method->invokeArgs($this, $l_callArgs);
   }
 
 
@@ -708,7 +805,7 @@ class Handler
       }
       catch (ReflectionException $l_error)
       {
-        log::error("core.handler", "unknown action '%s'", $l_action);
+        log::error("core.httphandler", "unknown action '%s'", $l_action);
         return false;
       }
     }
@@ -732,7 +829,7 @@ class Handler
   /*     { */
   /*       if (false == $c_param->isDefaultValueAvailable()) */
   /*       { */
-  /*         log::error("core.handler", "requested param '%s' not available", $l_paramName); */
+  /*         log::error("core.httphandler", "requested param '%s' not available", $l_paramName); */
   /*         return false; */
   /*       } */
   /*       $l_paramValue = $c_param->getDefaultValue(); */
@@ -741,7 +838,7 @@ class Handler
   /*     { */
   /*       if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue)) */
   /*       { */
-  /*         log::error("core.handler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue); */
+  /*         log::error("core.httphandler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue); */
   /*         return false; */
   /*       } */
   /*     } */
@@ -769,7 +866,7 @@ class Handler
       {
         if (false == $c_param->isDefaultValueAvailable())
         {
-          log::error("core.handler", "requested param '%s' not available", $l_paramName);
+          log::error("core.httphandler", "requested param '%s' not available", $l_paramName);
           return false;
         }
         $l_paramValue = $c_param->getDefaultValue();
@@ -782,7 +879,7 @@ class Handler
         {
           if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue))
           {
-            log::error("core.handler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue);
+            log::error("core.httphandler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue);
             return false;
           }
         }
