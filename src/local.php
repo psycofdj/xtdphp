@@ -3,11 +3,19 @@
 ini_set("error_reporting", E_ALL | E_NOTICE);
 ini_set("display_errors",  1);
 
+if (false == defined("__WAPPCORE_DIR__"))
+{
+  if (false == ($l_value = getenv("__WAPPCORE_DIR__")))
+    $l_value = dirname(__FILE__);
+  define("__WAPPCORE_DIR__", $l_value);
+}
 
 if (false == defined("__APP_DIR__"))
-  define("__APP_DIR__",      getenv("__APP_DIR__"));
-if (false == defined("__WAPPCORE_DIR__"))
-  define("__WAPPCORE_DIR__", getenv("__WAPPCORE_DIR__"));
+{
+  if (false == ($l_value = getenv("__APP_DIR__")))
+    die("unknown __APP_DIR__ env variable");
+  define("__APP_DIR__", $l_value);
+}
 
 require_once(__WAPPCORE_DIR__ . "/core/classes/log.php");
 
