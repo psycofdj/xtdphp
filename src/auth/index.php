@@ -5,7 +5,7 @@ require_once(__WAPPCORE_DIR__  . "/core/classes/handler.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/tools.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/config.php");
 
-class Page extends Handler
+class Page extends HTTPHandler
 {
   public function __construct()
   {
