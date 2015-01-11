@@ -140,6 +140,11 @@ class HTTPHandler extends Handler
     self::$ms_defaultGenerator = $p_gen;
   }
 
+  public function setGenerator($p_gen)
+  {
+    $this->m_gen = $p_gen;
+  }
+
   /* ---------------------------------------------- */
 
   /**
