@@ -111,7 +111,7 @@ class HTTPHandler extends Handler
   private static $ms_defaultGenerator = "WappHtmlGenerator";
 
   /** List of headers to include in HTTP header response */
-  private $m_headers;
+  protected $m_headers;
   /** List of headers to include in HTTP header response */
   private $m_statusCode;
   /** Content-Type HTTP value */
