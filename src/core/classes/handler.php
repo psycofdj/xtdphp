@@ -319,8 +319,7 @@ class HTTPHandler extends Handler
     $this->m_content     = $l_content;
     $this->m_contentType = $this->m_gen->getContentType();
     $this->setStatusCode($p_error->getStatusCode());
-
-    return $this->reply();
+    $this->reply();
   }
 
   protected function replyException(Exception $p_error)
@@ -334,11 +333,9 @@ class HTTPHandler extends Handler
     {
       if (false == ($l_content = $this->m_gen->resolve()))
         return $this->replyInternalError();
-
       $this->m_content     = $l_content;
       $this->m_contentType = $this->m_gen->getContentType();
     }
-
     $this->reply();
   }
 
@@ -773,7 +770,7 @@ class HTTPHandler extends Handler
     if (false == ($l_data = $this->methodGet()))
     {
       log::error("core.httphandler", "unable to find method");
-      return $this->replyInternalError();
+      return false;
     }
     list($l_method, $l_wrapped, $l_action) = $l_data;
 
@@ -781,7 +778,7 @@ class HTTPHandler extends Handler
     if (false === ($l_callArgs = $this->methodGetArgs($l_method, array("wrapped" => $l_wrapped))))
     {
       log::error("core.httphandlerhandler", "paramters don't fit requested method");
-      return $this->replyInternalError();
+      return false;
     }
 
     // 3.
