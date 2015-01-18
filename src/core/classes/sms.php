@@ -1,4 +1,13 @@
 <?php
+/**
+ ** Copyright (C) 2015 All Rights Reserved
+ **
+ ** Written by: Xavier MARCELET <xavier@marcelet.com>, 2014
+ ** Written by: Pascal BERGER   <pb@wapp.pro>, 2014
+ **
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ */
 
 require_once(dirname(__FILE__) . "/../../local.php");
 require_once(__WAPPCORE_DIR__ . "/core/classes/handler.php");
@@ -17,6 +26,23 @@ class BulkSMS
 
   public function send($p_message, $p_dst = null)
   {
+    $l_chunks = chunk_split($p_message, 160, "%%part%%");
+    $l_chunks = explode("%%part%%", $l_chunks);
+    foreach ($l_chunks as $c_chunk)
+    {
+      $c_chunk = trim($c_chunk);
+      if (0 == strlen($c_chunk))
+        continue;
+      if (false == $this->__send($c_chunk, $p_dst))
+        return false;
+    }
+    return true;
+  }
+
+  private function __send($p_message, $p_dst)
+  {
+    global $g_conf;
+
     $l_dst = $p_dst;
     if (null == $l_dst)
       $l_dst = $this->m_defaultDst;
@@ -27,6 +53,9 @@ class BulkSMS
             "message"          => $p_message,
             "msisdn"           => join(",     ", $l_dst),
             "routing_group"    => 2);
+
+    if ($g_conf["env"] == "dev")
+      $l_data["test_always_succeed"] = "1";
 
     $l_query = http_build_query($l_data);
     $l_curl  = curl_init();
@@ -56,23 +85,6 @@ class BulkSMS
 
     return true;
   }
-}
-
-
-class Tester extends Handler
-{
-  public function run()
-  {
-    $l_sms = new BulkSMS();
-    return $l_sms->send("hello", array("33608852123"));
-  }
-}
-
-
-if (php_sapi_name() == 'cli')
-{
-  $l_test = new Tester();
-  $l_test->process();
 }
 
 ?>

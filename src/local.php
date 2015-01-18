@@ -1,4 +1,13 @@
 <?php
+/**
+ ** Copyright (C) 2015 All Rights Reserved
+ **
+ ** Written by: Xavier MARCELET <xavier@marcelet.com>, 2014
+ ** Written by: Pascal BERGER   <pb@wapp.pro>, 2014
+ **
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ */
 
 ini_set("error_reporting", E_ALL | E_NOTICE);
 ini_set("display_errors",  1);

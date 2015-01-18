@@ -1,4 +1,13 @@
 <?php
+/**
+ ** Copyright (C) 2015 All Rights Reserved
+ **
+ ** Written by: Xavier MARCELET <xavier@marcelet.com>, 2014
+ ** Written by: Pascal BERGER   <pb@wapp.pro>, 2014
+ **
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ */
 
 require_once(dirname(__FILE__) . "/../../local.php");
 require_once(__WAPPCORE_DIR__  . "/core/classes/tools.php");
@@ -103,9 +112,7 @@ class Handler
 }
 
 
-/**
- * Output generator
- */
+
 class HTTPHandler extends Handler
 {
   private static $ms_defaultGenerator = "WappHtmlGenerator";
@@ -650,7 +657,6 @@ class HTTPHandler extends Handler
   }
 
 
-
   /**
    * Handle current request and render server response
    *
@@ -698,72 +704,6 @@ class HTTPHandler extends Handler
    *
    * @return false in case of server error, true otherwise
    */
-  /* public function process() */
-  /* { */
-  /*   log::debug("core.handler", "handling request..."); */
-
-  /*   // 1. */
-  /*   if (true != $this->initialize()) */
-  /*   { */
-  /*     log::crit("core.handler", "unable to initialize handler"); */
-  /*     return $this->replyInternalError(); */
-  /*   } */
-
-  /*   if (false == ($l_data = $this->methodGet())) */
-  /*   { */
-  /*     log::error("core.handler", "unable to find method"); */
-  /*     return $this->replyInternalError(); */
-  /*   } */
-
-  /*   list($l_method, $l_wrapped, $l_action) = $l_data; */
-
-  /*   if (false === ($l_callArgs = $this->methodGetArgs($l_method, array("wrapped" => $l_wrapped)))) */
-  /*   { */
-  /*     log::error("core.handler", "paramters don't fit requested method"); */
-  /*     return $this->replyInternalError(); */
-  /*   } */
-
-  /*   try */
-  /*   { */
-  /*     // 4. */
-  /*     $this->m_signals->emit("process", $this, $l_action); */
-  /*     if (false === $l_method->invokeArgs($this, $l_callArgs)) */
-  /*     { */
-  /*       return $this->replyInternalError(); */
-  /*     } */
-
-  /*     // 5. */
-  /*     if (true != $this->finalize()) */
-  /*     { */
-  /*       log::crit("core.handler", "unable to finalize handler"); */
-  /*       return $this->replyInternalError(); */
-  /*     } */
-  /*   } */
-  /*   catch (WappError $l_error) */
-  /*   { */
-  /*     return $this->replyError($l_error); */
-  /*   } */
-  /*   catch (Exception $l_error) */
-  /*   { */
-  /*     log::crit("core.handler", "caught exception"); */
-  /*     log::doLogFile(log::mc_levelCrit, "core.handler", "    %s", $l_error->getMessage(), $l_error->getFile(), $l_error->getLine()); */
-  /*     log::crit("core.handler", "exception backtrace"); */
-  /*     log::logStack(log::mc_levelCrit, "core.handler", $l_error->getTrace()); */
-  /*     return $this->replyException($l_error); */
-  /*   } */
-
-  /*   try */
-  /*   { */
-  /*     // 6. */
-  /*     return $this->replySuccess(); */
-  /*   } */
-  /*   catch (Exception $l_error) */
-  /*   { */
-  /*     log::crit("core.handler", "caugth exception : %s", $l_error->getMessage()); */
-  /*     return $this->replyException($l_error); */
-  /*   } */
-  /* } */
-
   protected function run()
   {
     // 1.
@@ -814,41 +754,6 @@ class HTTPHandler extends Handler
 
     return array($l_method, $l_wrapped, $l_action);
   }
-
-  /* private function checkMethod($p_method, $p_wrapped) */
-  /* { */
-  /*   $l_params   = $p_method->getParameters(); */
-  /*   $l_callArgs = array(); */
-  /*   foreach ($l_params as $c_param) */
-  /*   { */
-  /*     list($l_paramAttr, $l_paramName) = explode("_", $c_param->getName(), 2); */
-  /*     if ($l_paramName == "method") */
-  /*     { */
-  /*       array_push($l_callArgs, $p_wrapped); */
-  /*       continue; */
-  /*     } */
-  /*     if (false === ($l_paramValue = $this->getParam($l_paramName))) */
-  /*     { */
-  /*       if (false == $c_param->isDefaultValueAvailable()) */
-  /*       { */
-  /*         log::error("core.httphandler", "requested param '%s' not available", $l_paramName); */
-  /*         return false; */
-  /*       } */
-  /*       $l_paramValue = $c_param->getDefaultValue(); */
-  /*     } */
-  /*     else */
-  /*     { */
-  /*       if (false == $this->validateParam($l_paramName, $l_paramAttr, $l_paramValue)) */
-  /*       { */
-  /*         log::error("core.httphandler", "couldn't validate param '%s' of value '%s'", $l_paramName, $l_paramValue); */
-  /*         return false; */
-  /*       } */
-  /*     } */
-  /*     array_push($l_callArgs, $l_paramValue); */
-  /*   } */
-  /*   return $l_callArgs; */
-  /* } */
-
 
   private function methodGetArgs($p_method, $p_params = array())
   {
