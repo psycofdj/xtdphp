@@ -181,6 +181,7 @@ class TemplateGenerator implements OutputGenerator
   private   $m_targetTmpl;
   private   $m_targetErrorTmpl;
   private   $m_signals;
+  private static $ms_plugins = array();
 
   public function __construct($p_contentType)
   {
@@ -193,6 +194,10 @@ class TemplateGenerator implements OutputGenerator
       ->setCompileDir(sprintf("%s/templates_c", __APP_DIR__))
       ->setCacheDir(sprintf("%s/cache",         __APP_DIR__))
       ->registerPlugin("block", "t", array($this, 'translate'));
+
+    foreach (self::$ms_plugins as $c_plugin)
+      $this->m_smarty->registerPlugin($c_plugin[0], $c_plugin[1], $c_plugin[2]);
+
     $this->m_smarty->caching = 0;
 
     foreach (App::get()->getModules() as $c_module) {
@@ -200,6 +205,11 @@ class TemplateGenerator implements OutputGenerator
       $l_path = sprintf("%s/%s/templates", $c_module->getBaseDir(), $l_name);
       $this->m_smarty->addTemplateDir($l_path, $l_name);
     }
+  }
+
+  static public function addStaticPlugin($p_type, $p_name, $p_callback)
+  {
+    array_push(self::$ms_plugins, array($p_type, $p_name, $p_callback));
   }
 
   public function addPlugin($p_type, $p_name, $p_callback)

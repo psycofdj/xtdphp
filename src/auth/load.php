@@ -16,6 +16,7 @@ require_once(__WAPPCORE_DIR__  . "/core/classes/menu.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/user.php");
 require_once(__WAPPCORE_DIR__  . "/auth/models/config.php");
 require_once(__WAPPCORE_DIR__  . "/auth/classes/resource.php");
+require_once(__WAPPCORE_DIR__  . "/core/classes/generator.php");
 
 use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
@@ -54,12 +55,9 @@ class authModule extends Module
     $p_app->connect("HTTPHandler", "process",  array($this, "updatePerm"));
     $p_app->connect("HTTPHandler", "process",  array($this, "checkPerm"));
 
-    $l_this = $this;
-    $p_app->connect("TemplateGenerator", "initialize", function(TemplateGenerator $p_gen) use (&$l_this) {
-        $p_gen->addPlugin("block",    "perm",          array($l_this, "pluginPerm"));
-        $p_gen->addPlugin("function", "permelse",      array($l_this, "pluginPermElse"));
-        $p_gen->addPlugin("function", "perm_if",       array($l_this, "pluginPermIf"));
-      });
+    TemplateGenerator::addStaticPlugin("block",    "perm",     array($this, "pluginPerm"));
+    TemplateGenerator::addStaticPlugin("function", "permelse", array($this, "pluginPermElse"));
+    TemplateGenerator::addStaticPlugin("function", "perm_if",  array($this, "pluginPermIf"));
   }
 
 
