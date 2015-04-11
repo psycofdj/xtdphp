@@ -316,7 +316,7 @@ class authModule extends Module
   public function setup()
   {
     R::exec(<<<'EOT'
-            CREATE TABLE IF NOT EXISTS `authuser`
+            CREATE TABLE `authuser`
             (
               `id`       int(11) unsigned                                        NOT NULL AUTO_INCREMENT,
               `mail`     varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -330,7 +330,7 @@ EOT
            );
 
     R::exec(<<<'EOT'
-            CREATE TABLE IF NOT EXISTS `authconfig`
+            CREATE TABLE `authconfig`
             (
               `id`       int(11) unsigned                                        NOT NULL AUTO_INCREMENT,
               `name`     varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,

@@ -29,7 +29,7 @@ class coreModule extends Module
       ->addSubTab("core.menu.lang.fr", "/wappcore/core/lang.php?lang=fr");
   }
 
-  function update_0_13()
+  function setup()
   {
     R::exec(<<<EOF
       CREATE TABLE `session` (
