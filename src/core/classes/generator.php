@@ -185,6 +185,8 @@ class TemplateGenerator implements OutputGenerator
 
   public function __construct($p_contentType)
   {
+    global $g_conf;
+
     $this->m_contentType = $p_contentType;
     $this->m_data        = Array();
     $this->m_targetTmpl  = null;
@@ -195,10 +197,12 @@ class TemplateGenerator implements OutputGenerator
       ->setCacheDir(sprintf("%s/cache",         __APP_DIR__))
       ->registerPlugin("block", "t", array($this, 'translate'));
 
+    $this->m_smarty->caching = 0;
+    if ($g_conf["env"] == "dev")
+      $this->m_smarty->force_compile = 1;
+
     foreach (self::$ms_plugins as $c_plugin)
       $this->m_smarty->registerPlugin($c_plugin[0], $c_plugin[1], $c_plugin[2]);
-
-    $this->m_smarty->caching = 0;
 
     foreach (App::get()->getModules() as $c_module) {
       $l_name = $c_module->getName();
@@ -542,7 +546,7 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addJs("jquery.fileupload.js", "core")
       ;
 
-      //->addJs("wapp.fileupload.js",                "core") a voir après pour wappcoriser
+    //->addJs("wapp.fileupload.js",                "core") a voir après pour wappcoriser
     $this
       ->addCss("jquery-ui.css",                        "core")
       ->addCss("jquery-ui-timepicker-addon.css",       "core")
@@ -553,7 +557,7 @@ class WappHtmlGenerator extends HtmlGenerator
       ->addCss("jquery.dataTables.bootstrap.css",      "core")
       ->addCss("wapp.css",                             "core")
       ->addCss("jquery.fileupload.css", "core")
-;
+      ;
   }
 
   public function initialize(HTTPHandler $p_handler)
