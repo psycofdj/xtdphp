@@ -31,7 +31,7 @@ class Setup extends HTTPHandler
     //App::get()->getModule("auth")
     //->registerPerm("update",  "core/setup")
     // ->registerPerm("default", "core/setup")
-      ;
+    ;
     return true;
   }
 
@@ -78,7 +78,7 @@ class Setup extends HTTPHandler
        SET @tables = NULL;
        SELECT GROUP_CONCAT('`', table_name, '`') INTO @tables
          FROM information_schema.tables
-         WHERE table_schema = (SELECT DATABASE());
+         WHERE table_schema = (SELECT DATABASE()) and table_name != 'inouts';
        SELECT IFNULL(@tables,'dummy') INTO @tables;
        SET @tables = CONCAT('DROP TABLE IF EXISTS ', @tables);
        PREPARE stmt FROM @tables;

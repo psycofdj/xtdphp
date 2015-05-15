@@ -146,6 +146,11 @@ class JsonGenerator implements OutputGenerator
     return $this;
   }
 
+  public function setArrayData($p_data)
+  {
+    $this->m_data = $p_data;
+  }
+
   public function resolve()
   {
     if ($this->m_forceObject)
