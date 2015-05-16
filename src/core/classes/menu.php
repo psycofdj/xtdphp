@@ -130,7 +130,7 @@ class MenuTab
   {
     if (true == $this->hasTabs())
       return array_reduce($this->m_subTabs, function ($p_res, $p_obj) {
-            $p_res = $p_res || $p_obj->isDisplayable();
+          $p_res = $p_res || $p_obj->isDisplayable();
           return $p_res;
         }, false);
 
