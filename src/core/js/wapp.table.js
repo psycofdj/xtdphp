@@ -1,9 +1,9 @@
 /* Set the defaults for DataTables initialisation */
 $.extend( true, $.fn.dataTable.defaults, {
   "sDom":
-  "<'row'<'col-xs-6'l><'col-xs-6'f>r>" +
-    "t" +
-    "<'row'<'col-xs-6'i><'col-xs-6'p>>"
+  "t" +
+    "<'row'<'col-xs-6'l><'col-xs-6'p>r>" +
+    "<'row'<'col-xs-6'i><'col-xs-6'f>>"
 } );
 
 /* Default class modification */
