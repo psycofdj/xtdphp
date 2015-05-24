@@ -727,32 +727,48 @@ class HTTPHandler extends Handler
   }
 
 
+
   private function methodGet()
   {
     if (false === ($l_action = $this->getParam("action")))
       $l_action = "default";
 
-    $l_reflex    = new ReflectionClass($this);
-    try
-    {
-      $l_method    = $l_reflex->getMethod(sprintf("h_%s", $l_action));
-      $l_wrapped   = null;
-    }
-    catch (ReflectionException $l_error)
-    {
-      try
-      {
-        $l_method   = $l_reflex->getMethod("serverSide");
-        $l_wrapped  = $l_reflex->getMethod(sprintf("s_%s", $l_action));
-      }
-      catch (ReflectionException $l_error)
-      {
-        log::error("core.httphandler", "unknown action '%s'", $l_action);
+    $l_reflex = new ReflectionClass($this);
+    $l_getter = function($p_name) use ($l_reflex) {
+      try {
+        return $l_reflex->getMethod($p_name);
+      } catch (ReflectionException $l_error) {
         return false;
       }
-    }
+    };
 
-    return array($l_method, $l_wrapped, $l_action);
+    $l_wrapped = null;
+    if (false !== ($l_method = $l_getter(sprintf("h_%s", $l_action))))
+      return array($l_method, $l_wrapped, $l_action);
+
+    if ((false !== ($l_wrapped = $l_getter(sprintf("s_%s", $l_action)))) &&
+        (false !== ($l_method  = $l_reflex->getMethod("serverSide"))))
+      return array($l_method, $l_wrapped, $l_action);
+
+    if ((false !== ($l_wrapped = $l_getter(sprintf("j_%s", $l_action)))) &&
+        (false !== ($l_method  = $l_reflex->getMethod("jsonAnwser"))))
+      return array($l_method, $l_wrapped, $l_action);
+
+    log::error("core.httphandler", "unknown action '%s'", $l_action);
+    return false;
+  }
+
+
+  public function jsonAnwser($p_wrapped)
+  {
+    $this->setGenerator(new JsonGenerator(false));
+    $l_callArgs = $this->methodGetArgs($p_wrapped);
+    if ((false === $l_callArgs) || (false === $p_wrapped->invokeArgs($this, $l_callArgs)))
+    {
+      log::error("code.handler", "json server side error");
+      return false;
+    }
+    return true;
   }
 
   private function methodGetArgs($p_method, $p_params = array())

@@ -311,7 +311,15 @@ $.fn.dataTableExt.oApi.fnGetColumnData = function (oSettings, iColumn, bUnique, 
   for (var i=0,c=aiRows.length; i<c; i++) {
     iRow = aiRows[i];
     var aData = this.fnGetData(iRow);
-    var sValue = aData[iColumn];
+
+    if (false == Array.isArray(aData)) {
+      var aCols  = Object.keys(aData);
+      var sValue = aData[aCols[iColumn]];
+    } else {
+      var sValue = aData[iColumn];
+    }
+
+
 
     if ((sValue.indexOf(">") > -1) && (sValue.indexOf("<") > -1))
       sValue = $(sValue).text().trim();
@@ -339,13 +347,14 @@ function escapeRegExp(str) {
 function WappFilter(p_target, p_th, p_table, p_tableID, p_colIdx, p_settings) {
   var self = p_target;
 
-  self.m_th       = p_th;
-  self.m_table    = p_table;
-  self.m_tableID  = p_tableID;
-  self.m_colIdx   = p_colIdx;
-  self.m_settings = p_settings;
-  self.m_name     = "#" + self.m_tableID + ".wappt-col" + self.m_colIdx;
-  self.m_cell     = $("<th></th>");
+  self.m_th        = p_th;
+  self.m_table     = p_table;
+  self.m_tableID   = p_tableID;
+  self.m_colIdx    = p_colIdx;
+  self.m_settings  = p_settings;
+  self.m_cookieSet = false;
+  self.m_name      = "#" + self.m_tableID + ".wappt-col" + self.m_colIdx;
+  self.m_cell      = $("<th></th>");
 
 
   self.__getElement = function() {
@@ -370,6 +379,10 @@ function WappFilter(p_target, p_th, p_table, p_tableID, p_colIdx, p_settings) {
 
   self.__getDefaultValue = function(p_value) {
     return "";
+  };
+
+  self.isCookieSet = function() {
+    return self.m_cookieSet;
   };
 
   self.save = function(p_value) {
@@ -403,6 +416,7 @@ function WappFilter(p_target, p_th, p_table, p_tableID, p_colIdx, p_settings) {
     var l_value = $.cookie(self.m_name) || undefined;
     if (undefined != l_value) {
       self.update(l_value);
+      self.m_cookieSet = true;
     }
   };
 
@@ -672,8 +686,9 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
     };
 
     self.initFilters = function() {
-      if (false == self.m_settings.bColFilter) return;
+      if (false == self.m_settings.bColFilter) return false;
 
+      var l_redraw  = false;
       var l_head    = self.getHead();
       var l_row     = $("<tr></tr>");
       var l_tfoot   = null;
@@ -696,6 +711,7 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
         }
         l_row.append(l_cell);
         l_filters.push(l_filter);
+        l_redraw = l_redraw || l_filter.isCookieSet();
       });
 
       if (self.m_settings.sFilterPlace != "thead")
@@ -708,6 +724,8 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
         l_head.append(l_row);
       }
       self.m_table.filters = $(l_filters);
+
+      return l_redraw;
     };
 
     self.init = function() {
@@ -717,12 +735,15 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       self.load();
       self.create();
       self.bind();
-      self.initFilters();
+      var l_redraw = self.initFilters();
       self.m_table.filter = function(p_idx) {
         return self.m_table.filters[p_idx];
       };
       self.m_table.highlighCell = self.highlighCell;
       self.m_table.highlighRow  = self.highlighRow;
+      if (l_redraw) {
+        self.m_table.api().draw();
+      };
     };
 
     self.init();
