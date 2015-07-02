@@ -39,7 +39,7 @@ function core_fr() {
           "core.color.brown"    => "Marron",
           "core.color.burgundy" => "Bordeaux",
           "core.color.gold"     => "Or",
-          "core.color.gray"     => "Gris",
+          "core.color.gray"     => "Argent",
           "core.color.green"    => "Vert",
           "core.color.orange"   => "Orange",
           "core.color.pink"     => "Rose",
@@ -47,7 +47,7 @@ function core_fr() {
           "core.color.red"      => "Rouge",
           "core.color.yellow"   => "Jaune",
           "core.color.white"    => "Blanc",
-          "core.color.charcoal" => "Charbon",
+          "core.color.charcoal" => "Gris",
           "core.color.other"    => "Autre",
 
           "core.payment.taxrate"       => "Taxe",
