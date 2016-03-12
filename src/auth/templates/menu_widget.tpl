@@ -1,3 +1,11 @@
+{*
+ ** Copyright (C) 2015 All Rights Reserved
+ **
+ ** Written by: Xavier MARCELET <xavier@marcelet.com>, 2014
+ **
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+*}
 {if null == $auth_user }
   <form id="auth_menu_widget" class="navbar-form form-inline text-center" style="margin-right:0px;margin-left:0px;" method="POST" action="/wappcore/auth/">
     <input type="hidden" name="action"   value="login"/>

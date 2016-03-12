@@ -3,7 +3,6 @@
  ** Copyright (C) 2015 All Rights Reserved
  **
  ** Written by: Xavier MARCELET <xavier@marcelet.com>, 2014
- ** Written by: Pascal BERGER   <pb@wapp.pro>, 2014
  **
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
@@ -26,6 +25,7 @@ function core_en() {
           "core.total"                 => "Total",
           "core.free"                  => "Free",
           "core.mail"                  => "Email",
+          "core.phone"                 => "Phone",
           "core.actions"               => "Actions",
           "core.actions.advanced"      => "Advanced",
           "core.item"                  => "Item",
