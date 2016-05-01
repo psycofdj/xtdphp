@@ -99,6 +99,14 @@ class Mapper
         {
           $l_cond = sprintf("%s IS NOT NULL", $l_colName);
         }
+        else if ("__empty__" == $c_col->m_search)
+        {
+          $l_cond = sprintf("%s = ''", $l_colName);
+        }
+        else if ("__notempty__" == $c_col->m_search)
+        {
+          $l_cond = sprintf("%s REGEXP '^.+$'", $l_colName);
+        }
         else if (false == $c_col->m_isRegexp)
         {
           $l_cond = sprintf("%s LIKE ?", $l_colName);

@@ -475,7 +475,9 @@ function WappFilterSelect(p_th, p_table, p_tableID, p_colIdx, p_settings) {
         self.m_table.setColFilter(".*", self.m_colIdx, true);
       }
     } else if (p_value == "__notempty__") {
-      self.m_table.setColFilter("^.+$", self.m_colIdx, true);
+      self.m_table.setColFilter("__notempty__", self.m_colIdx, false);
+    } else if (p_value == "__empty__") {
+      self.m_table.setColFilter("__empty__", self.m_colIdx, false);
     } else if (p_value == "__null__") {
       self.m_table.setColFilter("__null__", self.m_colIdx, false);
     } else if (p_value == "__notnull__") {
@@ -496,37 +498,113 @@ function WappFilterSelect(p_th, p_table, p_tableID, p_colIdx, p_settings) {
     return self.m_table.fnGetColumnData(self.m_colIdx, true, true, false);
   };
 
+  self.allowValues = function()
+  {
+    if ((undefined != self.m_settings.aoColumns) &&
+        (undefined != self.m_settings.aoColumns[p_colIdx]) &&
+        (undefined != self.m_settings.aoColumns[p_colIdx].bFilterAllowValues))
+      return self.m_settings.aoColumns[p_colIdx].bFilterAllowValues;
+    return true;
+  };
+
+  self.getLabel  = function(p_type) {
+    if ((undefined != self.m_settings.aoColumns) &&
+        (undefined != self.m_settings.aoColumns[p_colIdx])) {
+      if ((p_type == "__any__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].sAllCellFilterLabel))
+        return self.m_settings.aoColumns[p_colIdx].sAllCellFilterLabel;
+      if ((p_type == "__notnull__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].sNotNullCellFilterLabel))
+        return self.m_settings.aoColumns[p_colIdx].sNotNullCellFilterLabel;
+      if ((p_type == "__null__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].sNullCellFilterLabel))
+        return self.m_settings.aoColumns[p_colIdx].sNullCellFilterLabel;
+      if ((p_type == "__empty__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].sEmptyCellFilterLabel))
+        return self.m_settings.aoColumns[p_colIdx].sEmptyCellFilterLabel;
+      if ((p_type == "__notempty__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].sNotEmptyCellFilterLabel))
+        return self.m_settings.aoColumns[p_colIdx].sNotEmptyCellFilterLabel;
+    }
+    if (p_type == "__any__") {
+      return self.m_settings.sAllCellFilterLabel;
+    } else if  (p_type == "__empty__") {
+      return self.m_settings.sEmptyCellFilterLabel;
+    } else if  (p_type == "__null__") {
+      return self.m_settings.sNullCellFilterLabel;
+    } else if  (p_type == "__notnull__") {
+      return self.m_settings.sNotNullCellFilterLabel;
+    } else if  (p_type == "__notempty__") {
+      return self.m_settings.sNotEmptyCellFilterLabel;
+    }
+    return "";
+  };
+
+  self.isAllowed = function(p_type)
+  {
+    if ((undefined != self.m_settings.aoColumns) &&
+        (undefined != self.m_settings.aoColumns[p_colIdx])) {
+      if ((p_type == "__any__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].bFilterAllowAny))
+        return self.m_settings.aoColumns[p_colIdx].bFilterAllowAny;
+      if ((p_type == "__notnull__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].bFilterAllowNotNull))
+        return self.m_settings.aoColumns[p_colIdx].bFilterAllowNotNull;
+      if ((p_type == "__null__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].bFilterAllowNull))
+        return self.m_settings.aoColumns[p_colIdx].bFilterAllowNull;
+      if ((p_type == "__empty__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].bFilterAllowEmpty))
+        return self.m_settings.aoColumns[p_colIdx].bFilterAllowEmpty;
+      if ((p_type == "__notempty__") &&
+          (undefined != self.m_settings.aoColumns[p_colIdx].bFilterAllowNotEmpty))
+        return self.m_settings.aoColumns[p_colIdx].bFilterAllowNotEmpty;
+    }
+    if (p_type == "__any__") {
+      return self.m_settings.bFilterAllowAny;
+    } else if  (p_type == "__empty__") {
+      return self.m_settings.bFilterAllowEmpty;
+    } else if  (p_type == "__null__") {
+      return self.m_settings.bFilterAllowNull;
+    } else if  (p_type == "__notnull__") {
+      return self.m_settings.bFilterAllowNotNull;
+    } else if  (p_type == "__notempty__") {
+      return self.m_settings.bFilterAllowNotEmpty;
+    }
+    return false;
+  };
+
   self.createSelectOptions = function(p_values)
   {
     var r = "";
     var i;
     var iLen = p_values.length;
+    var l_specials = [ "__any__", "__empty__", "__notempty__", "__null__", "__notnull__"];
 
-    r += '<option value="__any__">' + self.m_settings.sAllCellFilterLabel + '</option>';
-    if (self.m_settings.bFilterAllowEmpty)
-      r += '<option value="">' + self.m_settings.sEmptyCellFilterLabel + '</option>';
-    if (self.m_settings.bFilterAllowNotEmpty)
-      r += '<option value="__notempty__">' + self.m_settings.sNotEmptyCellFilterLabel + '</option>';
-    if (self.m_settings.bFilterAllowNull)
-      r += '<option value="__null__">' + self.m_settings.sNullCellFilterLabel + '</option>';
-    if (self.m_settings.bFilterAllowNotNull)
-      r += '<option value="__notnull__">' + self.m_settings.sNotNullCellFilterLabel + '</option>';
+    for (c_idx in l_specials) {
+      l_item = l_specials[c_idx];
+      if (true == self.isAllowed(l_item)) {
+        r += '<option value="' + l_item + '">' + self.getLabel(l_item) + '</option>';
+      }
+    }
 
-    for (i = 0 ; i < iLen ; i++ )
-    {
-      var l_node  = p_values[i] || "__null__";
-      var l_label = l_node;
+    if (self.allowValues()) {
+      for (i = 0 ; i < iLen ; i++ )
+      {
+        var l_node  = p_values[i] || "__null__";
+        var l_label = l_node;
 
-      if ((undefined != self.m_settings.aoColumns) &&
-          (undefined != self.m_settings.aoColumns[p_colIdx]) &&
-          (undefined != self.m_settings.aoColumns[p_colIdx].aFilterLabels) &&
-          (undefined != self.m_settings.aoColumns[p_colIdx].aFilterLabels[l_node]))
-        l_label = self.m_settings.aoColumns[p_colIdx].aFilterLabels[l_node];
+        if ((undefined != self.m_settings.aoColumns) &&
+            (undefined != self.m_settings.aoColumns[p_colIdx]) &&
+            (undefined != self.m_settings.aoColumns[p_colIdx].aFilterLabels) &&
+            (undefined != self.m_settings.aoColumns[p_colIdx].aFilterLabels[l_node]))
+          l_label = self.m_settings.aoColumns[p_colIdx].aFilterLabels[l_node];
 
-      if (l_label == "__null__")
-        l_label = self.m_settings.sNullCellFilterLabel;
+        if (l_label == "__null__")
+          l_label = self.getLabel("__null__");
 
-      r += '<option value="' + l_node + '">' + l_label + '</option>';
+        r += '<option value="' + l_node + '">' + l_label + '</option>';
+      }
     }
     return r;
   };
@@ -616,10 +694,14 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       "sNotEmptyCellFilterLabel" : $.wapp.messages.table.notempty,
       "sNullCellFilterLabel"     : $.wapp.messages.table.null,
       "sNotNullCellFilterLabel"  : $.wapp.messages.table.notnull,
+
+      "bFilterAllowAny"          : true,
       "bFilterAllowNull"         : false,
       "bFilterAllowNotNull"      : false,
       "bFilterAllowNotEmpty"     : false,
       "bFilterAllowEmpty"        : false,
+      "bFilterAllowValues"       : true,
+
       "aoColumnDefs"             : [ { "sClass": "text-center", "aTargets": "_all" } ],
       "fnDrawCallback"           : function(p_settings) {
         $(this).trigger("wapptable.loaded");
