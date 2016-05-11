@@ -33,7 +33,7 @@
       <li class="active">{t}auth.menu.users{/t}
         &nbsp;&nbsp;
         <a
-          href="/wappcore/auth/user.php?action=add" class="btn btn-sm btn-success glyphicon glyphicon-pencil"
+          href="/wappcore/auth/user.php?action=add" class="btn btn-sm btn-success glyphicon glyphicon-plus"
           data-toggle="tooltip" data-placement="right" data-title="{t}auth.user.list.add{/t}"
           {perm_if action="auth/user/modify"}
           ></a>

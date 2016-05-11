@@ -34,7 +34,7 @@
       <li class="active">{t}auth.menu.roles{/t}
         &nbsp;&nbsp;
         <a
-          href="/wappcore/auth/role.php?action=add" class="btn btn-sm btn-success glyphicon glyphicon-pencil"
+          href="/wappcore/auth/role.php?action=add" class="btn btn-sm btn-success glyphicon glyphicon-plus"
           data-toggle="tooltip" data-placement="right" data-title="{t}auth.role.list.add{/t}"
           {perm_if action="auth/role/modify"}
           ></a>
@@ -47,7 +47,7 @@
       <table id="roles" cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-hover table-condensed table-responsive" id="example">
         <thead>
           <tr>
-            <th class="col-xs-1"></th>
+            <th style="width:100px;" class="col-xs-1"></th>
             <th class="wp-search text-center">{t}auth.role.list.name{/t}</th>
             <th class="wp-search text-center">{t}auth.role.list.data{/t}</th>
           </tr>

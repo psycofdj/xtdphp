@@ -181,8 +181,14 @@ class Page extends HTTPHandler
     }
 
     $l_newPassword = tools::genPassword(8, 8);
-    $l_user        = UserModel::update($l_user->id, $l_user->mail, $l_user->name, $l_newPassword, $l_dummy);
-    $l_mail        = new MailTemplate("userrecover", $p_email);
+    list($l_user, $l_error) = UserModel::update($l_user->id, $l_user->mail, $l_user->name, $l_newPassword, $l_dummy);
+    if (false === $l_user)
+    {
+      log::error("auth.user.recover", "unable to update password for user '%s'", $p_email);
+      return false;
+    }
+
+    $l_mail = new MailTemplate("userrecover", $p_email, true, $this);
     $l_mail
       ->setData("user",     $l_user)
       ->setData("password", $l_newPassword)

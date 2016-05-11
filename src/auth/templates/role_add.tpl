@@ -86,7 +86,7 @@
           {t}auth.role.add.title{/t}
         {/if}
         &nbsp;&nbsp;
-        <button type="submit" class="btn btn-sm btn-success glyphicon" data-form="#add" data-toggle="tooltip" data-placement="right" data-title="{t}core.save{/t}">{t}core.save{/t}</button>
+        <button type="submit" class="btn btn-sm btn-success glyphicon glyphicon-floppy-save" data-form="#add" data-toggle="tooltip" data-placement="right" data-title="{t}core.save{/t}"></button>
       </li>
     </ol>
   </div> <!-- row -->
