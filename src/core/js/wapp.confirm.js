@@ -27,8 +27,12 @@
       onConfirm      : function(p_event, p_elem) {
         var l_form   = $(p_elem).closest("form");
         var l_action = $(p_elem).attr("formaction");
+        var l_target = $(p_elem).data("formtarget");
+
         if (undefined != l_action)
           l_form.attr("action", l_action);
+        if (undefined != l_target)
+          l_form.attr("target", l_target);
         l_form.submit();
       },
       onCancel : function(p_event, p_elem) {

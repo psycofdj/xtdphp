@@ -13,6 +13,8 @@
 
   $.fn.wappform = function(options) {
 
+    options = options || {};
+
     var methods = {
       clear : function() {
         this.each(function() {
@@ -40,6 +42,12 @@
       },
      errorClass : "has-error",
      validClass : "has-success",
+     clean : function(p_form) {
+       var l_validator = $(p_form).validate();
+       l_validator.elements().each(function() {
+         l_validator.settings.success("success", $(this));
+       });
+     },
      success : function(p_succes, p_el) {
        $(p_el)
          .parents("div.form-group")
@@ -50,6 +58,10 @@
          .find("span.form-control-feedback")
          .removeClass("glyphicon-remove")
          .addClass("glyphicon-ok");
+
+       if (options.callbackSuccess != undefined) {
+         options.callbackSuccess(p_succes, p_el);
+       }
      },
      errorPlacement : function(p_error, p_el) {
        $(p_el)
@@ -69,6 +81,10 @@
            trigger   : "manual"
          })
          .tooltip("show");
+
+       if (options.callbackError != undefined) {
+         options.callbackError(p_error, p_el);
+       }
     }}, options);
 
     return this.each(function() {

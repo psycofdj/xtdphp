@@ -260,8 +260,6 @@ $.fn.dataTableExt.oApi.setColFilter = function(oSettings, sInput, iColumn, bRege
   oSettings.aoPreSearchCols[iColumn].bRegex  = bRegex;
 };
 
-
-
 $.fn.dataTableExt.oApi.fnGetServerColumnsData = function (oSettings, p_colIdx) {
   var l_results = [];
 
@@ -353,6 +351,7 @@ function escapeRegExp(str) {
 }
 
 
+
 function WappFilter(p_target, p_th, p_table, p_tableID, p_colIdx, p_settings) {
   var self = p_target;
 
@@ -392,6 +391,14 @@ function WappFilter(p_target, p_th, p_table, p_tableID, p_colIdx, p_settings) {
 
   self.isCookieSet = function() {
     return self.m_cookieSet;
+  };
+
+  self.enable = function() {
+    self.__getElement().prop("disabled", false);
+  };
+
+  self.disable = function() {
+    self.__getElement().prop("disabled", true);
   };
 
   self.save = function(p_value) {
@@ -694,14 +701,12 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       "sNotEmptyCellFilterLabel" : $.wapp.messages.table.notempty,
       "sNullCellFilterLabel"     : $.wapp.messages.table.null,
       "sNotNullCellFilterLabel"  : $.wapp.messages.table.notnull,
-
       "bFilterAllowAny"          : true,
       "bFilterAllowNull"         : false,
       "bFilterAllowNotNull"      : false,
       "bFilterAllowNotEmpty"     : false,
       "bFilterAllowEmpty"        : false,
       "bFilterAllowValues"       : true,
-
       "aoColumnDefs"             : [ { "sClass": "text-center", "aTargets": "_all" } ],
       "fnDrawCallback"           : function(p_settings) {
         $(this).trigger("wapptable.loaded");
@@ -776,6 +781,11 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       return l_head;
     };
 
+
+    self.deleteFilters = function() {
+      $(".wapptable-row-filter", self.m_table).remove();
+    };
+
     self.initFilters = function() {
       if (false == self.m_settings.bColFilter) return false;
 
@@ -785,9 +795,13 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       var l_tfoot   = null;
       var l_filters = [];
 
+      l_row.addClass("wapptable-row-filter");
+
       $("> tr > th", l_head).each(function(p_colIndex) {
         var l_cell   = $("<th></th>");
         var l_filter = null;
+
+
 
         if (true == $(this).hasClass("wp-search")) {
           l_filter = new WappFilterInput($(this), self.m_table, self.m_id, p_colIndex, self.m_settings);
@@ -809,7 +823,6 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       {
         l_place = $("<tfoot></tfoot>");
         l_place.append(l_row);
-        l_table.append(l_place);
       }
       else {
         l_head.append(l_row);
@@ -819,6 +832,7 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       return l_redraw;
     };
 
+
     self.init = function() {
       if (self.m_id == null) {
         throw "wapptables need table id attribute";
@@ -826,6 +840,7 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       self.load();
       self.create();
       self.bind();
+
       var l_redraw = self.initFilters();
       self.m_table.filter = function(p_idx) {
         return self.m_table.filters[p_idx];
@@ -835,6 +850,13 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       if (l_redraw) {
         self.m_table.api().draw();
       };
+
+      self.m_table.destroy = function() {
+        self.deleteFilters();
+        self.m_table.fnDestroy();
+      };
+
+
     };
 
     self.init();

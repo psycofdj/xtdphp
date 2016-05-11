@@ -73,6 +73,7 @@ class Mapper
   {
     array_push($this->m_conds, $p_cond);
     $this->m_condVars = array_merge($this->m_condVars, $p_vars);
+    return $this;
   }
 
   protected function getColName($p_idx)

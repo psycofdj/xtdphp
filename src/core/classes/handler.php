@@ -242,6 +242,12 @@ class HTTPHandler extends Handler
         $l_name = "string";
         break;
 
+      case 'd' :
+        $l_name   = "date";
+        $l_status = types::to_date($p_paramValue);
+        break;
+
+
       case 'a' :
         $l_name    = "array";
         $l_remains = array_slice($p_paramAttr, $c_idx + 1);
