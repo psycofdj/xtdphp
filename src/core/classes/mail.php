@@ -121,7 +121,8 @@ class MailTemplate extends TemplateGenerator
   }
 }
 
-?>
 /* Local Variables: */
 /* ispell-local-dictionary: "american" */
 /* End: */
+
+?>

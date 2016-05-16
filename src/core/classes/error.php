@@ -16,7 +16,6 @@ class WappError extends Exception
   public function __construct($p_message, $p_code = 200, $p_redirect = "/")
   {
     parent::__construct($p_message);
-
     $this
       ->setData("error_message", $p_message)
       ->setStatusCode($p_code)
@@ -50,5 +49,6 @@ class WappError extends Exception
     return $this->setData("__redirect", $p_dest);
   }
 }
+
 
 ?>

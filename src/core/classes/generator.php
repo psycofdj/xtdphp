@@ -182,8 +182,8 @@ class TemplateGenerator implements OutputGenerator
   /** Smarty engine instance */
   protected $m_smarty;
   /** Smarty template relative file path */
-  private   $m_targetTmpl;
-  private   $m_targetErrorTmpl;
+  protected   $m_targetTmpl;
+  protected   $m_targetErrorTmpl;
   private   $m_signals;
   private static $ms_plugins = array();
 
@@ -373,17 +373,18 @@ class HtmlGenerator extends TemplateGenerator
   {
     global $g_conf;
     parent::__construct("text/html");
-    $this->m_content        = null;
-    $this->m_jsList         = Array();
-    $this->m_cssList        = Array();
-    $this->m_title          = null;
-    $this->m_metaKw         = null;
-    $this->m_metaDescr      = null;
-    $this->m_favicon        = null;
-    $this->m_base           = null;
-    $this->m_header         = null;
-    $this->m_metaHttpEquivs = Array();
-    $this->m_version        = $g_conf["version"];
+    $this->m_content         = null;
+    $this->m_jsList          = Array();
+    $this->m_cssList         = Array();
+    $this->m_title           = null;
+    $this->m_metaKw          = null;
+    $this->m_metaDescr       = null;
+    $this->m_favicon         = null;
+    $this->m_base            = null;
+    $this->m_header          = null;
+    $this->m_metaHttpEquivs  = Array();
+    $this->m_version         = $g_conf["version"];
+    $this->m_targetErrorTmpl = "[core]error.tpl";
 
     $this
       ->setData("lang",    locale::getName())
@@ -506,7 +507,7 @@ class HtmlGenerator extends TemplateGenerator
 
   public function resolveError(WappError $p_error)
   {
-    $this->setContent("[core]error.tpl");
+    $this->setContent($this->m_targetErrorTmpl);
     foreach ($p_error->getData() as $c_key => $c_value)
       $this->setData($c_key, $c_value);
     return $this->resolve();
