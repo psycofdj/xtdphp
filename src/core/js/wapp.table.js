@@ -694,7 +694,7 @@ function WappFilterNull(p_th, p_table, p_tableID, p_colIdx, p_settings) {
       "sFilterPlace"             : "thead",
       "bAutoWidth"               : false,
       "bColFilter"               : true,  // enable automatique creation of ciltering widgets
-      "bCookie"                  : true,  // use cookie to save filtering options
+      "bCookie"                  : false,  // use cookie to save filtering options
       "dCookieTime"              : 365,   // when use cookie, expire time of the cookie
       "sAllCellFilterLabel"      : $.wapp.messages.table.nofilter,
       "sEmptyCellFilterLabel"    : $.wapp.messages.table.empty,
