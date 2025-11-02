@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class TemplateHandler</title>
+
+	<script type="text/javascript" src="resources/combined.js?893406147"></script>
+	<script type="text/javascript" src="elementlist.js?449495022"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Handler.html">Handler</a></li>
+				<li><a href="class-HtmlHandler.html">HtmlHandler</a></li>
+				<li><a href="class-ImageUrlMail.html">ImageUrlMail</a></li>
+				<li><a href="class-JsonHandler.html">JsonHandler</a></li>
+				<li><a href="class-locale.html">locale</a></li>
+				<li><a href="class-log.html">log</a></li>
+				<li><a href="class-NewUserMail.html">NewUserMail</a></li>
+				<li class="active"><a href="class-TemplateHandler.html">TemplateHandler</a></li>
+				<li><a href="class-TemplateMail.html">TemplateMail</a></li>
+				<li><a href="class-types.html">types</a></li>
+				<li><a href="class-ViewMail.html">ViewMail</a></li>
+			</ul>
+
+
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-t.html">t</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class TemplateHandler</h1>
+
+
+	<div class="description">
+	
+<p>Generate answer from given data and smarty template</p>
+
+<p>Renders given $m_targetTmpl smarty template with Handler::$m_data. Smarty
+engine will be initialized with the custum function plugin named <b>{t}</b>
+which allow to generate localized output</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Handler.html"><span>Handler</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>TemplateHandler</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-HtmlHandler.html">HtmlHandler</a>
+	</div>
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> <a href="source-class-TemplateHandler.html#496-594" title="Go to source code">core/handler.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-TemplateHandler.html#510-523" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Handler.html#___construct">Handler::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="translate" id="_translate">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_translate">#</a>
+		<code><a href="source-class-TemplateHandler.html#526-569" title="Go to source code">translate</a>( <span>string <var>$p_params</var></span>, <span>string <var>$p_content</var></span>, <span>mixed <var>&amp; $p_smarty</var></span>, <span>mixed <var>&amp; $p_repeat</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Smarty custom plugin for localized output</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Smarty custom plugin for localized output</p>
+
+<p><br />
+<b>Smarty plugin signature</b></p>
+
+<p>The $p_content comes from the content of the plugin call, like core.currency
+in : <code> {t}core.currency{/t} </code></p>
+
+<p>The array $p_params represents from the paramters given to the plugin call,
+like var1 and var2 in : <code> {t var1=value1 var2=value2}....{/t} </code></p>
+
+<p><br />
+<b>Process</b></p>
+
+<p>First, this function will convert the $p_content key to its localized value
+according to the current language configuration (@see Locale::resolve)</p>
+
+<p>Then, final output will be genrated by passing $p_params to the localized
+string as if it were a sprint format.</p>
+
+<p>Exemple @code {t value=400}core.currency{t} For english :</p>
+
+<ul>
+	<li>Step 1. Locale::resolve("core.currency") =&gt; "Price: $%d"</li>
+
+	<li>Step 2. sprint("Price: $%d", 400) =&gt; "Price: $400"</li>
+</ul>
+
+<p>For french :</p>
+
+<ul>
+	<li>Step 1. Locale::resolve("core.currency") =&gt; "Prix : %d€"</li>
+
+	<li>Step 2. sprint("Prix : %d€", 400) =&gt; "Prix : 400€"</li>
+</ul>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$p_params</var></dt>
+					<dd><code>string</code><br>$p_params format arguments</dd>
+					<dt><var>$p_content</var></dt>
+					<dd><code>string</code><br>$p_content locale key (content of the smarty call)</dd>
+					<dt><var>$p_smarty</var></dt>
+					<dd><code>mixed</code><br>$p_smarty (unused)</dd>
+					<dt><var>$p_repeat</var></dt>
+					<dd><code>mixed</code><br>$p_repeat (unused)</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>localized value<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setTarget" id="_setTarget">
+
+		<td class="attributes"><code>
+			 protected 
+			<code><a href="class-TemplateHandler.html">TemplateHandler</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setTarget">#</a>
+		<code><a href="source-class-TemplateHandler.html#571-581" title="Go to source code">setTarget</a>( <span>string <var>$p_target</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Set input template file path</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Set input template file path</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$p_target</var></dt>
+					<dd><code>string</code><br>$p_target template file path relative to smarty template directory</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-TemplateHandler.html">TemplateHandler</a></code></code><br>@this<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="display" id="_display">
+
+		<td class="attributes"><code>
+			 protected 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_display">#</a>
+		<code><a href="source-class-TemplateHandler.html#583-593" title="Go to source code">display</a>( )</code>
+
+		<div class="description short">
+			
+<p>Generate template result</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate template result</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>generated template result<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Handler.html#methods">Handler</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Handler.html#_checkFile">checkFile()</a>, 
+			<a href="class-Handler.html#_checkSessionOrRedirect">checkSessionOrRedirect()</a>, 
+			<a href="class-Handler.html#_deleteSession">deleteSession()</a>, 
+			<a href="class-Handler.html#_finalize">finalize()</a>, 
+			<a href="class-Handler.html#_getSession">getSession()</a>, 
+			<a href="class-Handler.html#_initialize">initialize()</a>, 
+			<a href="class-Handler.html#_process">process()</a>, 
+			<a href="class-Handler.html#_redirect">redirect()</a>, 
+			<a href="class-Handler.html#_setContentType">setContentType()</a>, 
+			<a href="class-Handler.html#_setData">setData()</a>, 
+			<a href="class-Handler.html#_setSession">setSession()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="m_smarty" id="$m_smarty">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-TemplateHandler.html#505-506" title="Go to source code"><var>$m_smarty</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_smarty" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Smarty engine instance</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Smarty engine instance</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="m_targetTmpl" id="$m_targetTmpl">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-TemplateHandler.html#507-508" title="Go to source code"><var>$m_targetTmpl</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_targetTmpl" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Smarty template relative file path</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Smarty template relative file path</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Handler.html#properties">Handler</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Handler.html#$m_data"><var>$m_data</var></a>, 
+			<a href="class-Handler.html#$m_headers"><var>$m_headers</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

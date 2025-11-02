@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class HtmlHandler</title>
+
+	<script type="text/javascript" src="resources/combined.js?893406147"></script>
+	<script type="text/javascript" src="elementlist.js?449495022"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Handler.html">Handler</a></li>
+				<li class="active"><a href="class-HtmlHandler.html">HtmlHandler</a></li>
+				<li><a href="class-ImageUrlMail.html">ImageUrlMail</a></li>
+				<li><a href="class-JsonHandler.html">JsonHandler</a></li>
+				<li><a href="class-locale.html">locale</a></li>
+				<li><a href="class-log.html">log</a></li>
+				<li><a href="class-NewUserMail.html">NewUserMail</a></li>
+				<li><a href="class-TemplateHandler.html">TemplateHandler</a></li>
+				<li><a href="class-TemplateMail.html">TemplateMail</a></li>
+				<li><a href="class-types.html">types</a></li>
+				<li><a href="class-ViewMail.html">ViewMail</a></li>
+			</ul>
+
+
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-t.html">t</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class HtmlHandler</h1>
+
+
+	<div class="description">
+	
+<p>Template generator specialized for html output</p>
+
+<p>This object simplifies the generation of HTML page based on a fixed
+template.</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Handler.html"><span>Handler</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-TemplateHandler.html"><span>TemplateHandler</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>HtmlHandler</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> <a href="source-class-HtmlHandler.html#600-730" title="Go to source code">core/handler.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-HtmlHandler.html#622-641" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-TemplateHandler.html#___construct">TemplateHandler::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="initialize" id="_initialize">
+
+		<td class="attributes"><code>
+			 protected 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_initialize">#</a>
+		<code><a href="source-class-HtmlHandler.html#643-650" title="Go to source code">initialize</a>( )</code>
+
+		<div class="description short">
+			
+<p>Initialize the session and language settings</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Initialize the session and language settings</p>
+
+<p>Child classe may override this function if it need to perform operations
+before action routing or parameter parsing.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>true<br />
+				</div>
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Handler.html#_initialize">Handler::initialize()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setContent" id="_setContent">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setContent">#</a>
+		<code><a href="source-class-HtmlHandler.html#652-656" title="Go to source code">setContent</a>( <span>mixed <var>$p_content</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addJs" id="_addJs">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addJs">#</a>
+		<code><a href="source-class-HtmlHandler.html#658-662" title="Go to source code">addJs</a>( <span>mixed <var>$p_jsPath</var></span>, <span>mixed <var>$p_module</var> = <span class="php-quote">&quot;app&quot;</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addCss" id="_addCss">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addCss">#</a>
+		<code><a href="source-class-HtmlHandler.html#664-668" title="Go to source code">addCss</a>( <span>mixed <var>$p_cssPath</var></span>, <span>mixed <var>$p_module</var> = <span class="php-quote">&quot;app&quot;</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="relPathToUrl" id="_relPathToUrl">
+
+		<td class="attributes"><code>
+			 private 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_relPathToUrl">#</a>
+		<code><a href="source-class-HtmlHandler.html#670-681" title="Go to source code">relPathToUrl</a>( <span>mixed <var>$p_module</var></span>, <span>mixed <var>$p_filePath</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setTitle" id="_setTitle">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setTitle">#</a>
+		<code><a href="source-class-HtmlHandler.html#683-687" title="Go to source code">setTitle</a>( <span>mixed <var>$p_title</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setMetaKw" id="_setMetaKw">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setMetaKw">#</a>
+		<code><a href="source-class-HtmlHandler.html#689-693" title="Go to source code">setMetaKw</a>( <span>mixed <var>$p_metaKw</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setMetaDescr" id="_setMetaDescr">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setMetaDescr">#</a>
+		<code><a href="source-class-HtmlHandler.html#695-699" title="Go to source code">setMetaDescr</a>( <span>mixed <var>$p_metaDescr</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setOnload" id="_setOnload">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setOnload">#</a>
+		<code><a href="source-class-HtmlHandler.html#701-705" title="Go to source code">setOnload</a>( <span>mixed <var>$p_onload</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addMetaHttpEquiv" id="_addMetaHttpEquiv">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addMetaHttpEquiv">#</a>
+		<code><a href="source-class-HtmlHandler.html#707-711" title="Go to source code">addMetaHttpEquiv</a>( <span>mixed <var>$p_equiv</var></span>, <span>mixed <var>$p_content</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="display" id="_display">
+
+		<td class="attributes"><code>
+			 protected 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_display">#</a>
+		<code><a href="source-class-HtmlHandler.html#713-729" title="Go to source code">display</a>( )</code>
+
+		<div class="description short">
+			
+<p>Generate template result</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate template result</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>generated template result<br />
+				</div>
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-TemplateHandler.html#_display">TemplateHandler::display()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-TemplateHandler.html#methods">TemplateHandler</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-TemplateHandler.html#_setTarget">setTarget()</a>, 
+			<a href="class-TemplateHandler.html#_translate">translate()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Handler.html#methods">Handler</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Handler.html#_checkFile">checkFile()</a>, 
+			<a href="class-Handler.html#_checkSessionOrRedirect">checkSessionOrRedirect()</a>, 
+			<a href="class-Handler.html#_deleteSession">deleteSession()</a>, 
+			<a href="class-Handler.html#_finalize">finalize()</a>, 
+			<a href="class-Handler.html#_getSession">getSession()</a>, 
+			<a href="class-Handler.html#_process">process()</a>, 
+			<a href="class-Handler.html#_redirect">redirect()</a>, 
+			<a href="class-Handler.html#_setContentType">setContentType()</a>, 
+			<a href="class-Handler.html#_setData">setData()</a>, 
+			<a href="class-Handler.html#_setSession">setSession()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="m_content" id="$m_content">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-HtmlHandler.html#607-608" title="Go to source code"><var>$m_content</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_content" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Body sub-template file path</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Body sub-template file path</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="m_jsList" id="$m_jsList">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-HtmlHandler.html#609-610" title="Go to source code"><var>$m_jsList</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_jsList" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>List of javascript links</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>List of javascript links</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="m_cssList" id="$m_cssList">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-HtmlHandler.html#611-612" title="Go to source code"><var>$m_cssList</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_cssList" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>List of css stylesheets</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>List of css stylesheets</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="m_title" id="$m_title">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-HtmlHandler.html#613-614" title="Go to source code"><var>$m_title</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_title" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Page's title</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Page's title</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="m_metaKw" id="$m_metaKw">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-HtmlHandler.html#615-616" title="Go to source code"><var>$m_metaKw</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_metaKw" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Page's meta keywords string</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Page's meta keywords string</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="m_metaDescr" id="$m_metaDescr">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-HtmlHandler.html#617-618" title="Go to source code"><var>$m_metaDescr</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_metaDescr" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Page's meta description</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Page's meta description</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="m_metaHttpEquiv" id="$m_metaHttpEquiv">
+		<td class="attributes"><code>
+			private  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-HtmlHandler.html#619-620" title="Go to source code"><var>$m_metaHttpEquiv</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$m_metaHttpEquiv" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>List of additional http-equiv directives</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>List of additional http-equiv directives</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Handler.html#properties">Handler</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Handler.html#$m_data"><var>$m_data</var></a>, 
+			<a href="class-Handler.html#$m_headers"><var>$m_headers</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
